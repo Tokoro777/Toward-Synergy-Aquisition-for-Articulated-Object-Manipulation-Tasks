@@ -41,11 +41,11 @@ GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')
 class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
     def __init__(
             self, model_path, target_position, target_rotation,
-            target_position_range, reward_type, initial_qpos={},
+            target_position_range, target_angle_range, reward_type, initial_qpos={},
             randomize_initial_position=False, randomize_initial_rotation=False, randomize_object=False,
-            distance_threshold=0.01, rotation_threshold=0.1, n_substeps=20, relative_control=False,
+            distance_threshold=0.01, rotation_threshold=0.1, angle_threshold=0.1, n_substeps=20, relative_control=False,
             ignore_z_target_rotation=False,
-            target_id=0, num_axis=5, reward_lambda=0.5
+            target_id=0, num_axis=5, reward_lambda=0.5  # angle_threshold=0.1は約5度に相当
     ):
         """Initializes a new Hand manipulation environment.
 
@@ -79,11 +79,13 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         self.target_position = target_position
         self.target_rotation = target_rotation
         self.target_position_range = target_position_range
+        self.target_angle_range = target_angle_range
         self.parallel_quats = [rotations.euler2quat(r) for r in rotations.get_parallel_rotations()]
         self.randomize_initial_rotation = randomize_initial_rotation
         self.randomize_initial_position = randomize_initial_position
         self.distance_threshold = distance_threshold
         self.rotation_threshold = rotation_threshold
+        self.angle_threshold = angle_threshold
         self.reward_type = reward_type
         self.ignore_z_target_rotation = ignore_z_target_rotation
         self.synergy = None
@@ -117,48 +119,58 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         self.target_id = _target_id
         self.randomize_object = _randomize_object
 
+    # def _get_achieved_goal(self):
+    #     # Object position and rotation.
+    #     object_qpos = self.sim.data.get_joint_qpos(self.object)
+    #     assert object_qpos.shape == (7,)
+    #     return object_qpos
+
     def set_synergy(self, synergy):
         self.synergy = synergy
 
     def _get_achieved_goal(self):
-        # Object position and rotation.
-        object_qpos = self.sim.data.get_joint_qpos(self.object)
-        assert object_qpos.shape == (7,)
-        return object_qpos
+        # はさみのhingeの角度の取得
+        hinge_joint_angle_2 = self.sim.data.get_joint_qpos("scissors_hinge_2:joint")  # 正の値(はさみが開く場合の時)
+        # print("はさみの回転角度_2:", hinge_joint_angle_2)
+        return hinge_joint_angle_2
 
     # def _randamize_target(self):
     #     self.sim.data.set_joint_qpos("target0:joint", [1, 0.87, 0.4, 1, 0, 0, 0])
     #     # print("##### {} #####".format(self.sim.data.get_joint_qpos("target0:joint")))
 
+    # def _goal_distance(self, goal_a, goal_b):
+    #     assert goal_a.shape == goal_b.shape
+    #     assert goal_a.shape[-1] == 7
+    #
+    #     d_pos = np.zeros_like(goal_a[..., 0])
+    #     d_rot = np.zeros_like(goal_b[..., 0])
+    #     if self.target_position != 'ignore':
+    #         delta_pos = goal_a[..., :3] - goal_b[..., :3]
+    #         d_pos = np.linalg.norm(delta_pos, axis=-1)
+    #
+    #     if self.target_rotation != 'ignore':
+    #         quat_a, quat_b = goal_a[..., 3:], goal_b[..., 3:]
+    #
+    #         if self.ignore_z_target_rotation:
+    #             # Special case: We want to ignore the Z component of the rotation.
+    #             # This code here assumes Euler angles with xyz convention. We first transform
+    #             # to euler, then set the Z component to be equal between the two, and finally
+    #             # transform back into quaternions.
+    #             euler_a = rotations.quat2euler(quat_a)
+    #             euler_b = rotations.quat2euler(quat_b)
+    #             euler_a[2] = euler_b[2]
+    #             quat_a = rotations.euler2quat(euler_a)
+    #
+    #         # Subtract quaternions and extract angle between them.
+    #         quat_diff = rotations.quat_mul(quat_a, rotations.quat_conjugate(quat_b))
+    #         angle_diff = 2 * np.arccos(np.clip(quat_diff[..., 0], -1., 1.))
+    #         d_rot = angle_diff
+    #     assert d_pos.shape == d_rot.shape
+    #     return d_pos, d_rot
+
     def _goal_distance(self, goal_a, goal_b):
-        assert goal_a.shape == goal_b.shape
-        assert goal_a.shape[-1] == 7
-
-        d_pos = np.zeros_like(goal_a[..., 0])
-        d_rot = np.zeros_like(goal_b[..., 0])
-        if self.target_position != 'ignore':
-            delta_pos = goal_a[..., :3] - goal_b[..., :3]
-            d_pos = np.linalg.norm(delta_pos, axis=-1)
-
-        if self.target_rotation != 'ignore':
-            quat_a, quat_b = goal_a[..., 3:], goal_b[..., 3:]
-
-            if self.ignore_z_target_rotation:
-                # Special case: We want to ignore the Z component of the rotation.
-                # This code here assumes Euler angles with xyz convention. We first transform
-                # to euler, then set the Z component to be equal between the two, and finally
-                # transform back into quaternions.
-                euler_a = rotations.quat2euler(quat_a)
-                euler_b = rotations.quat2euler(quat_b)
-                euler_a[2] = euler_b[2]
-                quat_a = rotations.euler2quat(euler_a)
-
-            # Subtract quaternions and extract angle between them.
-            quat_diff = rotations.quat_mul(quat_a, rotations.quat_conjugate(quat_b))
-            angle_diff = 2 * np.arccos(np.clip(quat_diff[..., 0], -1., 1.))
-            d_rot = angle_diff
-        assert d_pos.shape == d_rot.shape
-        return d_pos, d_rot
+        d_angle = goal_a - goal_b
+        return abs(d_angle)
 
     # GoalEnv methods
     # ----------------------------  
@@ -186,11 +198,17 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
     # RobotEnv methods
     # ----------------------------
 
+    # def _is_success(self, achieved_goal, desired_goal, isingrasp):
+    #     d_pos, d_rot = self._goal_distance(achieved_goal, desired_goal)
+    #     achieved_pos = (d_pos < self.distance_threshold).astype(np.float32)
+    #     achieved_rot = (d_rot < self.rotation_threshold).astype(np.float32)
+    #     achieved_both = achieved_pos * achieved_rot * isingrasp
+    #     return achieved_both
+
     def _is_success(self, achieved_goal, desired_goal, isingrasp):
-        d_pos, d_rot = self._goal_distance(achieved_goal, desired_goal)
-        achieved_pos = (d_pos < self.distance_threshold).astype(np.float32)
-        achieved_rot = (d_rot < self.rotation_threshold).astype(np.float32)
-        achieved_both = achieved_pos * achieved_rot * isingrasp
+        d_angle = self._goal_distance(achieved_goal, desired_goal)
+        achieved_angle = (d_angle < self.angle_threshold).astype(np.float32)  # はさみが閉じれた状態なら成功. 回転角度が閾値以下なら閉じれたと判断
+        achieved_both = achieved_angle.flatten() * isingrasp
         return achieved_both
 
     def _env_setup(self, initial_qpos):
@@ -201,6 +219,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
     def _reset_sim(self):
         self.sim.set_state(self.initial_state)
         self.sim.forward()
+
+        # ハサミのタスクでは, リセットするものはハンドとはさみのみなので, targetは関係ないため使っていない.
 
         # -- motoda
         if self.randomize_object == True:
@@ -249,7 +269,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         initial_quat /= np.linalg.norm(initial_quat)
         initial_qpos = np.concatenate([initial_pos, initial_quat])
         self.initial_qpos = initial_qpos
-        self.sim.data.set_joint_qpos(self.object, initial_qpos)
+        self.sim.data.set_joint_qpos("scissors_hinge_1:joint", -0.52358)  # はさみの回転角度の初期化
+        self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 1.02358)
         self.step_n = 0
 
         def is_on_palm():
@@ -271,60 +292,73 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
     def _sample_goal(self):
         # Select a goal for the object position.
-        target_pos = None
+        goal = None
         if self.target_position == 'random':
-            assert self.target_position_range.shape == (3, 2)
-            offset = self.np_random.uniform(self.target_position_range[:, 0], self.target_position_range[:, 1])
-            assert offset.shape == (3,)
-            target_pos = self.sim.data.get_joint_qpos(self.object)[:3] + offset
+            assert self.target_angle_range.shape == (1, 2)
+            offset = self.np_random.uniform(self.target_angle__range[0], self.target_angle_range[1])  # はさみの可動範囲である0〜60度のランダムなオフセット
+            assert offset.shape == (1,)
+            goal = 0.0 + offset
         elif self.target_position in ['ignore', 'fixed']:
-            target_pos = self.sim.data.get_joint_qpos(self.object)[:3]
+            goal = 0.0
         else:
             raise error.Error('Unknown target_position option "{}".'.format(self.target_position))
-        assert target_pos is not None
-        assert target_pos.shape == (3,)
+        assert goal is not None
+        assert goal.shape == (1,)
+
+        # if self.target_position == 'random':
+        #     assert self.target_position_range.shape == (3, 2)
+        #     offset = self.np_random.uniform(self.target_position_range[:, 0], self.target_position_range[:, 1])
+        #     assert offset.shape == (3,)
+        #     target_pos = self.sim.data.get_joint_qpos(self.object)[:3] + offset
+        # elif self.target_position in ['ignore', 'fixed']:
+        #     target_pos = self.sim.data.get_joint_qpos(self.object)[:3]
+        # else:
+        #     raise error.Error('Unknown target_position option "{}".'.format(self.target_position))
+        # assert target_pos is not None
+        # assert target_pos.shape == (3,)
 
         # Select a goal for the object rotation.
-        target_quat = None
-        if self.target_rotation == 'z':
-            angle = self.np_random.uniform(-np.pi, np.pi)
-            axis = np.array([0., 0., 1.])
-            target_quat = quat_from_angle_and_axis(angle, axis)
-        elif self.target_rotation == 'parallel':
-            angle = self.np_random.uniform(-np.pi, np.pi)
-            axis = np.array([0., 0., 1.])
-            target_quat = quat_from_angle_and_axis(angle, axis)
-            parallel_quat = self.parallel_quats[self.np_random.randint(len(self.parallel_quats))]
-            target_quat = rotations.quat_mul(target_quat, parallel_quat)
-        elif self.target_rotation == 'xyz':
-            angle = self.np_random.uniform(-np.pi, np.pi)
-            axis = self.np_random.uniform(-1., 1., size=3)
-            target_quat = quat_from_angle_and_axis(angle, axis)
-        elif self.target_rotation in ['ignore', 'fixed']:
-            target_quat = self.sim.data.get_joint_qpos(self.object)
-        else:
-            raise error.Error('Unknown target_rotation option "{}".'.format(self.target_rotation))
-        assert target_quat is not None
-        assert target_quat.shape == (4,)
+        # target_quat = None
+        # if self.target_rotation == 'z':
+        #     angle = self.np_random.uniform(-np.pi, np.pi)
+        #     axis = np.array([0., 0., 1.])
+        #     target_quat = quat_from_angle_and_axis(angle, axis)
+        # elif self.target_rotation == 'parallel':
+        #     angle = self.np_random.uniform(-np.pi, np.pi)
+        #     axis = np.array([0., 0., 1.])
+        #     target_quat = quat_from_angle_and_axis(angle, axis)
+        #     parallel_quat = self.parallel_quats[self.np_random.randint(len(self.parallel_quats))]
+        #     target_quat = rotations.quat_mul(target_quat, parallel_quat)
+        # elif self.target_rotation == 'xyz':
+        #     angle = self.np_random.uniform(-np.pi, np.pi)
+        #     axis = self.np_random.uniform(-1., 1., size=3)
+        #     target_quat = quat_from_angle_and_axis(angle, axis)
+        # elif self.target_rotation in ['ignore', 'fixed']:
+        #     target_quat = self.sim.data.get_joint_qpos(self.object)
+        # else:
+        #     raise error.Error('Unknown target_rotation option "{}".'.format(self.target_rotation))
+        # assert target_quat is not None
+        # assert target_quat.shape == (4,)
 
-        target_quat /= np.linalg.norm(target_quat)  # normalized quaternion
-        goal = np.concatenate([target_pos, target_quat])
-        return goal
+        # target_quat /= np.linalg.norm(target_quat)  # normalized quaternion
+        # goal = np.concatenate([target_pos, target_quat])
+        return goal  # ランダムな(はさみの回転)角度1次元を生成
 
     def _render_callback(self):
+        # オブジェクトが隠れないようにtargetを動かす関数なので, ハサミのタスクでは関係なさそう. よってコメントアウト
         # Assign current state to target object but offset a bit so that the actual object
         # is not obscured.
-        goal = self.goal.copy()
-        assert goal.shape == (7,)
-        if self.target_position == 'ignore':
-            # Move the object to the side since we do not care about it's position.
-            goal[0] += 0.15
-        self.sim.data.set_joint_qpos('target:joint', goal)
-        self.sim.data.set_joint_qvel('target:joint', np.zeros(6))
-
-        if 'object_hidden' in self.sim.model.geom_names:
-            hidden_id = self.sim.model.geom_name2id('object_hidden')
-            self.sim.model.geom_rgba[hidden_id, 3] = 1.
+        # goal = self.goal.copy()
+        # assert goal.shape == (7,)
+        # if self.target_position == 'ignore':
+        #     # Move the object to the side since we do not care about it's position.
+        #     goal[0] += 0.15
+        # self.sim.data.set_joint_qpos('target:joint', goal)
+        # self.sim.data.set_joint_qvel('target:joint', np.zeros(6))
+        #
+        # if 'object_hidden' in self.sim.model.geom_names:
+        #     hidden_id = self.sim.model.geom_name2id('object_hidden')
+        #     self.sim.model.geom_rgba[hidden_id, 3] = 1.
         self.sim.forward()
 
     def _check_contact(self):
@@ -335,11 +369,9 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
     def _get_obs(self):
         robot_qpos, robot_qvel = robot_get_obs(self.sim)
-        object_qvel = self.sim.data.get_joint_qvel(self.object)
-        achieved_goal = self._get_achieved_goal().ravel()  # this contains the object position + rotation
+        object_qvel = self.sim.data.get_joint_qvel("scissors_hinge_2:joint")
+        achieved_goal = self._get_achieved_goal().ravel()  # はさみの角度(1次元)の取得
         sensordata = self._get_contact_forces()
-        pospalm = self.sim.data.site_xpos[self.sim.model.site_name2id("robot0:Tch_palm")]
-        print("pospalm", pospalm[2])
 
         observation = np.concatenate([robot_qpos, robot_qvel, object_qvel, achieved_goal, sensordata])
         # observation = np.concatenate([robot_qpos, robot_qvel, object_qvel, achieved_goal, [self.target_id]])
@@ -347,8 +379,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         return {
             'observation': observation.copy(),
-            'achieved_goal': achieved_goal.copy(),
-            'desired_goal': self.goal.ravel().copy(),
+            'achieved_goal': achieved_goal.copy(),  # 達成した角度(1次元)
+            'desired_goal': self.goal.ravel().copy(),  # ランダムに用意されたゴールとなる角度(1次元)
         }
 
     def _get_grasp_center_space(self, radius=0.07):
@@ -363,7 +395,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
     def _is_in_grasp_space(self, radius=0.05):
         posgrasp = self._get_grasp_center_space(radius=radius)
-        posobject = self.sim.data.site_xpos[self.sim.model.site_name2id("box:center")]
+        posobject = self.init_object_qpos[:3]
         return mean_squared_error(posgrasp, posobject, squared=False) < 0.05
 
     def _display_grasp_space(self):
@@ -458,7 +490,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
 
         if self.step_n < 20:
-            self.sim.data.set_joint_qpos(self.object, self.initial_qpos)
+            self.sim.data.set_joint_qpos(self.object, self.initial_qpos)  # 今回回転角度のみしかリセットできない
 
         # Options for displaying information
         # self._display_contacts()
@@ -474,6 +506,7 @@ class GraspObjectEnv(ManipulateEnv):
             model_path=GRASP_OBJECT_XML, target_position=target_position,
             target_rotation=target_rotation,
             target_position_range=np.array([(-0.025, 0.025), (-0.025, 0.025), (0.2, 0.25)]),
+            target_angle_range=(0, 1.0),  # はさみの可動範囲である0度〜60度
             randomize_initial_position=False, reward_type=reward_type,
             distance_threshold=0.05,
             rotation_threshold=100.0,
