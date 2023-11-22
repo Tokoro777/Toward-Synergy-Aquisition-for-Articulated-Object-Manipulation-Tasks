@@ -13,5 +13,5 @@ register(
 register(
     id='GraspObject-v0',
     entry_point='gym_grasp.envs:GraspObjectEnv',
-    max_episode_steps=100,
+    max_episode_steps=200,
 )

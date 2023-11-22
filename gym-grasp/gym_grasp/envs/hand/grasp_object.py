@@ -103,7 +103,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             self.object = self.object_list[self.target_id]  # target
 
         self.step_n = 0
-        self.init_object_qpos = np.array([1, 0.87, 0.4, 1, 0, 0, 0])
+        self.init_object_qpos = np.array([1.06, 0.87, 0.4, 1, 0, 0, 0])  # 1
 
         assert self.target_position in ['ignore', 'fixed', 'random']
         assert self.target_rotation in ['ignore', 'fixed', 'xyz', 'z', 'parallel']
@@ -259,7 +259,26 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             else:
                 raise error.Error('Unknown target_rotation option "{}".'.format(self.target_rotation))
 
-        self.sim.data.set_joint_qpos("robot0:rollhinge", 1.57) # self.np_random.uniform(0, 3.14))
+        # self.sim.data.set_joint_qpos("robot0:rollhinge", 1.57) # self.np_random.uniform(0, 3.14))
+        joint_names = ["robot0:rollhinge",
+                       "robot0:zslider",
+                       "robot0:WRJ1", "robot0:WRJ0",
+                       "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+                       "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+                       "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+                       "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+                       "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        joint_angles = [1.57,
+                        0.02,
+                        0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.22, 0.209, 0.0, 0.0]
+
+        for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
+            self.sim.data.set_joint_qpos(joint_name, angle)
 
         # Randomize initial position.
         if self.randomize_initial_position:
@@ -268,9 +287,9 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         initial_quat /= np.linalg.norm(initial_quat)
         initial_qpos = np.concatenate([initial_pos, initial_quat])
-        self.initial_qpos = initial_qpos
-        self.sim.data.set_joint_qpos("scissors_hinge_1:joint", -0.52358)  # はさみの回転角度の初期化
-        self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 1.02358)
+        # self.initial_qpos = initial_qpos
+        self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0.524)  # はさみの回転角度の初期化
+        self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)  #  1.02358
         self.step_n = 0
 
         def is_on_palm():
@@ -298,9 +317,9 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             offset = self.np_random.uniform(self.target_angle_range[0, 0], self.target_angle_range[0, 1])  # はさみの可動範囲である0〜60度のランダムなオフセット
             offset = np.array([offset])
             assert offset.shape == (1,)  # offset は単一のランダムな浮動小数点数を含む1次元のNumPy配列. 浮動小数点数 (float) には shape 属性がないため、offset の shape を検証するとエラーが発生
-            goal = 0.0 + offset
+            goal = 1.0 - offset
         elif self.target_position in ['ignore', 'fixed']:
-            goal = 0.0
+            goal = 1.0
         else:
             raise error.Error('Unknown target_position option "{}".'.format(self.target_position))
         assert goal is not None
@@ -343,6 +362,15 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # target_quat /= np.linalg.norm(target_quat)  # normalized quaternion
         # goal = np.concatenate([target_pos, target_quat])
+        return goal  # ランダムな(はさみの回転)角度1次元を生成
+
+    def _sample_goal_not_ramdom(self):
+        # Select a goal for the object position.
+        goal = None
+        goal = np.array([1.0])
+        assert goal is not None
+        assert goal.shape == (1,)  # ここもoffsetと理由は同様.
+
         return goal  # ランダムな(はさみの回転)角度1次元を生成
 
     def _render_callback(self):
@@ -493,8 +521,41 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         }
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
 
+        joint_names = ["robot0:rollhinge",
+                       "robot0:zslider",
+                       "robot0:WRJ1", "robot0:WRJ0",
+                       "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+                       "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+                       "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+                       "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+                       "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [1.57,
+        #                 0.02,
+        #                 0.0, 0.0,
+        #                 0.0, 0.6, 0.55, 0.5,
+        #                 0.0, 0.6, 0.55, 0.5,
+        #                 0.0, 0.6, 0.55, 0.5,
+        #                 0.0, 0.0, 0.7, 0.7, 0.0,
+        #                 0.2, 1.0, 0.15, 0.0, -0.7]
+
+        joint_angles = [1.57,  #指真っ直ぐの時
+                        0.02,
+                        0.0, 0.0,
+                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 1.0, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0, 0.0,
+                        0.5, 1.22, 0.209, 0.0, 0.0]
+
         if self.step_n < 20:
-            self.sim.data.set_joint_qpos(self.object, self.initial_qpos)  # 今回回転角度のみしかリセットできない
+            self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0.524)  # はさみの回転角度の初期化
+            self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
+            for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
+                self.sim.data.set_joint_qpos(joint_name, angle)  # 始めの20stepは手の初期位置を維持する
+
+        # print("step_n:", self.step_n)
+        # for joint_name in joint_names:  # 全てのjointを初期指定
+        #     print(self.sim.data.get_joint_qpos(joint_name))
 
         # Options for displaying information
         # self._display_contacts()
