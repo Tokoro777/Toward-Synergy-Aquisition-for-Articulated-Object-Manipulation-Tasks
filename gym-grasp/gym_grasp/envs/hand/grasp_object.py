@@ -103,7 +103,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             self.object = self.object_list[self.target_id]  # target
 
         self.step_n = 0
-        self.init_object_qpos = np.array([1.06, 0.87, 0.4, 1, 0, 0, 0])  # 1
+        self.init_object_qpos = np.array([1.08, 0.888, 0.4, 1, 0, 0, 0])  # 1
 
         assert self.target_position in ['ignore', 'fixed', 'random']
         assert self.target_rotation in ['ignore', 'fixed', 'xyz', 'z', 'parallel']
@@ -218,6 +218,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
     def _reset_sim(self):
         self.sim.set_state(self.initial_state)
+        # print(self.sim.get_state())
         self.sim.forward()
 
         # ハサミのタスクでは, リセットするものはハンドとはさみのみなので, targetは関係ないため使っていない.
@@ -260,22 +261,22 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                 raise error.Error('Unknown target_rotation option "{}".'.format(self.target_rotation))
 
         # self.sim.data.set_joint_qpos("robot0:rollhinge", 1.57) # self.np_random.uniform(0, 3.14))
-        joint_names = ["robot0:rollhinge",
-                       "robot0:zslider",
+        joint_names = ["robot0:zslider",
+                       "robot0:rollhinge",
                        "robot0:WRJ1", "robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
                        "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        joint_angles = [1.57,
-                        0.02,
+        joint_angles = [0.03,
+                        1.57,
                         0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
                         0.0, 0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.22, 0.209, 0.0, 0.0]
+                        0.461, 1.22, 0.209, 0.0, 0.0]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
             self.sim.data.set_joint_qpos(joint_name, angle)
@@ -288,7 +289,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         initial_quat /= np.linalg.norm(initial_quat)
         initial_qpos = np.concatenate([initial_pos, initial_quat])
         # self.initial_qpos = initial_qpos
-        self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0.524)  # はさみの回転角度の初期化
+        self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
         self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)  #  1.02358
         self.step_n = 0
 
@@ -425,7 +426,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
     def _is_in_grasp_space(self, radius=0.05):
         posgrasp = self._get_grasp_center_space(radius=radius)
         x = self.init_object_qpos[0] - 0.02
-        y = self.init_object_qpos[1] + 0.02
+        y = self.init_object_qpos[1]
         z = self.init_object_qpos[2]
         posobject = [x, y, z]
         return mean_squared_error(posgrasp, posobject, squared=False) < 0.05
@@ -521,41 +522,58 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         }
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
 
-        joint_names = ["robot0:rollhinge",
-                       "robot0:zslider",
+        joint_names = ["robot0:zslider",
+                       "robot0:rollhinge",
                        "robot0:WRJ1", "robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
                        "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        # joint_angles = [1.57,
-        #                 0.02,
-        #                 0.0, 0.0,
-        #                 0.0, 0.6, 0.55, 0.5,
-        #                 0.0, 0.6, 0.55, 0.5,
-        #                 0.0, 0.6, 0.55, 0.5,
-        #                 0.0, 0.0, 0.7, 0.7, 0.0,
-        #                 0.2, 1.0, 0.15, 0.0, -0.7]
 
-        joint_angles = [1.57,  #指真っ直ぐの時
-                        0.02,
+        # joint_angles = [0.04,  #指真っ直ぐの時
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.3, 0.0, 0.0,
+        #                 0.0, 1.3, 0.0, 0.0,
+        #                 0.0, 1.3, 0.0, 0.0,
+        #                 0.0, 0.0, 1.3, 0.0, 0.0,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
+
+        joint_angles = [0.04,  # 指中くらいに曲げる時
+                        1.57,
                         0.0, 0.0,
-                        0.0, 1.0, 0.0, 0.0,
-                        0.0, 1.0, 0.0, 0.0,
-                        0.0, 1.0, 0.0, 0.0,
-                        0.0, 0.0, 1.0, 0.0, 0.0,
-                        0.5, 1.22, 0.209, 0.0, 0.0]
+                        0.0, 1., 0.5, 0.0,
+                        0.0, 1., 0.5, 0.0,
+                        0.0, 1., 0.5, 0.0,
+                        0.0, 0.0, 1., 0.5, 0.0,
+                        0.0, 1.22, 0.0, 0.0, 0.0]
+
+        # print(obs["observation"][:22])
+        # self.sim.data.ctrl[:] = [0.0, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 0.0, 1.57, 0.0, 0.5, 1.22, 0.209, 0.0, 0.0, 0.02]
+        # print(self.sim.data.ctrl)
+
+        # print(self.sim.data.get_joint_qpos("robot0:zslider"))
+        #
+        # if self.sim.data.get_joint_qpos("robot0:zslider") > -0.06:  # ハンドがはさみと距離が近くないなら, ハンドのjointを指定し続けながらハンドを下に下ろす
+        #     print("step数", self.step_n)
+        #     current_zslider_pos = self.sim.data.get_joint_qpos("robot0:zslider")
+        #     new_zslider_pos = current_zslider_pos - 0.01
+        #     self.sim.data.set_joint_qpos("robot0:zslider", new_zslider_pos)  # ハンドを下に下ろす
+        #     for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
+        #         self.sim.data.set_joint_qpos(joint_name, angle)
+        #     self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)
+        #     self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
+        #
+        # else:  # もし距離が近いなら, zsliderをその位置で固定
+        #     current_zslider_pos = self.sim.data.get_joint_qpos("robot0:zslider")
+        #     self.sim.data.set_joint_qpos("robot0:zslider", current_zslider_pos)
 
         if self.step_n < 20:
-            self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0.524)  # はさみの回転角度の初期化
+            self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
             self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
             for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
-                self.sim.data.set_joint_qpos(joint_name, angle)  # 始めの20stepは手の初期位置を維持する
-
-        # print("step_n:", self.step_n)
-        # for joint_name in joint_names:  # 全てのjointを初期指定
-        #     print(self.sim.data.get_joint_qpos(joint_name))
+                self.sim.data.set_joint_qpos(joint_name, angle)  # 始めの50stepは手の初期位置を維持する
 
         # Options for displaying information
         # self._display_contacts()

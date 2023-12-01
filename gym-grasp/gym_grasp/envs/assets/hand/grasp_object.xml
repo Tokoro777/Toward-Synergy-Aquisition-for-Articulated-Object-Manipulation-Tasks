@@ -68,70 +68,119 @@ https://www.shadowrobot.com/wp-content/uploads/shadow_dexterous_hand_technical_s
             <site name="box:center" pos="0 0 0" rgba="1 0 0 0" size="0.01 0.01 0.01"></site>
             <joint name="box:joint" type="free" damping="0.01"></joint>
         </body>
-        <body name="target" pos="1 0.87 0.4">
-            <geom name="target" type="sphere" size="0.005 0.005 0.005" condim="4" group="2"
+
+        <body name="target" pos="1.08 0.888 0.4">
+            <geom name="target" type="sphere" size="0.01 0.01 0.01" condim="4" group="2"
                   contype="0" conaffinity="0" rgba="0.9 0.9 0.1 1"></geom>
             <site name="target:center" pos="0 0 0" rgba="1 0 0 0" size="0.01 0.01 0.01"></site>
             <joint name="target:joint" type="free" damping="0.01"></joint>
         </body>
 
-        <body name="apple" pos="1.3 0.87 0.22">
-            <geom name="apple:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Apple" density="100"
-                  condim="4" euler="0 0 1.57" contype="3" conaffinity="3"></geom>
-            <joint name="apple:joint" type="free" damping="0.01"></joint>
-        </body>
+<!--        <body name="apple" pos="1.3 0.87 0.22">-->
+<!--            <geom name="apple:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Apple" density="100"-->
+<!--                  condim="4" euler="0 0 1.57" contype="3" conaffinity="3"></geom>-->
+<!--            <joint name="apple:joint" type="free" damping="0.01"></joint>-->
+<!--        </body>-->
 
-        <body name="banana" pos="0.7 0.87 0.2">
-            <geom name="banana:C_target" type="mesh" mesh="target0:Banana" density="120" friction="2 0.03 0.01" condim="3"
-                  euler="1.57 1.57 1.57" contype="3" conaffinity="3"></geom>
-            <joint name="banana:joint" type="free" damping="0.01"></joint>
-        </body>
+<!--        <body name="banana" pos="0.7 0.87 0.2">-->
+<!--            <geom name="banana:C_target" type="mesh" mesh="target0:Banana" density="120" friction="2 0.03 0.01" condim="3"-->
+<!--                  euler="1.57 1.57 1.57" contype="3" conaffinity="3"></geom>-->
+<!--            <joint name="banana:joint" type="free" damping="0.01"></joint>-->
+<!--        </body>-->
 
-        <body name="beerbottle" pos="0.7 1.17 0.22">
-            <geom name="beerbottle:C_target" friction="1.5 0.005 0.0001" type="mesh" density="100"
-                  mesh="target0:Beerbottle" euler="0 1.57 0" contype="3" conaffinity="3"></geom>
-            <joint name="beerbottle:joint" type="free" damping="0.01"></joint>
-        </body>
+<!--        <body name="beerbottle" pos="0.7 1.17 0.22">-->
+<!--            <geom name="beerbottle:C_target" friction="1.5 0.005 0.0001" type="mesh" density="100"-->
+<!--                  mesh="target0:Beerbottle" euler="0 1.57 0" contype="3" conaffinity="3"></geom>-->
+<!--            <joint name="beerbottle:joint" type="free" damping="0.01"></joint>-->
+<!--        </body>-->
 
-        <body name="book" pos="0.7 0.57 0.22">
-            <geom name="book:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Book" density="100"
-                  euler="1.57 1.57 0" contype="3" conaffinity="3"></geom>
-            <joint name="book:joint" type="free" damping="0.01"></joint>
-        </body>
+<!--        <body name="book" pos="0.7 0.57 0.22">-->
+<!--            <geom name="book:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Book" density="100"-->
+<!--                  euler="1.57 1.57 0" contype="3" conaffinity="3"></geom>-->
+<!--            <joint name="book:joint" type="free" damping="0.01"></joint>-->
+<!--        </body>-->
 
-        <body name="needle" pos="1 0.57 0.25">
-            <geom name="needle:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Needle"
-                  euler="1.57 1.57 0" contype="3" conaffinity="3"></geom>
-            <joint name="needle:joint" type="free" damping="0.01"></joint>
-        </body>
+<!--        <body name="needle" pos="1 0.57 0.25">-->
+<!--            <geom name="needle:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Needle"-->
+<!--                  euler="1.57 1.57 0" contype="3" conaffinity="3"></geom>-->
+<!--            <joint name="needle:joint" type="free" damping="0.01"></joint>-->
+<!--        </body>-->
 
-        <body name="pen" pos="1.4 0.57 0.18">
-            <geom name="pen:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Pen"
-                  euler="1.57 1.57 0"></geom>
-            <joint name="pen:joint" type="free" damping="0.01"></joint>
-        </body>
+<!--        <body name="pen" pos="1.4 0.57 0.18">-->
+<!--            <geom name="pen:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Pen"-->
+<!--                  euler="1.57 1.57 0"></geom>-->
+<!--            <joint name="pen:joint" type="free" damping="0.01"></joint>-->
+<!--        </body>-->
 
-        <body name="teacup" pos="1.3 1.17 0.24">
-            <geom name="teacup:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Teacup"
-                  euler="0 0.25 1.57"></geom>
-            <joint name="teacup:joint" type="free" damping="0.01"></joint>
-        </body>
+<!--        <body name="teacup" pos="1.3 1.17 0.24">-->
+<!--            <geom name="teacup:C_target" friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Teacup"-->
+<!--                  euler="0 0.25 1.57"></geom>-->
+<!--            <joint name="teacup:joint" type="free" damping="0.01"></joint>-->
+<!--        </body>-->
 
 
 <!--        # はさみのモデル-->
-        <body pos="1.06 0.885 0.4">  # "1.05 0.827 0.303" "1 0.87 0.4"
-			<body name="scissors_1" pos="0 0 0">
-				<inertial diaginertia="0.001 0.001 0.001" mass="0.1" pos="0 0 0" quat="0 0 0 0"></inertial>
+<!--        pos="1.057 0.89 0.4"-->
+<!--        <body pos="1.08 0.888 0.4">-->
+<!--			<body name="scissors_1" pos="0 0 0">-->
+<!--				<inertial diaginertia="0.001 0.001 0.001" mass="0.1" pos="0 0 0" quat="0 0 0 0"></inertial>-->
+<!--                <joint name="scissors_hinge_1:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-0.52358 0.52358" damping="1" armature="0.01"></joint>-->
+<!--				<geom friction="1.5 0.005 0.001" type="mesh" mesh="target0:Scissors_half" euler="0 3.1415 0.52358"></geom>-->
+<!--				<body name="scissors_2" pos="0 0 0">-->
+<!--					<inertial diaginertia="0.001 0.001 0.001" mass="0.1" pos="0 0 0" quat="0 0 0 0"></inertial>-->
+<!--                    <joint name="scissors_hinge_2:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.02358" damping="1" armature="0.01"></joint>-->
+<!--					<geom friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Scissors_half" euler="0 0 2.6179"></geom>-->
+<!--                    <site name="scissors:joint" pos="0.0 0.0 0.0" size="0.01 0.005 0.008"></site>-->
+<!--				</body>-->
+<!--			</body>-->
+<!--		</body>-->
+
+<!--        <body name="scissors" pos="1.08 0.888 0.4">-->
+<!--            <body name="scissors_1" pos="0 0 0">-->
+<!--				<inertial diaginertia="0.001 0.001 0.001" mass="0.1" pos="0 0 0" quat="0 0 0 0"></inertial>-->
+<!--                <joint name="scissors_hinge_1:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-0.52358 0.52358" damping="1" armature="0.01"></joint>-->
+<!--				<geom friction="1.5 0.005 0.001" type="mesh" mesh="target0:Scissors_half" euler="0 3.1415 0.52358"></geom>-->
+<!--				<body name="scissors_2" pos="0 0 0">-->
+<!--					<inertial diaginertia="0.001 0.001 0.001" mass="0.1" pos="0 0 0" quat="0 0 0 0"></inertial>-->
+<!--                    <joint name="scissors_hinge_2:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.02358" damping="1" armature="0.01"></joint>-->
+<!--					<geom friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Scissors_half" euler="0 0 2.6179"></geom>-->
+<!--                    <site name="scissors:joint" pos="0.0 0.0 0.0" size="0.01 0.005 0.008"></site>-->
+<!--				</body>-->
+<!--			</body>-->
+<!--        </body>-->
+
+
+    <!-- 上下反転させたはさみのモデル -->
+        <body name="scissors_part0" pos="1.085 0.88 0.4">
+            <body name="scissors_part1_mirror" pos="0 0 0">
                 <joint name="scissors_hinge_1:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-0.52358 0.52358" damping="1" armature="0.01"></joint>
-				<geom friction="1.5 0.005 0.001" type="mesh" mesh="target0:Scissors_half" euler="0 3.1415 0.52358"></geom>  # euler="0 3.1415 0.52358"
-				<body name="scissors_2" pos="0 0 0">
-					<inertial diaginertia="0.001 0.001 0.001" mass="0.1" pos="0 0 0" quat="0 0 0 0"></inertial>
-                    <joint name="scissors_hinge_2:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.02358" damping="1" armature="0.01"></joint>
-					<geom friction="1.5 0.005 0.0001" type="mesh" mesh="target0:Scissors_half" euler="0 0 2.6179"></geom>  # euler="0 0 2.6179"
-                    <site name="scissors:joint" pos="0.0 0.0 0.0" size="0.01 0.005 0.008"></site>
-				</body>
-			</body>
-		</body>
+                <geom name="scissors_part1_mirror" type="box" friction="1.5 0.005 0.0001" size="0.15 0.008 0.008"></geom>
+    <!-- hinge:jointでもう片方のはさみを連結  -->
+                <body name="scissors_part1" pos="0 0 0">
+                    <geom name="scissors_part1" type="box" friction="1.5 0.005 0.0001" size="0.15 0.008 0.008"></geom>
+                    <joint name="scissors_hinge_2:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.02358" damping="1" armature="0.01"></joint>-->
+                    <body name="scissors_part2" pos="0 -0.03 0">
+                        <geom name="scissors_part2" type="box" friction="1.5 0.005 0.0001" size="0.035 0.008 0.008" euler="0 0 1.57075"></geom>
+                        <body name="scissors_part3" pos="-0.067 -0.042 0">
+                            <geom name="scissors_part3" type="box" friction="1.5 0.005 0.0001" size="0.075 0.008 0.008" euler="0 0 0"></geom>
+                            <body name="scissors_part4" pos="-0.075 0.036 0">
+                                <geom name="scissors_part4" type="box" friction="1.5 0.005 0.0001" size="0.044 0.008 0.008" euler="0 0 1.57075"></geom>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+                <body name="scissors_part2_mirror" pos="0 0.03 0">
+                    <geom name="scissors_part2_mirror" type="box" friction="1.5 0.005 0.0001" size="0.035 0.008 0.008" euler="0 0 -1.57075"></geom>
+                    <body name="scissors_part3_mirror" pos="-0.067 0.042 0">
+                        <geom name="scissors_part3_mirror" type="box" friction="1.5 0.005 0.0001" size="0.075 0.008 0.008" euler="0 0 0"></geom>
+                        <body name="scissors_part4_mirror" pos="-0.075 -0.036 0">
+                            <geom name="scissors_part4_mirror" type="box" friction="1.5 0.005 0.0001" size="0.044 0.008 0.008" euler="0 0 -1.57075"></geom>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+
 
 
         <light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false"

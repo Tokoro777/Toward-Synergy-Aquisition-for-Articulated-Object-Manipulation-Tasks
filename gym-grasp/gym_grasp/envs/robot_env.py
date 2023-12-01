@@ -33,6 +33,25 @@ class RobotEnv(gym.GoalEnv):
         self.seed()
         self._env_setup(initial_qpos=initial_qpos)
         self.initial_state = copy.deepcopy(self.sim.get_state())
+        # print("initial_state", self.initial_state)  # initial_stateがどうなっているかの確認
+
+        # 新しい関節位置の値  #指真っ直ぐの時
+        # new_qpos_values = np.array([0.02,
+        #                             1.57,
+        #                             0.0, 0.0,
+        #                             0.0, 1.57, 0.0, 0.0,
+        #                             0.0, 1.57, 0.0, 0.0,
+        #                             0.0, 1.57, 0.0, 0.0,
+        #                             0.0, 0.0, 1.57, 0.0, 0.0,
+        #                             0.461, 1.22, 0.209, 0.0, 0.0,
+        #                             1.6, 0.85, 0.2, 1., 0., 0., 0., 0., 0.])  # 26joint + box
+        # # 新しい関節速度の値
+        # new_qvel_values = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        #                             0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])  # 26joint + box
+        # # qposとqvelを更新
+        # self.initial_state.qpos[:len(new_qpos_values)] = new_qpos_values
+        # self.initial_state.qvel[:len(new_qvel_values)] = new_qvel_values
+        # print("initial_state", self.initial_state)  # initial_stateがどうなっているかの確認
 
         self.goal = self._sample_goal()
         obs = self._get_obs()
