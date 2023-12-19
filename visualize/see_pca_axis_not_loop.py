@@ -118,10 +118,35 @@ while True:
     sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
     # print(n, sim.data.ctrl[:-1])
 
+    # 1stepの時の制御信号をファイル保存
+    if n == 0:
+        data_1 = sim.data.ctrl[:-1]
+
+        # ファイル名に使用する文字列を生成
+        pc_axis_str = f"PC{pc_axis}"  # PC1
+        # ディレクトリ作成
+        directory_path = os.path.expanduser(f"/home/tokoro/{pc_axis_str}")  # PC1というファイル作成
+        os.makedirs(directory_path, exist_ok=True)
+        # ファイルパス
+        file_path = os.path.join(directory_path, f"saved_data_{pc_axis_str}_{n+1}step.npy")  # saved_data_PC1_1step.npyというファイル名
+        # データを保存
+        np.save(file_path, data_1)
+
+    # 500stepの時の制御信号をファイル保存
+    if n == 499:
+        data_2 = sim.data.ctrl[:-1]
+
+        # ファイルパス
+        file_path = os.path.join(directory_path, f"saved_data_{pc_axis_str}_{n+1}step.npy")  # saved_data_PC1_1step.npyというファイル名
+        # データを保存
+        np.save(file_path, data_2)
+
+        break  # 保存ができたら終了
+
     time.sleep(0.001)
 
-    # 500ステップ以上経過したら初期化し, 繰り返し再生
-    if n == 499 and t == 1:
-        n = 0
-        t = 0
-        set_initial_joint_positions(sim, joint_names, joint_angles)
+    # # 500ステップ以上経過したら初期化し, 繰り返し再生
+    # if n == 499 and t == 1:
+    #     n = 0
+    #     t = 0
+    #     set_initial_joint_positions(sim, joint_names, joint_angles)

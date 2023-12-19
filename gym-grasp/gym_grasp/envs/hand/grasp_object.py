@@ -315,9 +315,9 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         goal = None
         if self.target_position == 'random':
             assert self.target_angle_range.shape == (1, 2)
-            offset = self.np_random.uniform(self.target_angle_range[0, 0], self.target_angle_range[0, 1])  # はさみの可動範囲である0〜60度のランダムなオフセット
+            offset = self.np_random.uniform(max(0.3, self.target_angle_range[0, 0]), min(0.4, self.target_angle_range[0, 1]))
             offset = np.array([offset])
-            assert offset.shape == (1,)  # offset は単一のランダムな浮動小数点数を含む1次元のNumPy配列. 浮動小数点数 (float) には shape 属性がないため、offset の shape を検証するとエラーが発生
+            assert offset.shape == (1,)
             goal = 1.0 - offset
         elif self.target_position in ['ignore', 'fixed']:
             goal = 1.0
@@ -368,7 +368,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
     def _sample_goal_not_ramdom(self):
         # Select a goal for the object position.
         goal = None
-        goal = np.array([1.0])
+        goal = np.array([0.7])
         assert goal is not None
         assert goal.shape == (1,)  # ここもoffsetと理由は同様.
 
@@ -508,6 +508,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         self.step_n += 1
 
         action = np.clip(action, self.action_space.low, self.action_space.high)
+        self._set_action(action)
         self._set_action(action)
         self.sim.step()
         self._step_callback()
