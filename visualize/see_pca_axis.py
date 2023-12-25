@@ -100,23 +100,42 @@ joint_angles = [#1.57,
 # 関節位置を設定
 set_initial_joint_positions(sim, joint_names, joint_angles)
 
+p = 0
 while True:
     viewer.render()
     t += 1
     sim.step()
     state = sim.get_state()
 
-    if t > 1 and n < 499:  # 500個ある軌道の点にそってハンドを制御, 5stepごとに次の点に移動
+    if n == 0 and t < 230:  # 1個目の軌道は, 与える制御信号に対して関節が追従するのに時間がかかるので230step 1個目を維持
+        n = 0
+        p += 1
+        print("p", p)
+
+    if n == 0 and t == 230:  # 制御信号に関節が追従したので, 2個目の軌道に移る
+        n += 1
+        t = 0
+        print("trajectory[0] finish! trajectory[1] start.")
+
+    if t > 1 and n < 499 and n > 0:  # 500個ある軌道の点にそってハンドを制御, 5stepごとに次の点に移動
         t = 0
         n += 1
 
-    # print(n, trajectory[n])
+    # if t > 1 and n < 499:  # 500個ある軌道の点にそってハンドを制御, 5stepごとに次の点に移動
+    #     t = 0
+    #     n += 1
+
+    print("trajectory[", n, "]")
 
     posture = pca.mean_ + pca.inverse_transform(trajectory[n])  # trajectory[?]=[* 0 0 0 0]
 
     sim.data.ctrl[:-1] = actuation_center[:-1] + posture * actuation_range[:-1]
     sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
-    # print(n, sim.data.ctrl[:-1])
+    # print(n, sim.data.ctrl[:-1][3])　　#  制御信号と関節の値が同じか比較
+    # print(sim.data.get_joint_qpos("robot0:FFJ2"))
+
+    print("robot0:FFJ0", sim.data.get_joint_qpos("robot0:FFJ0"), "robot0:MFJ0", sim.data.get_joint_qpos("robot0:MFJ0"),
+          "robot0:RFJ0", sim.data.get_joint_qpos("robot0:RFJ0"))
 
     time.sleep(0.001)
 
