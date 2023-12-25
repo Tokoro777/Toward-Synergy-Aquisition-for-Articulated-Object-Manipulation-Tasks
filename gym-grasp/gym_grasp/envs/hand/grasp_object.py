@@ -318,7 +318,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             offset = self.np_random.uniform(max(0.3, self.target_angle_range[0, 0]), min(1.0, self.target_angle_range[0, 1]))
             offset = np.array([offset])
             assert offset.shape == (1,)
-            goal = 1.0 - offset
+            goal = 1.0 - offset  #  0.0~0.7のランダム値
         elif self.target_position in ['ignore', 'fixed']:
             goal = 1.0
         else:
