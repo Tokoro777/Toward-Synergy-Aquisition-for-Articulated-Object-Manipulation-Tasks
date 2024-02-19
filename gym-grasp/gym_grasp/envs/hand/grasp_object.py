@@ -103,7 +103,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             self.object = self.object_list[self.target_id]  # target
 
         self.step_n = 0
-        self.init_object_qpos = np.array([1.08, 0.888, 0.4, 1, 0, 0, 0])  # 1
+        self.init_object_qpos = np.array([1.07, 0.892, 0.4, 1, 0, 0, 0])  # 1
 
         assert self.target_position in ['ignore', 'fixed', 'random']
         assert self.target_rotation in ['ignore', 'fixed', 'xyz', 'z', 'parallel']
@@ -269,14 +269,14 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
                        "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        joint_angles = [0.03,
+        joint_angles = [0.05,
                         1.57,
                         0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.57, 0.0, 0.0,
-                        0.0, 0.0, 1.57, 0.0, 0.0,
-                        0.461, 1.22, 0.209, 0.0, 0.0]
+                        0.0, 1.57, 1.57, 0.0,
+                        0.0, 0.0, 1.57, 1.57, 0.0,
+                        0.0, 1.22, 0.0, 0.0, 0.0]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
             self.sim.data.set_joint_qpos(joint_name, angle)
@@ -532,23 +532,23 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-        joint_angles = [0.04,  #指真っ直ぐの時
-                        1.57,
-                        0.0, 0.0,
-                        0.0, 1.4, 0.0, 0.0,
-                        0.0, 1.4, 0.0, 0.0,
-                        0.0, 1.4, 0.0, 0.0,
-                        0.0, 0.0, 1.4, 0.0, 0.0,
-                        0.0, 1.22, 0.0, 0.0, 0.0]
-
-        # joint_angles = [0.04,  # 指中くらいに曲げる時
+        # joint_angles = [0.05,  #指真っ直ぐの時, 1.4→1.57に変更
         #                 1.57,
         #                 0.0, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 0.0, 1., 0.5, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 0.0, 1.57, 0.0, 0.0,
         #                 0.0, 1.22, 0.0, 0.0, 0.0]
+
+        joint_angles = [0.05,  # 指真っ直ぐの時, 1.4→1.57に変更
+                        1.57,
+                        0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 1.57, 0.0,
+                        0.0, 0.0, 1.57, 1.57, 0.0,
+                        0.0, 1.22, 0.0, 0.0, 0.0]
 
         # print(obs["observation"][:22])
         # self.sim.data.ctrl[:] = [0.0, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 0.0, 1.57, 0.0, 0.5, 1.22, 0.209, 0.0, 0.0, 0.02]
