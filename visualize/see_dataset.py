@@ -17,7 +17,7 @@ viewer = MjViewer(sim)
 
 t = 0
 pos_num = 0
-postures = np.load(dataset_path.format("grasp_dataset_on_best_policy.npy"))
+postures = np.load(dataset_path.format("grasp_dataset_10.npy"))
 ctrlrange = sim.model.actuator_ctrlrange
 actuation_center = (ctrlrange[:, 1] + ctrlrange[:, 0]) / 2.
 actuation_range = (ctrlrange[:, 1] - ctrlrange[:, 0]) / 2.
@@ -45,9 +45,17 @@ joint_angles = [1.57,
                 0.0, 0.0,
                 0.0, 1.57, 0.0, 0.0,
                 0.0, 1.57, 0.0, 0.0,
-                0.0, 1.57, 1.57, 0.0,
-                0.0, 0.0, 1.57, 1.57, 0.0,
+                0.0, 1.57, 0.0, 0.0,
+                0.0, 0.0, 1.57, 0.0, 0.0,
                 0.0, 1.22, 0.0, 0.0, 0.0]
+
+# joint_angles = [1.57,
+#                 0.0, 0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 1.57, 1.57, 0.0,
+#                 0.0, 0.0, 1.57, 1.57, 0.0,
+#                 0.0, 1.22, 0.0, 0.0, 0.0]
 
 # 関節位置を設定
 set_initial_joint_positions(sim, joint_names, joint_angles)

@@ -49,6 +49,15 @@ actuation_range = (ctrlrange[:, 1] - ctrlrange[:, 0]) / 2.
 
 pca = PCA(n_components=5)
 pca.fit(postures)
+pc1_vector = pca.components_[0]  # 軸(固有ベクトル)
+pc2_vector = pca.components_[1]
+pc3_vector = pca.components_[2]
+print(pc1_vector)
+print(pc2_vector)
+print(pc3_vector)
+print(np.dot(pc1_vector, pc2_vector))
+print(np.dot(pc1_vector, pc3_vector))
+print(np.dot(pc2_vector, pc3_vector))
 
 # PCAの各主成分の寄与率を出力
 explained_variance_ratios = pca.explained_variance_ratio_
@@ -110,12 +119,12 @@ while True:
     if n == 0 and t < 230:  # 1個目の軌道は, 与える制御信号に対して関節が追従するのに時間がかかるので230step 1個目を維持
         n = 0
         p += 1
-        print("p", p)
+        # print("p", p)
 
     if n == 0 and t == 230:  # 制御信号に関節が追従したので, 2個目の軌道に移る
         n += 1
         t = 0
-        print("trajectory[0] finish! trajectory[1] start.")
+        # print("trajectory[0] finish! trajectory[1] start.")
 
     if t > 1 and n < 499 and n > 0:  # 500個ある軌道の点にそってハンドを制御, 5stepごとに次の点に移動
         t = 0
@@ -125,7 +134,7 @@ while True:
     #     t = 0
     #     n += 1
 
-    print("trajectory[", n, "]")
+    # print("trajectory[", n, "]")
 
     posture = pca.mean_ + pca.inverse_transform(trajectory[n])  # trajectory[?]=[* 0 0 0 0]
 
@@ -134,8 +143,8 @@ while True:
     # print(n, sim.data.ctrl[:-1][3])　　#  制御信号と関節の値が同じか比較
     # print(sim.data.get_joint_qpos("robot0:FFJ2"))
 
-    print("robot0:FFJ0", sim.data.get_joint_qpos("robot0:FFJ0"), "robot0:MFJ0", sim.data.get_joint_qpos("robot0:MFJ0"),
-          "robot0:RFJ0", sim.data.get_joint_qpos("robot0:RFJ0"))
+    # print("robot0:FFJ0", sim.data.get_joint_qpos("robot0:FFJ0"), "robot0:MFJ0", sim.data.get_joint_qpos("robot0:MFJ0"),
+    #       "robot0:RFJ0", sim.data.get_joint_qpos("robot0:RFJ0"))
 
     time.sleep(0.001)
 

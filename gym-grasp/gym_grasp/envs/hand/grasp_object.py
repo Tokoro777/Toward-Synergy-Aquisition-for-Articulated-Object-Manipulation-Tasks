@@ -269,13 +269,22 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
                        "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.05,
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 1.57, 1.57, 0.0,
+        #                 0.0, 0.0, 1.57, 1.57, 0.0,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
+
         joint_angles = [0.05,
                         1.57,
                         0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.57, 1.57, 0.0,
-                        0.0, 0.0, 1.57, 1.57, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 0.0, 1.57, 0.0, 0.0,
                         0.0, 1.22, 0.0, 0.0, 0.0]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
@@ -315,10 +324,10 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         goal = None
         if self.target_position == 'random':
             assert self.target_angle_range.shape == (1, 2)
-            offset = self.np_random.uniform(max(0.3, self.target_angle_range[0, 0]), min(1.0, self.target_angle_range[0, 1]))
+            offset = self.np_random.uniform(max(0.4, self.target_angle_range[0, 0]), min(1.0, self.target_angle_range[0, 1]))
             offset = np.array([offset])
             assert offset.shape == (1,)
-            goal = 1.0 - offset  #  0.0~0.7のランダム値
+            goal = 1.0 - offset  #  0.0~0.6のランダム値
         elif self.target_position in ['ignore', 'fixed']:
             goal = 1.0
         else:
@@ -532,23 +541,23 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-        # joint_angles = [0.05,  #指真っ直ぐの時, 1.4→1.57に変更
-        #                 1.57,
-        #                 0.0, 0.0,
-        #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 1.22, 0.0, 0.0, 0.0]
-
-        joint_angles = [0.05,  # 指真っ直ぐの時, 1.4→1.57に変更
+        joint_angles = [0.05,  #指真っ直ぐの時, 1.4→1.57に変更
                         1.57,
                         0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.57, 1.57, 0.0,
-                        0.0, 0.0, 1.57, 1.57, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 0.0, 1.57, 0.0, 0.0,
                         0.0, 1.22, 0.0, 0.0, 0.0]
+
+        # joint_angles = [0.05,  # 指真っ直ぐの時, 1.4→1.57に変更
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 1.57, 1.57, 0.0,
+        #                 0.0, 0.0, 1.57, 1.57, 0.0,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
         # print(obs["observation"][:22])
         # self.sim.data.ctrl[:] = [0.0, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 0.0, 1.57, 0.0, 0.5, 1.22, 0.209, 0.0, 0.0, 0.02]
