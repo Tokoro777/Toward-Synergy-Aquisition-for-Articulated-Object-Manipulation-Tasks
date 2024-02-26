@@ -17,12 +17,36 @@ viewer = MjViewer(sim)
 
 t = 0
 pos_num = 0
-postures = np.load(dataset_path.format("grasp_dataset_10.npy"))
+postures = np.load(dataset_path.format("grasp_dataset_290.npy"))
+print(postures[0])
+print(postures[2])
+print(postures[5])
+print(postures.shape)
+# 使用したいデータのみ選別
+# 抜き取りたい行のインデックスリスト
+desired_row_indices = [2, 3, 5, 6, 9, 10, 12, 14, 17, 21, 22, 23, 25, 26, 28, 29, 35, 38, 40, 43, 45, 56, 58, 59, 60, 62, 63, 64, 68, 70, 71, 72, 73, 74, 77, 78, 79, 80, 82, 83, 84, 85, 86, 88, 93, 97, 98, 99, 100]  # Pythonのインデックスは0から始まるため、2行目はインデックス1、5行目はインデックス4
+# 複数の行を抜き取る
+postures = postures[desired_row_indices, :]
+print(postures.shape)
+#
+# initial_posture = [0.0, 0.0,
+#             0.0, 1.44, 0.0,
+#             0.0, 1.53, 0.0,
+#             0.0, 1.44, 0.0,
+#             0.0, 0.0, 1.32, 0.0,
+#             0.0, 1.22, 0.209, -0.524, -0.361]
+# # 新しい行を追加
+# postures = np.vstack([postures, initial_posture])
+# # 配列の形状を(50, 20)に変更
+# new_array = postures.reshape((50, 20))
+
+
+
 ctrlrange = sim.model.actuator_ctrlrange
 actuation_center = (ctrlrange[:, 1] + ctrlrange[:, 0]) / 2.
 actuation_range = (ctrlrange[:, 1] - ctrlrange[:, 0]) / 2.
-print(actuation_center)
-print(postures, postures[0])  # actionの値
+# print(actuation_center)
+# print(postures, postures[0])  # actionの値
 
 for name in sim.model.actuator_names:
     print(name)
@@ -41,13 +65,21 @@ joint_names = ["robot0:rollhinge",
                 "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-joint_angles = [1.57,
+# joint_angles = [1.57,
+#                 0.0, 0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 1.22, 0.0, 0.0, 0.0]
+
+joint_angles = [1.57,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
                 0.0, 0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.0, 0.0, 1.57, 0.0, 0.0,
-                0.0, 1.22, 0.0, 0.0, 0.0]
+                0.0, 1.44, 0.0, 1.57,
+                0.0, 1.53, 0.0, 1.57,
+                0.0, 1.44, 0.0, 1.57,
+                0.0, 0.0, 1.32, 0.0, 1.57,
+                0.0, 1.22, 0.209, -0.524, -0.361]
 
 # joint_angles = [1.57,
 #                 0.0, 0.0,
@@ -57,7 +89,7 @@ joint_angles = [1.57,
 #                 0.0, 0.0, 1.57, 1.57, 0.0,
 #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
-# 関節位置を設定
+# 関節位置を設定, 初期化
 set_initial_joint_positions(sim, joint_names, joint_angles)
 
 while True:
@@ -69,16 +101,17 @@ while True:
     if t > 500:  # あるグラスプポーズについて500step表示
         t = 0
         pos_num += 1
-        set_initial_joint_positions(sim, joint_names, joint_angles)
+        set_initial_joint_positions(sim, joint_names, joint_angles)  # 500step過ぎたらposition初期化
         print(pos_num)
 
     if t == 499:
-        print(sim.data.ctrl[:])  # jointの値
+        # print(sim.data.ctrl[:])  # jointの値
         # 各アクチュエータの角度を表示
         for name in sim.model.actuator_names:
             joint_idx = sim.model.actuator_name2id(name)
             joint_angle = sim.data.qpos[joint_idx]
             print(f"{name}: {joint_angle}")
+        print(sim.data.ctrl[:-1])
 
     sim.data.ctrl[:-1] = actuation_center[:-1] + postures[pos_num] * actuation_range[:-1]
     sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])

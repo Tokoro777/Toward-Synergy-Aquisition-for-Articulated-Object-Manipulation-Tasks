@@ -90,7 +90,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         self.ignore_z_target_rotation = ignore_z_target_rotation
         self.synergy = None
 
-        self.object_list = ["box:joint", "apple:joint", "banana:joint", "beerbottle:joint", "book:joint",
+        self.object_list = ["scissors:joint", "box:joint", "apple:joint", "banana:joint", "beerbottle:joint", "book:joint",
                             "needle:joint", "pen:joint", "teacup:joint"]
         self.target_id = target_id
         self.num_axis = num_axis  # the number of components
@@ -269,23 +269,23 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
                        "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        # joint_angles = [0.05,
+        # joint_angles = [0.03,
         #                 1.57,
         #                 0.0, 0.0,
         #                 0.0, 1.57, 0.0, 0.0,
         #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 1.57, 1.57, 0.0,
-        #                 0.0, 0.0, 1.57, 1.57, 0.0,
-        #                 0.0, 1.22, 0.0, 0.0, 0.0]
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 0.0, 1.57, 0.0, 0.0,
+        #                 0.461, 1.22, 0.209, 0.0, 0.0]
 
-        joint_angles = [0.05,
+        joint_angles = [0.04,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
                         1.57,
                         0.0, 0.0,
-                        0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.57, 0.0, 0.0,
-                        0.0, 0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.22, 0.0, 0.0, 0.0]
+                        0.0, 1.44, 0.0, 1.57,
+                        0.0, 1.53, 0.0, 1.57,
+                        0.0, 1.44, 0.0, 1.57,
+                        0.0, 0.0, 1.32, 0.0, 1.57,
+                        0.0, 1.22, 0.209, -0.524, -0.361]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
             self.sim.data.set_joint_qpos(joint_name, angle)
@@ -297,7 +297,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         initial_quat /= np.linalg.norm(initial_quat)
         initial_qpos = np.concatenate([initial_pos, initial_quat])
-        # self.initial_qpos = initial_qpos
+        self.initial_qpos = initial_qpos
+        self.sim.data.set_joint_qpos(self.object, initial_qpos)  # はさみの位置をinitial_qposに初期化
         self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
         self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)  #  1.02358
         self.step_n = 0
@@ -324,10 +325,10 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         goal = None
         if self.target_position == 'random':
             assert self.target_angle_range.shape == (1, 2)
-            offset = self.np_random.uniform(max(0.4, self.target_angle_range[0, 0]), min(1.0, self.target_angle_range[0, 1]))
+            offset = self.np_random.uniform(max(0.3, self.target_angle_range[0, 0]), min(1.0, self.target_angle_range[0, 1]))
             offset = np.array([offset])
             assert offset.shape == (1,)
-            goal = 1.0 - offset  #  0.0~0.6のランダム値
+            goal = 1.0 - offset  #  0.0~0.7のランダム値
         elif self.target_position in ['ignore', 'fixed']:
             goal = 1.0
         else:
@@ -433,11 +434,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         return posgrasp
 
     def _is_in_grasp_space(self, radius=0.05):
-        posgrasp = self._get_grasp_center_space(radius=radius)
-        x = self.init_object_qpos[0] - 0.02
-        y = self.init_object_qpos[1]
-        z = self.init_object_qpos[2]
-        posobject = [x, y, z]
+        posgrasp = self._get_grasp_center_space(radius=radius)  # 手の平の位置
+        posobject = self.sim.data.site_xpos[self.sim.model.site_name2id("scissors:center")]  # はさみの位置
         return mean_squared_error(posgrasp, posobject, squared=False) < 0.05
 
     def _display_grasp_space(self):
@@ -541,22 +539,31 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-        joint_angles = [0.05,  #指真っ直ぐの時, 1.4→1.57に変更
-                        1.57,
-                        0.0, 0.0,
-                        0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.57, 0.0, 0.0,
-                        0.0, 0.0, 1.57, 0.0, 0.0,
-                        0.0, 1.22, 0.0, 0.0, 0.0]
-
-        # joint_angles = [0.05,  # 指真っ直ぐの時, 1.4→1.57に変更
+        # joint_angles = [0.04,  #指真っ直ぐの時
         #                 1.57,
         #                 0.0, 0.0,
-        #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 1.57, 1.57, 0.0,
-        #                 0.0, 0.0, 1.57, 1.57, 0.0,
+        #                 0.0, 1.4, 0.0, 0.0,
+        #                 0.0, 1.4, 0.0, 0.0,
+        #                 0.0, 1.4, 0.0, 0.0,
+        #                 0.0, 0.0, 1.4, 0.0, 0.0,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
+
+        joint_angles = [0.04,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
+                        1.57,
+                        0.0, 0.0,
+                        0.0, 1.44, 0.0, 1.57,
+                        0.0, 1.53, 0.0, 1.57,
+                        0.0, 1.44, 0.0, 1.57,
+                        0.0, 0.0, 1.32, 0.0, 1.57,
+                        0.0, 1.22, 0.209, -0.524, -0.361]
+
+        # joint_angles = [0.04,  # 指中くらいに曲げる時
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1., 0.5, 0.0,
+        #                 0.0, 1., 0.5, 0.0,
+        #                 0.0, 1., 0.5, 0.0,
+        #                 0.0, 0.0, 1., 0.5, 0.0,
         #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
         # print(obs["observation"][:22])
@@ -579,11 +586,14 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #     current_zslider_pos = self.sim.data.get_joint_qpos("robot0:zslider")
         #     self.sim.data.set_joint_qpos("robot0:zslider", current_zslider_pos)
 
-        if self.step_n < 20:
+
+        if self.step_n < 30:  # はじめの40stepは以下の値を維持する.(はさみの角度, ハンドの姿勢, はさみの位置)
+            self.sim.data.set_joint_qpos(self.object, self.initial_qpos)  # はさみを初期位置にし、freejointで落下させる
             self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
             self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
             for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
                 self.sim.data.set_joint_qpos(joint_name, angle)  # 始めの50stepは手の初期位置を維持する
+
 
         # Options for displaying information
         # self._display_contacts()
@@ -594,7 +604,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
 
 class GraspObjectEnv(ManipulateEnv):
-    def __init__(self, target_position='random', target_rotation='xyz', reward_type="not_sparse"):
+    def __init__(self, target_position='random', target_rotation='fixed', reward_type="not_sparse"):
         super(GraspObjectEnv, self).__init__(
             model_path=GRASP_OBJECT_XML, target_position=target_position,
             target_rotation=target_rotation,
