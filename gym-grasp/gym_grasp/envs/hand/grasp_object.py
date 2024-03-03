@@ -526,7 +526,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         info = {
             'is_success': self._is_success(obs['achieved_goal'], self.goal, 1.0 if self._is_in_grasp_space() else 0.0),
             "contact_penalty": self._check_contact(),
-            "is_in_grasp_space": 1.0 if self._is_in_grasp_space() else 0.0
+            "is_in_grasp_space": 1.0 if self._is_in_grasp_space() else 0.0,
+            'achieved_goal': obs['achieved_goal']  # 新たにagを追加, rolloutで把持姿勢pos＋はさみの角度を保存するため
         }
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
 

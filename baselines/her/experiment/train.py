@@ -80,8 +80,9 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
 
             episode = rollout_worker.generate_rollouts(min_num=min_num, num_axis=num_axis,
                                                        reward_lambda=reward_lambda,
+                                                       epoch=epoch,
                                                        synergy=pos_database,
-                                                       synergy_type=synergy_type)
+                                                       synergy_type=synergy_type)  # agを保存するためepochを追加
 
             if len(pos_database.get_poslist()) > min_num:
                 pos_database.calc_pca()
@@ -96,12 +97,17 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
                 _, _, reward = policy.train()
                 rewards.append(reward)
             policy.update_target_net()
+
+        logger.info('Poslist length at the end of epoch {}: {}'.format(epoch, len(pos_database.get_poslist())))
+
         # test
         evaluator.clear_history()
         for _ in range(n_test_rollouts):
             evaluator.generate_rollouts(min_num=min_num, num_axis=num_axis,
-                                        reward_lambda=reward_lambda, synergy=pos_database,
-                                        synergy_type=synergy_type)
+                                        reward_lambda=reward_lambda, epoch=epoch, synergy=pos_database,
+                                        synergy_type=synergy_type)  # agを保存するためepochを追加
+        logger.info('Poslist length at the end of epoch {}: {}'.format(epoch, len(pos_database.get_poslist())))
+
         # record logs
         logger.record_tabular('epoch', epoch)
         for key, val in evaluator.logs('test'):
@@ -122,6 +128,7 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
 
         if rank == 0:
             logger.dump_tabular()
+        logger.info('Poslist length at the end of epoch {}: {}'.format(epoch, len(pos_database.get_poslist())))
 
         # save the policy if it's better than the previous ones
         success_rate = mpi_average(evaluator.current_success_rate())
@@ -136,11 +143,15 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
             policy_path = periodic_policy_path.format(epoch)
             logger.info('Saving periodic policy to {} ...'.format(policy_path))
             evaluator.save_policy(policy_path)
-            # -- motoda added
+            # -- motoda added  # ここは作動してた。
             grasp_path = path_to_grasp_dataset.format(epoch)
+            print('yyyyyyyy')
+            logger.info('Poslist length at the end of epoch {}: {}'.format(epoch, len(pos_database.get_poslist())))
             logger.info('Saving grasp pose: {} grasps. Saving policy to {} ...'.format(len(pos_database.get_poslist()),
                                                                                        grasp_path))
+            logger.info('Poslist length at the end of epoch {}: {}'.format(epoch, len(pos_database.get_poslist())))
             np.save(grasp_path, pos_database.get_poslist())
+            print("tttttttt")
             # --
             
             # -- reset : grasp Pose -------
@@ -148,6 +159,7 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
             # -----------------------------
 
         poslist = poslist[-max_num:] # nishimura
+        print("ssssss")
 
         # make sure that different threads have different seeds
         local_uniform = np.random.uniform(size=(1,))
@@ -156,10 +168,12 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
         if rank != 0:
             assert local_uniform[0] != root_uniform[0]
 
-    # motoda --
+    # motoda --   # ここは作動してなかった。
     # Dumping the total success_pose
+    print('eeeeeeeeee')
     logger.info('Saving grasp pose: {} grasps. Saving policy to {} ...'.format(len(poslist), all_success_grasp_path))
     np.save(all_success_grasp_path, poslist)
+    print('aaaaaaaaaa')
     # --
 
 def launch(

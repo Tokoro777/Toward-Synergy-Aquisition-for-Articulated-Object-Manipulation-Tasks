@@ -11,13 +11,14 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/hand.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy/test/{}"
+dataset_path = "/home/tokoro/policy_best_free_joint/test/{}"
 
 viewer = MjViewer(sim)
 
 t = 0
 pos_num = 0
 postures = np.load(dataset_path.format("grasp_dataset_290.npy"))
+print(postures.shape)
 print(postures[0])
 print(postures[2])
 print(postures[5])
