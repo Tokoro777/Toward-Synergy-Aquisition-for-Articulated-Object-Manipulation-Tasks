@@ -58,6 +58,8 @@ actuation_center = (ctrlrange[:, 1] + ctrlrange[:, 0]) / 2.
 actuation_range = (ctrlrange[:, 1] - ctrlrange[:, 0]) / 2.
 
 pca = PCA(n_components=5)
+postures = postures[:, :18]  ### はじめの2つであるWRJ1とWRJ0を除いた(18,)でPCAする
+# print(postures.shape)  # shape (49, 20)→(49, 18) に変形
 pca.fit(postures)
 
 # PCAの各主成分の寄与率を出力
@@ -148,8 +150,9 @@ while True:
 
     posture = pca.mean_ + pca.inverse_transform(trajectory[n])  # trajectory[?]=[* 0 0 0 0]
 
-    sim.data.ctrl[:-1] = actuation_center[:-1] + posture * actuation_range[:-1]
-    sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
+    # print(actuation_center[2:-1].shape, posture.shape, actuation_center[2:-1].shape, sim.data.ctrl[2:-1].shape)
+    sim.data.ctrl[2:-1] = actuation_center[2:-1] + posture * actuation_range[2:-1]
+    sim.data.ctrl[2:-1] = np.clip(sim.data.ctrl[2:-1], ctrlrange[2:-1, 0], ctrlrange[2:-1, 1])
     # print(n, sim.data.ctrl[:-1][3])　　#  制御信号と関節の値が同じか比較
     # print(sim.data.get_joint_qpos("robot0:FFJ2"))
 

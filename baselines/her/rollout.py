@@ -95,7 +95,7 @@ class RolloutWorker:
         for i in range(self.rollout_batch_size):
             self.reset_rollout(i)
 
-    def generate_rollouts(self, min_num, num_axis, reward_lambda, epoch, synergy, is_train=True,
+    def generate_rollouts(self, min_num, num_axis, reward_lambda, synergy, is_train=True,
                           success_type='Last', synergy_type='actuator'):  # agを保存するために, epochを追加
         """Performs `rollout_batch_size` rollouts in parallel for time horizon `T` with the current
         policy acting on it accordingly.
@@ -179,85 +179,23 @@ class RolloutWorker:
                         elif success_type == 'Last':
                             # 学習の最後5stepで成功した場合のみver
                             if success[i] > 0 and t > self.T*0.95:
-                                synergy.add_pos(pos)
-                                if epoch == 290:  # 290epochの時のみ, posと同時にその時のachieved_goalを順に保存していく.
-                                    pos_with_ag_now = np.append(pos, info['achieved_goal'])  # はさみのagをposに追加, 今回のpos_with_ag
-                                    file_path = '/home/tokoro/pos_with_achieved_goal.npy'  # はじめは空のデータで, 順次(21,)を追加
-                                    # ファイルが存在するか確認
-                                    if os.path.exists(file_path):
-                                        # 既存のデータがある場合
-                                        pos_with_ag_previous = np.load(file_path)  # 今までのpos_with_agのデータ
-                                        pos_with_achieved_goal = np.vstack([pos_with_ag_previous, pos_with_ag_now])  # 今までのデータに今回のデータを追加
-                                    else:
-                                        # ファイルが存在しない場合
-                                        pos_with_achieved_goal = np.array([pos_with_ag_now])  # 初回保存(0,)→(21,)
-                                    np.save(file_path, pos_with_achieved_goal)  # 新しい(○, 21)として保存
-                                    print(pos_with_achieved_goal.shape)
-                                # if epoch == 1:  # 290epochの時のみ, posと同時にその時のachieved_goalを順に保存していく.
-                                #     pos_with_ag_now_1 = np.append(pos, info['achieved_goal'])  # はさみのagをposに追加, 今回のpos_with_ag
-                                #     file_path = '/home/tokoro/1epoch_pos_with_achieved_goal.npy'  # はじめは空のデータで, 順次(21,)を追加
+                                pos_without_WRJ1 = pos[1:]
+                                pos_with_ag = np.append(pos_without_WRJ1, info['achieved_goal'])
+                                synergy.add_pos(pos_with_ag)
+
+                                # if epoch == 290:  # 290epochの時のみ, posと同時にその時のachieved_goalを順に保存していく.
+                                #     pos_with_ag_now = np.append(pos, info['achieved_goal'])  # はさみのagをposに追加, 今回のpos_with_ag
+                                #     file_path = '/home/tokoro/pos_with_achieved_goal.npy'  # はじめは空のデータで, 順次(21,)を追加
                                 #     # ファイルが存在するか確認
                                 #     if os.path.exists(file_path):
                                 #         # 既存のデータがある場合
-                                #         pos_with_ag_previous_1 = np.load(file_path)  # 今までのpos_with_agのデータ
-                                #         pos_with_achieved_goal_1 = np.vstack([pos_with_ag_previous_1, pos_with_ag_now_1])  # 今までのデータに今回のデータを追加
+                                #         pos_with_ag_previous = np.load(file_path)  # 今までのpos_with_agのデータ
+                                #         pos_with_achieved_goal = np.vstack([pos_with_ag_previous, pos_with_ag_now])  # 今までのデータに今回のデータを追加
                                 #     else:
                                 #         # ファイルが存在しない場合
-                                #         pos_with_achieved_goal_1 = np.array([pos_with_ag_now_1])  # 初回保存(0,)→(21,)
-                                #     np.save(file_path, pos_with_achieved_goal_1)  # 新しい(○, 21)として保存
-                                #     print(pos_with_achieved_goal_1.shape)
-                                # if epoch == 2:  # 290epochの時のみ, posと同時にその時のachieved_goalを順に保存していく.
-                                #     pos_with_ag_now_2 = np.append(pos, info['achieved_goal'])  # はさみのagをposに追加, 今回のpos_with_ag
-                                #     file_path = '/home/tokoro/2epoch_pos_with_achieved_goal.npy'  # はじめは空のデータで, 順次(21,)を追加
-                                #     # ファイルが存在するか確認
-                                #     if os.path.exists(file_path):
-                                #         # 既存のデータがある場合
-                                #         pos_with_ag_previous_2 = np.load(file_path)  # 今までのpos_with_agのデータ
-                                #         pos_with_achieved_goal_2 = np.vstack([pos_with_ag_previous_2, pos_with_ag_now_2])  # 今までのデータに今回のデータを追加
-                                #     else:
-                                #         # ファイルが存在しない場合
-                                #         pos_with_achieved_goal_2 = np.array([pos_with_ag_now_2])  # 初回保存(0,)→(21,)
-                                #     np.save(file_path, pos_with_achieved_goal_2)  # 新しい(○, 21)として保存
-                                #     print(pos_with_achieved_goal_2.shape)
-                                # if epoch == 3:  # 290epochの時のみ, posと同時にその時のachieved_goalを順に保存していく.
-                                #     pos_with_ag_now_3 = np.append(pos, info['achieved_goal'])  # はさみのagをposに追加, 今回のpos_with_ag
-                                #     file_path = '/home/tokoro/3epoch_pos_with_achieved_goal.npy'  # はじめは空のデータで, 順次(21,)を追加
-                                #     # ファイルが存在するか確認
-                                #     if os.path.exists(file_path):
-                                #         # 既存のデータがある場合
-                                #         pos_with_ag_previous_3 = np.load(file_path)  # 今までのpos_with_agのデータ
-                                #         pos_with_achieved_goal_3 = np.vstack([pos_with_ag_previous_3, pos_with_ag_now_3])  # 今までのデータに今回のデータを追加
-                                #     else:
-                                #         # ファイルが存在しない場合
-                                #         pos_with_achieved_goal_3 = np.array([pos_with_ag_now_3])  # 初回保存(0,)→(21,)
-                                #     np.save(file_path, pos_with_achieved_goal_3)  # 新しい(○, 21)として保存
-                                #     print(pos_with_achieved_goal_3.shape)
-                                # if epoch == 4:  # 290epochの時のみ, posと同時にその時のachieved_goalを順に保存していく.
-                                #     pos_with_ag_now_4 = np.append(pos, info['achieved_goal'])  # はさみのagをposに追加, 今回のpos_with_ag
-                                #     file_path = '/home/tokoro/4epoch_pos_with_achieved_goal.npy'  # はじめは空のデータで, 順次(21,)を追加
-                                #     # ファイルが存在するか確認
-                                #     if os.path.exists(file_path):
-                                #         # 既存のデータがある場合
-                                #         pos_with_ag_previous_4 = np.load(file_path)  # 今までのpos_with_agのデータ
-                                #         pos_with_achieved_goal_4 = np.vstack([pos_with_ag_previous_4, pos_with_ag_now_4])  # 今までのデータに今回のデータを追加
-                                #     else:
-                                #         # ファイルが存在しない場合
-                                #         pos_with_achieved_goal_4 = np.array([pos_with_ag_now_4])  # 初回保存(0,)→(21,)
-                                #     np.save(file_path, pos_with_achieved_goal_4)  # 新しい(○, 21)として保存
-                                #     print(pos_with_achieved_goal_4.shape)
-                                # if epoch == 5:  # 290epochの時のみ, posと同時にその時のachieved_goalを順に保存していく.
-                                #     pos_with_ag_now_5 = np.append(pos, info['achieved_goal'])  # はさみのagをposに追加, 今回のpos_with_ag
-                                #     file_path = '/home/tokoro/5epoch_pos_with_achieved_goal.npy'  # はじめは空のデータで, 順次(21,)を追加
-                                #     # ファイルが存在するか確認
-                                #     if os.path.exists(file_path):
-                                #         # 既存のデータがある場合
-                                #         pos_with_ag_previous_5 = np.load(file_path)  # 今までのpos_with_agのデータ
-                                #         pos_with_achieved_goal_5 = np.vstack([pos_with_ag_previous_5, pos_with_ag_now_5])  # 今までのデータに今回のデータを追加
-                                #     else:
-                                #         # ファイルが存在しない場合
-                                #         pos_with_achieved_goal_5 = np.array([pos_with_ag_now_5])  # 初回保存(0,)→(21,)
-                                #     np.save(file_path, pos_with_achieved_goal_5)  # 新しい(○, 21)として保存
-                                #     print(pos_with_achieved_goal_5.shape)
+                                #         pos_with_achieved_goal = np.array([pos_with_ag_now])  # 初回保存(0,)→(21,)
+                                #     np.save(file_path, pos_with_achieved_goal)  # 新しい(○, 21)として保存
+                                #     print(pos_with_achieved_goal.shape)
 
                     o_new[i] = curr_o_new['observation']
                     ag_new[i] = curr_o_new['achieved_goal']
