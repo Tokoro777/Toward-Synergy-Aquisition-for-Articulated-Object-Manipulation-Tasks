@@ -19,8 +19,11 @@ class SynergyManager:
     def get_lambda(self):
         return self.reward_lambda
 
-    def add_pos(self, pos):
+    def add_pos(self, pos):  # 要素をリストに追加
         self.poslist.append(pos)
+
+    def add_list(self, list):  # リストをリストに追加. new
+        self.poslist.extend(list)
 
     def set_poslist(self, poslist):
         self.poslist = poslist
