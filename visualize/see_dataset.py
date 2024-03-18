@@ -19,10 +19,6 @@ t = 0
 pos_num = 0
 postures = np.load(dataset_path.format("grasp_dataset_290.npy"))
 print(postures.shape)
-print(postures[0])
-print(postures[2])
-print(postures[5])
-print(postures.shape)
 # 使用したいデータのみ選別
 # 抜き取りたい行のインデックスリスト
 desired_row_indices = [2, 3, 5, 6, 9, 10, 12, 14, 17, 21, 22, 23, 25, 26, 28, 29, 35, 38, 40, 43, 45, 56, 58, 59, 60, 62, 63, 64, 68, 70, 71, 72, 73, 74, 77, 78, 79, 80, 82, 83, 84, 85, 86, 88, 93, 97, 98, 99, 100]  # Pythonのインデックスは0から始まるため、2行目はインデックス1、5行目はインデックス4

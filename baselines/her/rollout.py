@@ -181,7 +181,7 @@ class RolloutWorker:
                                 dtime[i] = 0
                         elif success_type == 'Last':
                             # 20stepごとにposを別リストに仮保存。95step目で成功なら、このリストもposlistに保存。
-                            if t % 20 == 0 and t <= self.T*0.95:
+                            if t == self.T*0.10:
                                 if i == 0:  # rollout_batch_sizeに対してiが0の時の20stepごとの姿勢(要素)を保存したリスト
                                     list_0.append(pos)
                                 else:       # rollout_batch_sizeに対してiが1の時の20stepごとの姿勢を保存したリスト
