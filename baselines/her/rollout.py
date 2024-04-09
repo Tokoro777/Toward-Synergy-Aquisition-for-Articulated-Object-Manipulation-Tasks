@@ -180,24 +180,27 @@ class RolloutWorker:
                                 synergy.add_pos(pos)
                                 dtime[i] = 0
                         elif success_type == 'Last':
-                            # 20stepごとにposを別リストに仮保存。95step目で成功なら、このリストもposlistに保存。
-                            if t == self.T*0.10:
-                                if i == 0:  # rollout_batch_sizeに対してiが0の時の20stepごとの姿勢(要素)を保存したリスト
-                                    list_0.append(pos)
-                                else:       # rollout_batch_sizeに対してiが1の時の20stepごとの姿勢を保存したリスト
-                                    list_1.append(pos)
-                            # 学習の最後5stepで成功した場合のみver
-                            if success[i] > 0 and t > self.T*0.95:
-                                if i == 0:  # タスク成功していて, iが0の時, list_0をposlistに追加。リストをリストに。
-                                    synergy.add_list(list_0)
-                                else:
-                                    synergy.add_list(list_1)
-                            # achieved_goalを考慮しない場合
-                                synergy.add_pos(pos)
-                            # achieved_goalを考慮する場合
-                                # pos_without_WRJ1 = pos[1:]  # 95step目のposをposlistに追加
-                                # pos_with_ag = np.append(pos_without_WRJ1, info['achieved_goal'])
-                                # synergy.add_pos(pos_with_ag)
+                            # # 20stepごとにposを別リストに仮保存。95step目で成功なら、このリストもposlistに保存。
+                            # if t == self.T * 0.10:
+                            #     if i == 0:  # rollout_batch_sizeに対してiが0の時の20stepごとの姿勢(要素)を保存したリスト
+                            #         list_0.append(pos)
+                            #     else:  # rollout_batch_sizeに対してiが1の時の20stepごとの姿勢を保存したリスト
+                            #         list_1.append(pos)
+                            # # 学習の最後5stepで成功した場合のみver
+                            # if success[i] > 0 and t > self.T * 0.95:
+                            #     if i == 0:  # タスク成功していて, iが0の時, list_0をposlistに追加。リストをリストに。
+                            #         synergy.add_list(list_0)
+                            #     else:
+                            #         synergy.add_list(list_1)
+                            #     # achieved_goalを考慮しない場合
+                            #     synergy.add_pos(pos)
+
+                            # # achieved_goalを考慮する場合
+                            # # 学習の最後5stepで成功した場合のみver
+                            if success[i] > 0 and t > self.T * 0.95:
+                                pos_without_WRJ1 = pos[1:]
+                                pos_with_ag = np.append(pos_without_WRJ1, info['achieved_goal'])
+                                synergy.add_pos(pos_with_ag)
 
                     o_new[i] = curr_o_new['observation']
                     ag_new[i] = curr_o_new['achieved_goal']

@@ -70,11 +70,17 @@ postures_pca = pca.fit_transform(postures)
 pc1 = postures_pca[:, 0]
 pc2 = postures_pca[:, 1]
 
-# achievedgoalの値に基づいて色分けしてプロット
+# achieved_goalの値を取得
 achievedgoal_values = postures[:, -1]
-plt.scatter(pc1, pc2, c=achievedgoal_values, cmap='viridis')
-plt.xlabel('PC1')
-plt.ylabel('PC2')
-plt.title('PCA(Color-coded by achieved_goal)')
+
+# 相関係数を計算
+correlation = np.corrcoef(pc2, achievedgoal_values)[0, 1]
+print(f"PC2とachieved_goalの相関係数: {correlation}")
+
+# PC1とachievedgoalの値に基づいて色分けしてプロット
+plt.scatter(pc2, achievedgoal_values, cmap='viridis')
+plt.xlabel('PC2')
+plt.ylabel('achieved_goal')
+plt.title('PC2 vs achieved_goal')
 plt.colorbar(label='achieved_goal')
 plt.show()

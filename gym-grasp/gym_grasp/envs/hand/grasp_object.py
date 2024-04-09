@@ -35,7 +35,8 @@ def euler2mat(euler):
     return r
 
 # Ensure we get the path separator correct on windows
-GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')  # 5本指ver
+GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指ShadowHandLite.ver
 
 
 class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
@@ -267,7 +268,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                       "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+                       # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
         # joint_angles = [0.03,
         #                 1.57,
@@ -284,7 +285,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                         0.0, 1.44, 0.0, 1.57,
                         0.0, 1.53, 0.0, 1.57,
                         0.0, 1.44, 0.0, 1.57,
-                        0.0, 0.0, 1.32, 0.0, 1.57,
+                        # 0.0, 0.0, 1.32, 0.0, 1.57,
                         0.0, 1.22, 0.209, -0.524, -0.361]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
@@ -313,7 +314,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # Run the simulation for a bunch of timesteps to let everything settle in.
         for _ in range(10):
-            self._set_action(np.zeros(21))
+            self._set_action(np.zeros(17))  # self._set_action(np.zeros(21))
             try:
                 self.sim.step()
             except mujoco_py.MujocoException:
@@ -537,7 +538,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                       "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+                       # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
         # joint_angles = [0.04,  #指真っ直ぐの時
@@ -555,7 +556,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                         0.0, 1.44, 0.0, 1.57,
                         0.0, 1.53, 0.0, 1.57,
                         0.0, 1.44, 0.0, 1.57,
-                        0.0, 0.0, 1.32, 0.0, 1.57,
+                        # 0.0, 0.0, 1.32, 0.0, 1.57,
                         0.0, 1.22, 0.209, -0.524, -0.361]
 
         # joint_angles = [0.04,  # 指中くらいに曲げる時
