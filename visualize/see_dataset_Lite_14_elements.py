@@ -78,17 +78,8 @@ while True:
         print(pos_num)  # 今から表示するposの番号
         print(postures[pos_num, -1])  # achieved_goalの値を出力
 
-    if t == 499:
-        # print(sim.data.ctrl[:])  # jointの値
-        # 各アクチュエータの角度を表示
-        for name in sim.model.actuator_names:
-            joint_idx = sim.model.actuator_name2id(name)
-            joint_angle = sim.data.qpos[joint_idx]
-            # print(f"{name}: {joint_angle}")
-        # print(sim.data.ctrl[:-1])
-
-    sim.data.ctrl[:-1] = actuation_center[:-1] + postures[pos_num][:-1] * actuation_range[:-1]
-    sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
+    sim.data.ctrl[2:-1] = actuation_center[2:-1] + postures[pos_num][1:-2] * actuation_range[2:-1]
+    sim.data.ctrl[2:-1] = np.clip(sim.data.ctrl[2:-1], ctrlrange[2:-1, 0], ctrlrange[2:-1, 1])
 
     time.sleep(0.005)
 

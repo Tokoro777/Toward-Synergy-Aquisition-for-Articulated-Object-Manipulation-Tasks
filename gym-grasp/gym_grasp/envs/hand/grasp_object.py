@@ -194,7 +194,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
             keep_reward = info['keep_position'].T[0]
 
-            reward = (success - 1.) + (keep_reward - 1.)  # キープ報酬を加算して全体の報酬を計算
+            reward = (success - 1.) #+ (keep_reward - 1.)  # キープ報酬を加算して全体の報酬を計算
 
             # reward = (success - 1.)  # - c_lambda * (success * info['e']) - cpenalty  # - gpenalty
 
@@ -284,23 +284,24 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
                        # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        # joint_angles = [0.03,
+
+        # joint_angles = [0.04,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
         #                 1.57,
         #                 0.0, 0.0,
-        #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 1.57, 0.0, 0.0,
-        #                 0.0, 0.0, 1.57, 0.0, 0.0,
-        #                 0.461, 1.22, 0.209, 0.0, 0.0]
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.53, 0.0, 1.57,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.209, -0.524, -0.361]
 
-        joint_angles = [0.04,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
+        joint_angles = [0.04,  # はさみの穴を狭めたver
                         1.57,
                         0.0, 0.0,
                         0.0, 1.44, 0.0, 1.57,
                         0.0, 1.53, 0.0, 1.57,
                         0.0, 1.44, 0.0, 1.57,
                         # 0.0, 0.0, 1.32, 0.0, 1.57,
-                        0.0, 1.22, 0.209, -0.524, -0.361]
+                        0.0, 1.22, 0.209, 0.0, -1.57]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
             self.sim.data.set_joint_qpos(joint_name, angle)
@@ -531,7 +532,6 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         action = np.clip(action, self.action_space.low, self.action_space.high)
         self._set_action(action)
-        self._set_action(action)
         self.sim.step()
         self._step_callback()
         obs = self._get_obs()
@@ -556,32 +556,26 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-        # joint_angles = [0.04,  #指真っ直ぐの時
+
+        # joint_angles = [0.04,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
         #                 1.57,
         #                 0.0, 0.0,
-        #                 0.0, 1.4, 0.0, 0.0,
-        #                 0.0, 1.4, 0.0, 0.0,
-        #                 0.0, 1.4, 0.0, 0.0,
-        #                 0.0, 0.0, 1.4, 0.0, 0.0,
-        #                 0.0, 1.22, 0.0, 0.0, 0.0]
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.53, 0.0, 1.57,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.209, -0.524, -0.361]
 
-        joint_angles = [0.04,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
+
+        joint_angles = [0.04,  # はさみの穴を狭めたver
                         1.57,
                         0.0, 0.0,
                         0.0, 1.44, 0.0, 1.57,
                         0.0, 1.53, 0.0, 1.57,
                         0.0, 1.44, 0.0, 1.57,
                         # 0.0, 0.0, 1.32, 0.0, 1.57,
-                        0.0, 1.22, 0.209, -0.524, -0.361]
+                        0.0, 1.22, 0.209, 0.0, -1.57]
 
-        # joint_angles = [0.04,  # 指中くらいに曲げる時
-        #                 1.57,
-        #                 0.0, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 0.0, 1., 0.5, 0.0,
-        #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
         # print(obs["observation"][:22])
         # self.sim.data.ctrl[:] = [0.0, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 0.0, 1.57, 0.0, 0.5, 1.22, 0.209, 0.0, 0.0, 0.02]
