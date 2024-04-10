@@ -11,7 +11,7 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/hand.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy_damping=0.1/test/{}"
+dataset_path = "/home/tokoro/policy_0-0.7/test/{}"
 
 viewer = MjViewer(sim)
 
@@ -27,10 +27,10 @@ print(postures.shape)
 # # 複数の行を抜き取る
 # postures = postures[desired_row_indices, :]
 
-# policy_damping=0.1/test/grasp_dataset_15.npyの時
-desired_row_indices = [6, 9, 10, 14, 17, 19, 20, 22, 23, 24, 27, 28, 29, 32, 34, 35, 36, 40, 43, 44, 46, 49, 50, 51, 54, 55, 59, 61, 63, 64, 67, 68, 69, 71, 72, 75, 82, 93, 96, 105, 107, 113, 114, 119, 121, 133, 138, 147, 151]
-postures = postures[desired_row_indices, :]
-print(postures.shape)
+# # policy_damping=0.1/test/grasp_dataset_15.npyの時
+# desired_row_indices = [6, 9, 10, 14, 17, 19, 20, 22, 23, 24, 27, 28, 29, 32, 34, 35, 36, 40, 43, 44, 46, 49, 50, 51, 54, 55, 59, 61, 63, 64, 67, 68, 69, 71, 72, 75, 82, 93, 96, 105, 107, 113, 114, 119, 121, 133, 138, 147, 151]
+# postures = postures[desired_row_indices, :]
+# print(postures.shape)
 
 
 ctrlrange = sim.model.actuator_ctrlrange
