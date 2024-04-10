@@ -192,7 +192,11 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             cpenalty = info["contact_penalty"].T[0]
             success = success * gpenalty
 
-            reward = (success - 1.)  # - c_lambda * (success * info['e']) - cpenalty  # - gpenalty
+            keep_reward = info['keep_position'].T[0]
+
+            reward = (success - 1.) + (keep_reward - 1.)  # キープ報酬を加算して全体の報酬を計算
+
+            # reward = (success - 1.)  # - c_lambda * (success * info['e']) - cpenalty  # - gpenalty
 
             return reward
 
@@ -211,6 +215,16 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         achieved_angle = (d_angle < self.angle_threshold).astype(np.float32)  # はさみが閉じれた状態なら成功. 回転角度が閾値以下なら閉じれたと判断
         achieved_both = achieved_angle.flatten() * isingrasp
         return achieved_both
+
+    def keep_positon(self):
+        # 追加部分: はさみを目標位置にキープした場合の報酬計算
+        distance_threshold = 0.05  # 目標位置に対する最大許容距離
+        obj_pos = self.sim.data.site_xpos[self.sim.model.site_name2id("scissors:center")]  # はさみの位置
+        goal_pos = self.init_object_qpos[:3]
+        goal_pos = goal_pos - [0.0, 0.0, 0.1]  # 目標位置
+        distance_to_goal = np.linalg.norm(obj_pos - goal_pos)  # はさみと目標位置との距離を計算
+        keep_reward = 1.0 if distance_to_goal <= distance_threshold else 0.0
+        return keep_reward
 
     def _env_setup(self, initial_qpos):
         for name, value in initial_qpos.items():
@@ -528,7 +542,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             'is_success': self._is_success(obs['achieved_goal'], self.goal, 1.0 if self._is_in_grasp_space() else 0.0),
             "contact_penalty": self._check_contact(),
             "is_in_grasp_space": 1.0 if self._is_in_grasp_space() else 0.0,
-            'achieved_goal': obs['achieved_goal']  # 新たにagを追加, rolloutで把持姿勢pos＋はさみの角度を保存するため
+            'achieved_goal': obs['achieved_goal'],  # 新たにagを追加, rolloutで把持姿勢pos＋はさみの角度を保存するため
+            'keep_position': self.keep_positon()
         }
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
 
