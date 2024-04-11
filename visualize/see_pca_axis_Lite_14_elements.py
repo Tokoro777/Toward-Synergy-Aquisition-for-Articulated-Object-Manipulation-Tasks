@@ -44,13 +44,7 @@ viewer = MjViewer(sim)
 t = 0
 postures = np.load(dataset_path)
 print(postures.shape)
-# # 使用したいデータのみ選別
-# # 抜き取りたい行のインデックスリスト
-# desired_row_indices = [2, 3, 5, 6, 9, 10, 12, 14, 17, 21, 22, 23, 25, 26, 28, 29, 35, 38, 40, 43, 45, 56, 58, 59, 60, 62, 63, 64, 68, 70, 71, 72, 73, 74, 77, 78, 79, 80, 82, 83, 84, 85, 86, 88, 93, 97, 98, 99, 100]  # Pythonのインデックスは0から始まるため、2行目はインデックス1、5行目はインデックス4
-# # 複数の行を抜き取る
-# postures = postures[desired_row_indices, :]
-# print(postures.shape)
-# # postures = postures[:5]  # さらに30
+
 
 
 ctrlrange = sim.model.actuator_ctrlrange
@@ -58,6 +52,8 @@ actuation_center = (ctrlrange[:, 1] + ctrlrange[:, 0]) / 2.
 actuation_range = (ctrlrange[:, 1] - ctrlrange[:, 0]) / 2.
 
 pca = PCA(n_components=5)
+postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
+print(postures.shape)
 pca.fit(postures)
 
 # PCAの各主成分の寄与率を出力
@@ -149,7 +145,7 @@ while True:
 
     posture = pca.mean_ + pca.inverse_transform(trajectory[n])  # trajectory[?]=[* 0 0 0 0]
 
-    sim.data.ctrl[2:-1] = actuation_center[2:-1] + posture[1:-2] * actuation_range[2:-1]
+    sim.data.ctrl[2:-1] = actuation_center[2:-1] + posture * actuation_range[2:-1]
     sim.data.ctrl[2:-1] = np.clip(sim.data.ctrl[2:-1], ctrlrange[2:-1, 0], ctrlrange[2:-1, 1])
     # print(n, sim.data.ctrl[:-1][3])　　#  制御信号と関節の値が同じか比較
     # print(sim.data.get_joint_qpos("robot0:FFJ2"))

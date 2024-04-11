@@ -49,17 +49,19 @@ postures = np.load(dataset_path)   # (20,)で、はじめの19個は姿勢。最
 print(postures.shape)
 
 
+# achieved_goalの値を取得
+achievedgoal_values = postures[:, -1]
 
 # PCAを実行
 pca = PCA(n_components=2)
+postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
+print(postures.shape)
 postures_pca = pca.fit_transform(postures)
 
 # PC1とPC2を取得
 pc1 = postures_pca[:, 0]
 pc2 = postures_pca[:, 1]
 
-# achieved_goalの値を取得
-achievedgoal_values = postures[:, -1]
 
 # 相関係数を計算
 correlation = np.corrcoef(pc1, achievedgoal_values)[0, 1]
