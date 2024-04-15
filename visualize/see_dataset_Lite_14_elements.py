@@ -11,7 +11,7 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/hand_Lite.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy_pattern2/test/{}"
+dataset_path = "/home/tokoro/policy_without_WRJ1J0/test/{}"
 
 viewer = MjViewer(sim)
 
@@ -78,8 +78,11 @@ while True:
         print(pos_num)  # 今から表示するposの番号
         print(postures[pos_num, -1])  # achieved_goalの値を出力
 
-    sim.data.ctrl[2:-1] = actuation_center[2:-1] + postures[pos_num][1:-2] * actuation_range[2:-1]
-    sim.data.ctrl[2:-1] = np.clip(sim.data.ctrl[2:-1], ctrlrange[2:-1, 0], ctrlrange[2:-1, 1])
+    # sim.data.ctrl[2:-1] = actuation_center[2:-1] + postures[pos_num][1:-2] * actuation_range[2:-1]  # WRJ0とzsliderとagを消すパターン
+    # sim.data.ctrl[2:-1] = np.clip(sim.data.ctrl[2:-1], ctrlrange[2:-1, 0], ctrlrange[2:-1, 1])
+
+    sim.data.ctrl[:-1] = actuation_center[:-1] + postures[pos_num][:-1] * actuation_range[:-1]  # actuatorが14個で, datasetからagを消すパターン
+    sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
 
     time.sleep(0.005)
 

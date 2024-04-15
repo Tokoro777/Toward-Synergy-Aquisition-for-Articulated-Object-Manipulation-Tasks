@@ -51,18 +51,18 @@
     </contact>
 
     <tendon>
-        <fixed name="robot0:T_WRJ1r" limited="true" range="-0.032 0.032" user="1236">
-            <joint joint="robot0:WRJ1" coef="0.0325"></joint>
-        </fixed>
-        <fixed name="robot0:T_WRJ1l" limited="true" range="-0.032 0.032" user="1237">
-            <joint joint="robot0:WRJ1" coef="-0.0325"></joint>
-        </fixed>
-        <fixed name="robot0:T_WRJ0u" limited="true" range="-0.032 0.032" user="1236">
-            <joint joint="robot0:WRJ0" coef="0.0175"></joint>
-        </fixed>
-        <fixed name="robot0:T_WRJ0d" limited="true" range="-0.032 0.032" user="1237">
-            <joint joint="robot0:WRJ0" coef="-0.0175"></joint>
-        </fixed>
+<!--        <fixed name="robot0:T_WRJ1r" limited="true" range="-0.032 0.032" user="1236">-->
+<!--            <joint joint="robot0:WRJ1" coef="0.0325"></joint>-->
+<!--        </fixed>-->
+<!--        <fixed name="robot0:T_WRJ1l" limited="true" range="-0.032 0.032" user="1237">-->
+<!--            <joint joint="robot0:WRJ1" coef="-0.0325"></joint>-->
+<!--        </fixed>-->
+<!--        <fixed name="robot0:T_WRJ0u" limited="true" range="-0.032 0.032" user="1236">-->
+<!--            <joint joint="robot0:WRJ0" coef="0.0175"></joint>-->
+<!--        </fixed>-->
+<!--        <fixed name="robot0:T_WRJ0d" limited="true" range="-0.032 0.032" user="1237">-->
+<!--            <joint joint="robot0:WRJ0" coef="-0.0175"></joint>-->
+<!--        </fixed>-->
         <fixed name="robot0:T_FFJ3r" limited="true" range="-0.018 0.018" user="1204">
             <joint joint="robot0:FFJ3" coef="0.01"></joint>
         </fixed>
@@ -198,8 +198,8 @@
     </tendon>
 
     <sensor>
-        <jointpos name="robot0:Sjp_WRJ1" joint="robot0:WRJ1"></jointpos>
-        <jointpos name="robot0:Sjp_WRJ0" joint="robot0:WRJ0"></jointpos>
+<!--        <jointpos name="robot0:Sjp_WRJ1" joint="robot0:WRJ1"></jointpos>-->
+<!--        <jointpos name="robot0:Sjp_WRJ0" joint="robot0:WRJ0"></jointpos>-->
         <jointpos name="robot0:Sjp_FFJ3" joint="robot0:FFJ3"></jointpos>
         <jointpos name="robot0:Sjp_FFJ2" joint="robot0:FFJ2"></jointpos>
         <jointpos name="robot0:Sjp_FFJ1" joint="robot0:FFJ1"></jointpos>
@@ -230,8 +230,8 @@
     </sensor>
 
     <actuator>
-        <position name="robot0:A_WRJ1" class="robot0:asset_class" user="2038" joint="robot0:WRJ1" ctrlrange="-0.489 0.14" kp="5" forcerange="-4.785 4.785"></position>
-        <position name="robot0:A_WRJ0" class="robot0:asset_class" user="2036" joint="robot0:WRJ0" ctrlrange="-0.698 0.489" kp="5" forcerange="-2.175 2.175"></position>
+<!--        <position name="robot0:A_WRJ1" class="robot0:asset_class" user="2038" joint="robot0:WRJ1" ctrlrange="-0.489 0.14" kp="5" forcerange="-4.785 4.785"></position>-->
+<!--        <position name="robot0:A_WRJ0" class="robot0:asset_class" user="2036" joint="robot0:WRJ0" ctrlrange="-0.698 0.489" kp="5" forcerange="-2.175 2.175"></position>-->
         <position name="robot0:A_FFJ3" class="robot0:asset_class" user="2004" joint="robot0:FFJ3" ctrlrange="-0.349 0.349" kp="1" forcerange="-0.9 0.9"></position>
         <position name="robot0:A_FFJ2" class="robot0:asset_class" user="2002" joint="robot0:FFJ2" ctrlrange="0 1.571" kp="1" forcerange="-0.9 0.9"></position>
         <position name="robot0:A_FFJ1" class="robot0:asset_class" user="2000" joint="robot0:FFJ1" ctrlrange="0 1.571" kp="1" forcerange="-0.7245 0.7245"></position>

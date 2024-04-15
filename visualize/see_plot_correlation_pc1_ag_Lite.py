@@ -39,7 +39,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_pattern2/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_without_WRJ1J0/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -54,7 +54,8 @@ achievedgoal_values = postures[:, -1]
 
 # PCAを実行
 pca = PCA(n_components=2)
-postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
+# postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
+postures = postures[:, :-1]
 print(postures.shape)
 postures_pca = pca.fit_transform(postures)
 
