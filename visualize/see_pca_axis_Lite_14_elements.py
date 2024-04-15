@@ -36,7 +36,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_pattern2/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)

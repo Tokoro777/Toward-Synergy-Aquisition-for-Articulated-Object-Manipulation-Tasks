@@ -314,7 +314,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         initial_quat /= np.linalg.norm(initial_quat)
         initial_qpos = np.concatenate([initial_pos, initial_quat])
         self.initial_qpos = initial_qpos
-        self.sim.data.set_joint_qpos(self.object, initial_qpos)  # はさみの位置をinitial_qposに初期化
+        self.sim.data.set_joint_qpos(self.object, initial_qpos)  # はさみの位置をinitial_qposに初期化, 空中固定の場合は必要ない
         self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
         self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)  #  1.02358
         self.step_n = 0
@@ -600,6 +600,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         if self.step_n < 30:  # はじめの40stepは以下の値を維持する.(はさみの角度, ハンドの姿勢, はさみの位置)
             self.sim.data.set_joint_qpos(self.object, self.initial_qpos)  # はさみを初期位置にし、freejointで落下させる
+            # 空中固定の場合は必要ない。
             self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
             self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
             for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定

@@ -11,7 +11,7 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/hand_Lite.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy/test/{}"
+dataset_path = "/home/tokoro/policy_pattern2/test/{}"
 
 viewer = MjViewer(sim)
 
