@@ -36,7 +36,8 @@ def euler2mat(euler):
 
 # Ensure we get the path separator correct on windows
 # GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')  # 5本指ver
-GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指ShadowHandLite.ver
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指ShadowHandLite.ver
+GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown.xml')  # Liteではさみが上下.ver
 
 
 class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
@@ -190,9 +191,10 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             gpenalty = info["is_in_grasp_space"].T[0]
             success = self._is_success(achieved_goal, goal, gpenalty).astype(np.float32)  # 成否（1,0）を取得する
             cpenalty = info["contact_penalty"].T[0]
-            success = success * gpenalty
-
             keep_reward = info['keep_position'].T[0]
+
+            # success = success * gpenalty
+            success = success * gpenalty #* keep_reward
 
             reward = (success - 1.) #+ (keep_reward - 1.)  # キープ報酬を加算して全体の報酬を計算
 
@@ -221,7 +223,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         distance_threshold = 0.05  # 目標位置に対する最大許容距離
         obj_pos = self.sim.data.site_xpos[self.sim.model.site_name2id("scissors:center")]  # はさみの位置
         goal_pos = self.init_object_qpos[:3]
-        goal_pos = goal_pos - [0.0, 0.0, 0.1]  # 目標位置
+        goal_pos = goal_pos #+ [0.0, 0.0, 0.1]  # 目標位置
         distance_to_goal = np.linalg.norm(obj_pos - goal_pos)  # はさみと目標位置との距離を計算
         keep_reward = 1.0 if distance_to_goal <= distance_threshold else 0.0
         return keep_reward
