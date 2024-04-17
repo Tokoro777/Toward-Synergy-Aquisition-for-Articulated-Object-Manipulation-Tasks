@@ -278,7 +278,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                 raise error.Error('Unknown target_rotation option "{}".'.format(self.target_rotation))
 
         # self.sim.data.set_joint_qpos("robot0:rollhinge", 1.57) # self.np_random.uniform(0, 3.14))
-        joint_names = ["robot0:zslider",
+        joint_names = [#"robot0:zslider",
                        "robot0:rollhinge",
                        "robot0:WRJ1", "robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
@@ -296,7 +296,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
         #                 0.0, 1.22, 0.209, -0.524, -0.361]
 
-        joint_angles = [0.04,  # はさみの穴を狭めたver
+        joint_angles = [#0.04,  # はさみの穴を狭めたver
                         1.57,
                         0.0, 0.0,
                         0.0, 1.44, 0.0, 1.57,
@@ -331,7 +331,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # Run the simulation for a bunch of timesteps to let everything settle in.
         for _ in range(10):
-            self._set_action(np.zeros(15))  # self._set_action(np.zeros(21))
+            self._set_action(np.zeros(14))  # self._set_action(np.zeros(21))
             try:
                 self.sim.step()
             except mujoco_py.MujocoException:
@@ -549,7 +549,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         }
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
 
-        joint_names = ["robot0:zslider",
+        joint_names = [#"robot0:zslider",
                        "robot0:rollhinge",
                        "robot0:WRJ1", "robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
@@ -569,7 +569,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #                 0.0, 1.22, 0.209, -0.524, -0.361]
 
 
-        joint_angles = [0.04,  # はさみの穴を狭めたver
+        joint_angles = [#0.04,  # はさみの穴を狭めたver
                         1.57,
                         0.0, 0.0,
                         0.0, 1.44, 0.0, 1.57,

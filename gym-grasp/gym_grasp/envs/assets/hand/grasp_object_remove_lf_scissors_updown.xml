@@ -264,7 +264,7 @@ https://www.shadowrobot.com/wp-content/uploads/shadow_dexterous_hand_technical_s
     </sensor>
 
     <actuator>
-        <position name="robot0:A_zslider" joint="robot0:zslider" ctrlrange="0.2 0.8" ctrllimited="true" kp="1" forcerange="-4.785 4.785"/>
+<!--        <position name="robot0:A_zslider" joint="robot0:zslider" ctrlrange="0.2 0.8" ctrllimited="true" kp="1" forcerange="-4.785 4.785"/>-->
 <!--        <position name="robot0:A_xslider" joint="robot0:xslider" ctrlrange="-0.15 0.15" ctrllimited="true" kp="1" forcerange="-4.785 4.785"/>-->
 <!--        <position name="robot0:A_yslider" joint="robot0:yslider" ctrlrange="-0.15 0.15" ctrllimited="true" kp="1" forcerange="-4.785 4.785"/>-->
 
