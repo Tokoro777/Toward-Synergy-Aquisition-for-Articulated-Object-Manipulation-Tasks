@@ -11,7 +11,7 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/hand_Lite.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy/test/{}"
+dataset_path = "/home/tokoro/policy_no_zslider_sci_updown/test/{}"
 
 viewer = MjViewer(sim)
 
@@ -81,9 +81,13 @@ while True:
     # sim.data.ctrl[2:-1] = actuation_center[2:-1] + postures[pos_num][1:-2] * actuation_range[2:-1]  # WRJ0とzsliderとagを消すパターン
     # sim.data.ctrl[2:-1] = np.clip(sim.data.ctrl[2:-1], ctrlrange[2:-1, 0], ctrlrange[2:-1, 1])
 
-    sim.data.ctrl[:-1] = actuation_center[:-1] + postures[pos_num][:-1] * actuation_range[:-1]  # actuatorが14個で, datasetからagを消すパターン
-    sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
+    # sim.data.ctrl[:-1] = actuation_center[:-1] + postures[pos_num][:-1] * actuation_range[:-1]  # actuatorが14個で, datasetからagを消すパターン
+    # sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
 
+    sim.data.ctrl[:11] = actuation_center[:11] + postures[pos_num][:11] * actuation_range[:11]  # 11番目のTHJ3まで制御入力を与え、THJ2には与えない。THJ0には与える。
+    sim.data.ctrl[:11] = np.clip(sim.data.ctrl[:11], ctrlrange[:11, 0], ctrlrange[:11, 1])
+    sim.data.ctrl[12:14] = actuation_center[12:14] + postures[pos_num][12:14] * actuation_range[12:14]  # THJ0に与える。
+    sim.data.ctrl[12:14] = np.clip(sim.data.ctrl[12:14], ctrlrange[12:14, 0], ctrlrange[12:14, 1])
 
     time.sleep(0.005)
 

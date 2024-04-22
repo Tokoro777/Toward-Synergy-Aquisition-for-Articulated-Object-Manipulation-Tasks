@@ -36,8 +36,8 @@ def euler2mat(euler):
 
 # Ensure we get the path separator correct on windows
 # GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')  # 5本指ver
-# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指ShadowHandLite.ver
-GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown.xml')  # Liteではさみが上下.ver
+GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指ShadowHandLite.ver
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown.xml')  # Liteではさみが上下.ver
 
 
 class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):

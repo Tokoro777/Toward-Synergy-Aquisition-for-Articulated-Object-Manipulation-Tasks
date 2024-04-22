@@ -39,7 +39,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_keep_pos/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_no_zslider_sci_updown/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -53,7 +53,7 @@ print(postures.shape)
 achievedgoal_values = postures[:, -1]
 
 # PCAを実行
-pca = PCA(n_components=2)
+pca = PCA(n_components=5)
 # postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
 postures = postures[:, :-1]
 print(postures.shape)
@@ -63,15 +63,14 @@ postures_pca = pca.fit_transform(postures)
 pc1 = postures_pca[:, 0]
 pc2 = postures_pca[:, 1]
 
-
 # 相関係数を計算
-correlation = np.corrcoef(pc1, achievedgoal_values)[0, 1]
-print(f"PC1とachieved_goalの相関係数: {correlation}")
+correlation = np.corrcoef(pc2, achievedgoal_values)[0, 1]
+print(f"PC2とachieved_goalの相関係数: {correlation}")
 
 # PC1とachievedgoalの値に基づいて色分けしてプロット
-plt.scatter(pc1, achievedgoal_values, cmap='viridis')
-plt.xlabel('PC1')
+plt.scatter(pc2, achievedgoal_values, cmap='viridis')
+plt.xlabel('PC2')
 plt.ylabel('achieved_goal')
-plt.title('PC1 vs achieved_goal')
+plt.title('PC2 vs achieved_goal')
 plt.colorbar(label='achieved_goal')
 plt.show()
