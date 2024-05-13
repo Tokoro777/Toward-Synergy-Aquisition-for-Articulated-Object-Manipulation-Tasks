@@ -48,7 +48,7 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
     all_success_grasp_path = os.path.join(logger.get_dir(), "total_grasp_dataset.npy")
 
     poslist = []
-    if is_init_grasp:  # On/Off
+    if is_init_grasp:  # On/Off   # ここは使っていない！
         init_poslist = []
         path_to_default_grasp_dataset = "model/initial_grasp_pose.npy"
         if os.path.exists(path_to_default_grasp_dataset):
@@ -69,7 +69,7 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
     logger.info("Training...")
     best_success_rate = -1
 
-    if policy.bc_loss == 1: policy.initDemoBuffer(demo_file)   # initialize demo buffer if training with demonstrations
+    if policy.bc_loss == 1: policy.initDemoBuffer(demo_file)  # initialize demo buffer if training with demonstrations # ここも使っていない！！！
     for epoch in range(n_epochs):
         clogger.info("Start: Epoch {}/{}".format(epoch, n_epochs))
         # train
@@ -83,8 +83,9 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
                                                        synergy=pos_database,
                                                        synergy_type=synergy_type)
 
-            if len(pos_database.get_poslist()) > min_num:
+            if len(pos_database.get_poslist()) > min_num:  # 0epochの途中から実行される
                 pos_database.calc_pca()
+
 
             # clogger.info("Episode = {}".format(episode.keys()))
             # for key in episode.keys():

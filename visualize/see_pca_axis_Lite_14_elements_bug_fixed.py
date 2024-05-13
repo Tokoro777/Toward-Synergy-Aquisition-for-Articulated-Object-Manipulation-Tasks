@@ -36,7 +36,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_without_WRJ1J0/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -46,16 +46,20 @@ postures = np.load(dataset_path)
 print(postures.shape)
 
 
-
 ctrlrange = sim.model.actuator_ctrlrange
 actuation_center = (ctrlrange[:, 1] + ctrlrange[:, 0]) / 2.
 actuation_range = (ctrlrange[:, 1] - ctrlrange[:, 0]) / 2.
 
 pca = PCA(n_components=5)
 # postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
-# postures = postures[:, :-1]  # 15個から14個に減らす(☓ ag)
-postures = postures[:, :-1]  # 14個から13個に減らす(☓ ag)
+postures = postures[:, :-1]  # 15個から14個に減らす(☓ ag)
 print(postures.shape)
+
+# new_posture = np.array([0, 1.44, 0, 0, 1.53, 0, 0, 1.44, 0, 0, 1.22, 0, 0, 0])
+# new_postures = np.tile(new_posture, (10, 1))  # 同じ姿勢を10個作成する
+# # 新しい姿勢データを既存のデータに追加する
+# postures = np.append(postures, new_postures, axis=0)
+
 pca.fit(postures)
 
 # PCAの各主成分の寄与率を出力
@@ -63,7 +67,7 @@ explained_variance_ratios = pca.explained_variance_ratio_
 for i, explained_variance_ratio in enumerate(explained_variance_ratios):
     print(f"PC{i+1} explained variance ratio: {explained_variance_ratio:.4f}")
 
-pc_axis = 2
+pc_axis = 1
 n = 0
 scores = pca.transform(postures)
 score_range = [(min(a), max(a)) for a in scores.T]
@@ -125,44 +129,13 @@ while True:
     sim.step()
     state = sim.get_state()
 
-    if n == 0 and t < 230:  # 1個目の軌道は, 与える制御信号に対して関節が追従するのに時間がかかるので230step 1個目を維持
-        n = 0
-        p += 1
-        # print("p", p)
-
-    if n == 0 and t == 230:  # 制御信号に関節が追従したので, 2個目の軌道に移る
-        n += 1
-        t = 0
-        # print("trajectory[0] finish! trajectory[1] start.")
-
-    if t > 1 and n < 499 and n > 0:  # 500個ある軌道の点にそってハンドを制御, 5stepごとに次の点に移動
+    if t > 5 and n < 499:
         t = 0
         n += 1
 
-    # if t > 1 and n < 499:  # 500個ある軌道の点にそってハンドを制御, 5stepごとに次の点に移動
-    #     t = 0
-    #     n += 1
+    posture = pca.mean_ + pca.inverse_transform(trajectory[n])
 
-    # print("trajectory[", n, "]")
-
-    posture = pca.mean_ + pca.inverse_transform(trajectory[n])  # trajectory[?]=[* 0 0 0 0]
-
-    # sim.data.ctrl[2:-1] = actuation_center[2:-1] + posture * actuation_range[2:-1]  # WRJ0とzsliderとagを消すパターン
-    # sim.data.ctrl[2:-1] = np.clip(sim.data.ctrl[2:-1], ctrlrange[2:-1, 0], ctrlrange[2:-1, 1])
-
-    # sim.data.ctrl[:-1] = actuation_center[:-1] + posture * actuation_range[:-1]  # actuatorが14個で, datasetからagを消すパターン
-    # sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
-
-    sim.data.ctrl[:11] = actuation_center[:11] + posture[:-2] * actuation_range[:11]  # 11番目のTHJ3まで制御入力を与え、THJ2には与えない。THJ0には与える。
-    sim.data.ctrl[:11] = np.clip(sim.data.ctrl[:11], ctrlrange[:11, 0], ctrlrange[:11, 1])
-    sim.data.ctrl[12:14] = actuation_center[12:14] + posture[11:13] * actuation_range[12:14]  # THJ0に与える。
-    sim.data.ctrl[12:14] = np.clip(sim.data.ctrl[12:14], ctrlrange[12:14, 0], ctrlrange[12:14, 1])
-
+    sim.data.ctrl[:-1] = actuation_center[:-1] + posture * actuation_range[:-1]
+    sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
 
     time.sleep(0.001)
-
-    # 500ステップ以上経過したら初期化し, 繰り返し再生
-    if n == 499 and t == 1:
-        n = 0
-        t = 0
-        set_initial_joint_positions(sim, joint_names, joint_angles)

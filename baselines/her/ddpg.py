@@ -141,15 +141,15 @@ class DDPG(object):
 
         ret = self.sess.run(vals, feed_dict=feed)
         # action postprocessing
-        u = ret[0]
+        u = ret[0]  # 範囲内やぞ!!!!!!!!!!!
         noise = noise_eps * self.max_u * np.random.randn(*u.shape)  # gaussian noise
         u += noise
         u = np.clip(u, -self.max_u, self.max_u)
         u += np.random.binomial(1, random_eps, u.shape[0]).reshape(-1, 1) * (self._random_action(u.shape[0]) - u)  # eps-greedy
-        if u.shape[0] == 1:
+        if u.shape[0] == 1:  # ここは使われていない!!!!!!!
             u = u[0]
         u = u.copy()
-        ret[0] = u
+        ret[0] = u  # 範囲外!!
 
         if len(ret) == 1:
             return ret[0]

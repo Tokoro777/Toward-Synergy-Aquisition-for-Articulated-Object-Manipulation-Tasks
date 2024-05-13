@@ -23,7 +23,7 @@ class Runner(AbstractEnvRunner):
         self.nc = self.batch_ob_shape[-1] // self.nstack
 
 
-    def run(self):
+    def run(self):  ### このプログラムは学習では使われていない!!!!!!!
         # enc_obs = np.split(self.obs, self.nstack, axis=3)  # so now list of obs steps
         enc_obs = np.split(self.env.stackedobs, self.env.nstack, axis=-1)
         mb_obs, mb_actions, mb_mus, mb_dones, mb_rewards = [], [], [], [], []

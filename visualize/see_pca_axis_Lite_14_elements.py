@@ -36,7 +36,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_no_freejoint_sci_updown/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -45,6 +45,25 @@ t = 0
 postures = np.load(dataset_path)
 print(postures.shape)
 
+
+# achieved_goals = postures[:, -1]  # 最後の列がachieved_goal
+#
+# # achieved_goalを0.0-0.8の範囲で10個ずつ区切る
+# bins = np.linspace(0.0, 0.8, 9)  # 0.0から0.8までを8つの区間に分割
+# digitized = np.digitize(achieved_goals, bins)
+#
+# # 各区間から10個ずつ抽出して整理する
+# selected_indices = []
+# for i in range(1, 9):  # 区間1から8まで
+#     indices_in_bin = np.where(digitized == i)[0][:10]  # 各区間から10個ずつ選択
+#     selected_indices.extend(indices_in_bin)
+#
+# # 選択されたデータを取得
+# postures = postures[selected_indices]
+# selected_achieved_goals = achieved_goals[selected_indices]
+#
+# print("整理されたposturesの形状:", postures.shape)
+# print("整理されたachieved_goalsの形状:", selected_achieved_goals.shape)
 
 
 ctrlrange = sim.model.actuator_ctrlrange
@@ -55,6 +74,12 @@ pca = PCA(n_components=5)
 # postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
 postures = postures[:, :-1]  # 15個から14個に減らす(☓ ag)
 print(postures.shape)
+
+# new_posture = np.array([0, 1.44, 0, 0, 1.53, 0, 0, 1.44, 0, 0, 1.22, 0, 0, 0])
+# new_postures = np.tile(new_posture, (10, 1))  # 同じ姿勢を10個作成する
+# # 新しい姿勢データを既存のデータに追加する
+# postures = np.append(postures, new_postures, axis=0)
+
 pca.fit(postures)
 
 # PCAの各主成分の寄与率を出力
@@ -96,22 +121,22 @@ joint_names = [#"robot0:rollhinge",
                 # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-#
-# joint_angles = [#1.57,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
+
+# joint_angles = [#1.57,  # はさみの穴を狭めたver
 #                 0.0, 0.0,
 #                 0.0, 1.44, 0.0, 1.57,
 #                 0.0, 1.53, 0.0, 1.57,
 #                 0.0, 1.44, 0.0, 1.57,
 #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-#                 0.0, 1.22, 0.209, -0.524, -0.361]
+#                 0.0, 1.22, 0.209, 0.0, -1.57]
 
-joint_angles = [#1.57,  # はさみの穴を狭めたver
+joint_angles = [#1.57,  # 指先曲げないver
                 0.0, 0.0,
-                0.0, 1.44, 0.0, 1.57,
-                0.0, 1.53, 0.0, 1.57,
-                0.0, 1.44, 0.0, 1.57,
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.53, 0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-                0.0, 1.22, 0.209, 0.0, -1.57]
+                0.0, 1.22, 0.0, 0.0, 0.0]
 
 
 # 関節位置を設定

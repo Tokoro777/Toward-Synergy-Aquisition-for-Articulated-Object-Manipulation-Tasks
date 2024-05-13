@@ -47,7 +47,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             randomize_initial_position=False, randomize_initial_rotation=False, randomize_object=False,
             distance_threshold=0.01, rotation_threshold=0.1, angle_threshold=0.1, n_substeps=20, relative_control=False,
             ignore_z_target_rotation=False,
-            target_id=0, num_axis=5, reward_lambda=0.5  # angle_threshold=0.1は約5度に相当
+            target_id=0, num_axis=5, reward_lambda=0.5  # angle_threshold=0.1は約5度に相当  0.02は、約
     ):
         """Initializes a new Hand manipulation environment.
 
@@ -278,7 +278,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                 raise error.Error('Unknown target_rotation option "{}".'.format(self.target_rotation))
 
         # self.sim.data.set_joint_qpos("robot0:rollhinge", 1.57) # self.np_random.uniform(0, 3.14))
-        joint_names = [#"robot0:zslider",
+        joint_names = ["robot0:zslider",
                        "robot0:rollhinge",
                        "robot0:WRJ1", "robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
@@ -287,16 +287,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-        # joint_angles = [0.04,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
-        #                 1.57,
-        #                 0.0, 0.0,
-        #                 0.0, 1.44, 0.0, 1.57,
-        #                 0.0, 1.53, 0.0, 1.57,
-        #                 0.0, 1.44, 0.0, 1.57,
-        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-        #                 0.0, 1.22, 0.209, -0.524, -0.361]
-
-        joint_angles = [#0.04,  # はさみの穴を狭めたver
+        joint_angles = [0.04,  # はさみの穴を狭めたver
                         1.57,
                         0.0, 0.0,
                         0.0, 1.44, 0.0, 1.57,
@@ -304,6 +295,15 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                         0.0, 1.44, 0.0, 1.57,
                         # 0.0, 0.0, 1.32, 0.0, 1.57,
                         0.0, 1.22, 0.209, 0.0, -1.57]
+
+        # joint_angles = [0.04,  # 指先曲げないver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.53, 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
             self.sim.data.set_joint_qpos(joint_name, angle)
@@ -331,7 +331,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # Run the simulation for a bunch of timesteps to let everything settle in.
         for _ in range(10):
-            self._set_action(np.zeros(14))  # self._set_action(np.zeros(21))
+            self._set_action(np.zeros(15))  # self._set_action(np.zeros(21))
             try:
                 self.sim.step()
             except mujoco_py.MujocoException:
@@ -549,7 +549,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         }
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
 
-        joint_names = [#"robot0:zslider",
+        joint_names = ["robot0:zslider",
                        "robot0:rollhinge",
                        "robot0:WRJ1", "robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
@@ -559,17 +559,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
 
-        # joint_angles = [0.04,  # すべての指先が曲がっていて、はさみをfreejointにしても落とさず掴んでくれそうな姿勢
-        #                 1.57,
-        #                 0.0, 0.0,
-        #                 0.0, 1.44, 0.0, 1.57,
-        #                 0.0, 1.53, 0.0, 1.57,
-        #                 0.0, 1.44, 0.0, 1.57,
-        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-        #                 0.0, 1.22, 0.209, -0.524, -0.361]
-
-
-        joint_angles = [#0.04,  # はさみの穴を狭めたver
+        joint_angles = [0.04,  # はさみの穴を狭めたver
                         1.57,
                         0.0, 0.0,
                         0.0, 1.44, 0.0, 1.57,
@@ -577,6 +567,15 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                         0.0, 1.44, 0.0, 1.57,
                         # 0.0, 0.0, 1.32, 0.0, 1.57,
                         0.0, 1.22, 0.209, 0.0, -1.57]
+
+        # joint_angles = [0.04,  # 指先曲げないver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.53, 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
 
         # print(obs["observation"][:22])

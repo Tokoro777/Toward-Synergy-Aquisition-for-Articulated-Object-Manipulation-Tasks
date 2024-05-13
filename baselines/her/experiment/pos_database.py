@@ -8,8 +8,8 @@ class SynergyManager:
         self.num_axis = num_axis
         self.maxn_pos = maxn_pos
 
-        self.axis = np.array([[0.5] * 20] * self.num_axis)
-        print(self.axis)
+        self.axis = np.array([[0.5] * 20] * self.num_axis)  # num_axis=5
+        print(self.axis)  # 0.5を20個持つ、(5, 20)が出力
 
         self.pca = PCA(self.num_axis)
 

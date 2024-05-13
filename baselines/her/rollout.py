@@ -109,9 +109,6 @@ class RolloutWorker:
         o[:] = self.initial_o
         ag[:] = self.initial_ag
 
-        list_0 = []
-        list_1 = []
-
         # evaluate grasp
         dtime = np.zeros(self.rollout_batch_size)
 
@@ -198,13 +195,13 @@ class RolloutWorker:
                             # # achieved_goalを考慮する場合
                             # # 学習の最後5stepで成功した場合のみver
                             if success[i] > 0 and t > self.T * 0.95:
-                                # pos_without_WRJ1 = pos[1:]
-                                # pos_with_ag = np.append(pos_without_WRJ1, info['achieved_goal'])
-                                # pos_without_zslider = pos[:-1]
-                                # pos_with_ag = np.append(pos_without_zslider, info['achieved_goal'])
-                                pos_without_THJ2 = np.delete(pos, 12)
-                                pos_with_ag = np.append(pos_without_THJ2, info['achieved_goal'])  # 14個のactuatorにagを加える15個に
+                                pos_without_zslider = pos[:-1]
+                                pos_with_ag = np.append(pos_without_zslider, info['achieved_goal'])
                                 synergy.add_pos(pos_with_ag)
+
+                                # pos_without_THJ2 = np.delete(pos, 12)
+                                # pos_with_ag = np.append(pos_without_THJ2, info['achieved_goal'])  # 14個のactuatorにagを加える15個に
+
 
                     o_new[i] = curr_o_new['observation']
                     ag_new[i] = curr_o_new['achieved_goal']
