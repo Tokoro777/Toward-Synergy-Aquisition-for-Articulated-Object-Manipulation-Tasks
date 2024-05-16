@@ -141,7 +141,7 @@ class DDPG(object):
 
         ret = self.sess.run(vals, feed_dict=feed)
         # action postprocessing
-        u = ret[0]  # 範囲内やぞ!!!!!!!!!!!
+        u = ret[0]  # 範囲外やぞ!!!!!!!!!!!
         noise = noise_eps * self.max_u * np.random.randn(*u.shape)  # gaussian noise
         u += noise
         u = np.clip(u, -self.max_u, self.max_u)

@@ -11,7 +11,7 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/hand_Lite.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy/test/{}"
+dataset_path = "/home/tokoro/policy_without_WRJ1J0/test/{}"
 
 viewer = MjViewer(sim)
 
@@ -44,21 +44,21 @@ joint_names = ["robot0:rollhinge",
                 # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-# joint_angles = [1.57,  # はさみの穴を狭めたver
-#                 0.0, 0.0,
-#                 0.0, 1.44, 0.0, 1.57,
-#                 0.0, 1.53, 0.0, 1.57,
-#                 0.0, 1.44, 0.0, 1.57,
-#                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-#                 0.0, 1.22, 0.209, 0.0, -1.57]
-
-joint_angles = [1.57,  # 指先曲げないver
+joint_angles = [1.57,  # はさみの穴を狭めたver
                 0.0, 0.0,
-                0.0, 1.44, 0.0, 0.0,
-                0.0, 1.53, 0.0, 0.0,
-                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.44, 0.0, 1.57,
+                0.0, 1.53, 0.0, 1.57,
+                0.0, 1.44, 0.0, 1.57,
                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-                0.0, 1.22, 0.0, 0.0, 0.0]
+                0.0, 1.22, 0.209, 0.0, -1.57]
+
+# joint_angles = [1.57,  # 指先曲げないver
+#                 0.0, 0.0,
+#                 0.0, 1.44, 0.0, 0.0,
+#                 0.0, 1.53, 0.0, 0.0,
+#                 0.0, 1.44, 0.0, 0.0,
+#                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+#                 0.0, 1.22, 0.0, 0.0, 0.0]
 
 
 # 関節位置を設定, 初期化

@@ -36,7 +36,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_without_WRJ1J0/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -122,21 +122,21 @@ joint_names = [#"robot0:rollhinge",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
 
-# joint_angles = [#1.57,  # はさみの穴を狭めたver
-#                 0.0, 0.0,
-#                 0.0, 1.44, 0.0, 1.57,
-#                 0.0, 1.53, 0.0, 1.57,
-#                 0.0, 1.44, 0.0, 1.57,
-#                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-#                 0.0, 1.22, 0.209, 0.0, -1.57]
-
-joint_angles = [#1.57,  # 指先曲げないver
+joint_angles = [#1.57,  # はさみの穴を狭めたver
                 0.0, 0.0,
-                0.0, 1.44, 0.0, 0.0,
-                0.0, 1.53, 0.0, 0.0,
-                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.44, 0.0, 1.57,
+                0.0, 1.53, 0.0, 1.57,
+                0.0, 1.44, 0.0, 1.57,
                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-                0.0, 1.22, 0.0, 0.0, 0.0]
+                0.0, 1.22, 0.209, 0.0, -1.57]
+
+# joint_angles = [#1.57,  # 指先曲げないver
+#                 0.0, 0.0,
+#                 0.0, 1.44, 0.0, 0.0,
+#                 0.0, 1.53, 0.0, 0.0,
+#                 0.0, 1.44, 0.0, 0.0,
+#                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+#                 0.0, 1.22, 0.0, 0.0, 0.0]
 
 
 # 関節位置を設定

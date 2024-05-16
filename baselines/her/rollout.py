@@ -196,7 +196,8 @@ class RolloutWorker:
                             # # 学習の最後5stepで成功した場合のみver
                             if success[i] > 0 and t > self.T * 0.95:
                                 pos_without_zslider = pos[:-1]
-                                pos_with_ag = np.append(pos_without_zslider, info['achieved_goal'])
+                                # pos_with_ag = np.append(pos_without_zslider, info['achieved_goal'])
+                                pos_with_ag = np.append(pos_without_zslider, curr_o_new['achieved_goal'])
                                 synergy.add_pos(pos_with_ag)
 
                                 # pos_without_THJ2 = np.delete(pos, 12)
