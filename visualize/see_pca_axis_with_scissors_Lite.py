@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dir', type=str, default="/home/tokoro")
 args = parser.parse_args()
 
-model = load_model_from_path(args.dir + "/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_remove_lf.xml")
+model = load_model_from_path(args.dir + "/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_Lite.xml")
 sim = MjSim(model)
 
 # motoda ---------------------------------------
@@ -36,7 +36,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_without_WRJ1J0/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_without_WRJ1J0THJ2_Lite/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -51,8 +51,7 @@ actuation_center = (ctrlrange[:, 1] + ctrlrange[:, 0]) / 2.
 actuation_range = (ctrlrange[:, 1] - ctrlrange[:, 0]) / 2.
 
 pca = PCA(n_components=5)
-# postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
-postures = postures[:, :-1]  # 15個から14個に減らす(☓ ag)
+postures = postures[:, :-1]  # 14個から13個に減らす(☓ zslider)
 print(postures.shape)
 
 
@@ -63,7 +62,7 @@ explained_variance_ratios = pca.explained_variance_ratio_
 for i, explained_variance_ratio in enumerate(explained_variance_ratios):
     print(f"PC{i+1} explained variance ratio: {explained_variance_ratio:.4f}")
 
-pc_axis = 2
+pc_axis = 3
 n = 0
 scores = pca.transform(postures)
 score_range = [(min(a), max(a)) for a in scores.T]
@@ -89,33 +88,24 @@ def set_initial_joint_positions(sim, joint_names, joint_angles):
         joint_idx = sim.model.joint_name2id(joint_name)
         sim.data.qpos[joint_idx] = joint_angle
 
+# 関節名と初期角度の定義
 joint_names = ["robot0:zslider",
                "robot0:rollhinge",
-                "robot0:WRJ1", "robot0:WRJ0",
-                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
-                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
-                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
-                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+               #"robot0:WRJ1", "robot0:WRJ0",
+               "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+               "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+               "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+               "robot0:THJ4", "robot0:THJ3", #"robot0:THJ2",
+               "robot0:THJ1", "robot0:THJ0"]
 
-
-joint_angles = [0.04,
-                1.57,  # はさみの穴を狭めたver
-                0.0, 0.0,
-                0.0, 1.44, 0.0, 1.57,
-                0.0, 1.53, 0.0, 1.57,
-                0.0, 1.44, 0.0, 1.57,
-                # 0.0, 0.0, 1.32, 0.0, 1.57,
-                0.0, 1.22, 0.209, 0.0, -1.57]
-
-# joint_angles = [0.04,
-#                 1.57,  # 指先曲げないver
-#                 0.0, 0.0,
-#                 0.0, 1.44, 0.0, 0.0,
-#                 0.0, 1.53, 0.0, 0.0,
-#                 0.0, 1.44, 0.0, 0.0,
-#                 # 0.0, 0.0, 1.32, 0.0, 1.57,
-#                 0.0, 1.22, 0.0, 0.0, 0.0]
+joint_angles = [0.04,  # 指先曲げないver, Lite用
+                1.57,
+                # 0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.53, 0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.22,  # 0.0,
+                0.0, 0.0]
 
 
 # 関節位置を設定
