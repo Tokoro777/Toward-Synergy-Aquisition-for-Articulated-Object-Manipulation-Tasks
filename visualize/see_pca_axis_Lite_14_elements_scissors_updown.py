@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dir', type=str, default="/home/tokoro")
 args = parser.parse_args()
 
-model = load_model_from_path(args.dir + "/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_remove_lf.xml")
+model = load_model_from_path(args.dir + "/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_remove_lf_scissors_updown.xml")
 sim = MjSim(model)
 
 # motoda ---------------------------------------
@@ -36,7 +36,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_without_WRJ1J0/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_sci_updown_no_zslider/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -52,8 +52,8 @@ actuation_range = (ctrlrange[:, 1] - ctrlrange[:, 0]) / 2.
 
 pca = PCA(n_components=5)
 # postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
-postures = postures[:, :-1]  # 15個から14個に減らす(☓ ag)
-print(postures.shape)
+# postures = postures[:, :-1]  # 15個から14個に減らす(☓ ag)
+print(postures.shape)  ### sci_updown_no_zsliderは14個の要素すべてがactuatorなので減らす必要なし
 
 
 pca.fit(postures)
@@ -89,7 +89,7 @@ def set_initial_joint_positions(sim, joint_names, joint_angles):
         joint_idx = sim.model.joint_name2id(joint_name)
         sim.data.qpos[joint_idx] = joint_angle
 
-joint_names = ["robot0:zslider",
+joint_names = [#"robot0:zslider",
                "robot0:rollhinge",
                 "robot0:WRJ1", "robot0:WRJ0",
                 "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
@@ -99,7 +99,7 @@ joint_names = ["robot0:zslider",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
 
-joint_angles = [0.04,
+joint_angles = [#0.04,
                 1.57,  # はさみの穴を狭めたver
                 0.0, 0.0,
                 0.0, 1.44, 0.0, 1.57,
@@ -155,8 +155,8 @@ while True:
     # sim.data.ctrl[2:-1] = actuation_center[2:-1] + posture * actuation_range[2:-1]  # WRJ0とzsliderとagを消すパターン
     # sim.data.ctrl[2:-1] = np.clip(sim.data.ctrl[2:-1], ctrlrange[2:-1, 0], ctrlrange[2:-1, 1])
 
-    sim.data.ctrl[:-1] = actuation_center[:-1] + posture * actuation_range[:-1]  # actuatorが14個で, datasetからagを消すパターン
-    sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
+    sim.data.ctrl[:] = actuation_center[:] + posture * actuation_range[:]  # actuatorが14個で, datasetからagを消すパターン
+    sim.data.ctrl[:] = np.clip(sim.data.ctrl[:], ctrlrange[:, 0], ctrlrange[:, 1])
 
     hinge_joint_angle_2 = sim.data.get_joint_qpos("scissors_hinge_2:joint")
     # print(hinge_joint_angle_2)  # PC1を変化させた時の, achieved_goalの値を出力
