@@ -12,6 +12,7 @@ import time
 import matplotlib
 matplotlib.use('TkAgg')  # Tkinterバックエンドを使用
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dir', type=str, default="/home/tokoro")
@@ -39,7 +40,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_sci_updown_no_zslider/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_without_WRJ1J0/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -67,10 +68,25 @@ pc2 = postures_pca[:, 1]
 correlation = np.corrcoef(pc1, achievedgoal_values)[0, 1]
 print(f"PC1とachieved_goalの相関係数: {correlation}")
 
-# PC1とachievedgoalの値に基づいて色分けしてプロット
-plt.scatter(pc1, achievedgoal_values, cmap='viridis')
+# ランプ関数の定義
+def ramp_function(x, x0, a):
+    return np.piecewise(x, [x < x0, x >= x0],
+                        [0, lambda x: a * (x - x0)])
+
+# 初期パラメータの設定
+initial_params = [0.1, 1]  # 適切に初期値を設定
+
+# フィッティング
+params, params_covariance = curve_fit(ramp_function, pc1, achievedgoal_values, p0=initial_params)
+
+# フィッティング結果をプロット
+plt.scatter(pc1, achievedgoal_values, label='Data')
+plt.plot(np.sort(pc1), ramp_function(np.sort(pc1), *params), label='Fitted ramp function', color='red', linewidth=2)
 plt.xlabel('PC1')
 plt.ylabel('achieved_goal')
-plt.title('PC1 vs achieved_goal')
-plt.colorbar(label='achieved_goal')
+plt.title('PC1 vs achieved_goal with Ramp Function Fit')
+plt.legend()
 plt.show()
+
+# フィッティングパラメータを表示
+print(f"Fitted parameters: x0 = {params[0]}, a = {params[1]}")
