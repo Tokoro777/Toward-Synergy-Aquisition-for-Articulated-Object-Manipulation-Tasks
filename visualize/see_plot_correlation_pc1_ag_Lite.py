@@ -74,7 +74,9 @@ def ramp_function(x, x0, a):
                         [0, lambda x: a * (x - x0)])
 
 # 初期パラメータの設定
-initial_params = [0.1, 1]  # 適切に初期値を設定
+initial_x0 = np.percentile(pc1, 25)  # データの25パーセンタイルを初期値とする
+initial_a = (achievedgoal_values.max() - achievedgoal_values.min()) / (pc1.max() - pc1.min())  # 傾きをデータの範囲で推定
+initial_params = [initial_x0, initial_a]
 
 # フィッティング
 params, params_covariance = curve_fit(ramp_function, pc1, achievedgoal_values, p0=initial_params)

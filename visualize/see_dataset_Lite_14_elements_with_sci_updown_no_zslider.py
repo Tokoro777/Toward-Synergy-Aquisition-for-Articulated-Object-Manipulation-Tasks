@@ -10,7 +10,7 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_remove_lf_scissors_updown.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy_sci_updown_no_zslider/test/{}"
+dataset_path = "/home/tokoro/policy_sci_updown_narrow/test/{}"
 
 viewer = MjViewer(sim)
 
