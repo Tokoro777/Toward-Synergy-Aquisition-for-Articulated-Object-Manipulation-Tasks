@@ -199,7 +199,7 @@ class RolloutWorker:
                                 # pos_with_ag = np.append(pos_without_zslider, curr_o_new['achieved_goal'])
                                 # synergy.add_pos(pos_with_ag)
 
-                                synergy.add_pos(pos)  # 14個のactuatorの情報をdatasetに保存
+                                synergy.add_pos(pos)  # actuatorの情報をdatasetに保存
 
 
                     o_new[i] = curr_o_new['observation']

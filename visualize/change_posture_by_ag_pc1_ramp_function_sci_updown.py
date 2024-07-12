@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dir', type=str, default="/home/tokoro")
 args = parser.parse_args()
 
-model = load_model_from_path(args.dir + "/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_remove_lf.xml")
+model = load_model_from_path(args.dir + "/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_remove_lf_scissors_updown.xml")
 sim = MjSim(model)
 
 # motoda ---------------------------------------
@@ -41,7 +41,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_without_WRJ1J0/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_sci_updown_no_zslider/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -98,7 +98,7 @@ print(f"Fitted parameters: x0 = {params[0]}, a = {params[1]}")
 x0, a = params
 
 # 目標の achieved_goal (ag) 値
-desired_ag = 0.4
+desired_ag = 0.7
 
 # 対応するPC1の値を計算
 pc1_value = (desired_ag / a) + x0
@@ -119,24 +119,26 @@ def set_initial_joint_positions(sim, joint_names, joint_angles):
     for joint_name, joint_angle in zip(joint_names, joint_angles):
         joint_idx = sim.model.joint_name2id(joint_name)
         # sim.data.qpos[joint_idx] = joint_angle  # もともとのコード
-        perturbation = math.radians(random.uniform(-1, 1))  # 修正後のコード, ロバスト性の確認用
+        perturbation = math.radians(random.uniform(-2, 2))  # 修正後のコード, ロバスト性の確認用
         sim.data.qpos[joint_idx] = joint_angle + perturbation  # 各関節に±1°のランダムなラジアンを加える
 
 # 関節名と初期角度の定義
-joint_names = ["robot0:zslider",
-               "robot0:rollhinge",
-               "robot0:WRJ1", "robot0:WRJ0",
-               "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
-               "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
-               "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-               "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+joint_names = [#"robot0:zslider",
+                "robot0:rollhinge",
+                "robot0:WRJ1", "robot0:WRJ0",
+                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-joint_angles = [0.04,
-                1.57,  # はさみの穴を狭めたバージョン
+joint_angles = [# 0.04,  # はさみの穴を狭めたver
+                1.57,
                 0.0, 0.0,
                 0.0, 1.44, 0.0, 1.57,
                 0.0, 1.53, 0.0, 1.57,
                 0.0, 1.44, 0.0, 1.57,
+                # 0.0, 0.0, 1.32, 0.0, 1.57,
                 0.0, 1.22, 0.209, 0.0, -1.57]
 
 initial_qpos = np.array([1.07, 0.892, 0.4, 1, 0, 0, 0])  # はさみの初期位置
@@ -175,17 +177,17 @@ while True:
             recorded_ags = recorded_ags[2:32]  # はじめの2つを無視して残りの30個を取得
             break
 
-    sim.data.ctrl[:-1] = actuation_center[:-1] + inverse_posture[0] * actuation_range[:-1]
-    sim.data.ctrl[:-1] = np.clip(sim.data.ctrl[:-1], ctrlrange[:-1, 0], ctrlrange[:-1, 1])
+    sim.data.ctrl[:] = actuation_center[:] + inverse_posture[0] * actuation_range[:]
+    sim.data.ctrl[:] = np.clip(sim.data.ctrl[:], ctrlrange[:, 0], ctrlrange[:, 1])
 
-    # time.sleep(0.005)  # あんまりよくない処理？
+    # time.sleep(0.005)
 
 # 結果をファイルに保存
 print(recorded_ags)
 
-output_dir = os.path.join(args.dir, "policy_without_WRJ1J0/test/")
+output_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider/test/")
 os.makedirs(output_dir, exist_ok=True)
-file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_1degree.txt")
+file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_2degree.txt")
 
 with open(file_name, 'w') as file:
     for ag in recorded_ags:

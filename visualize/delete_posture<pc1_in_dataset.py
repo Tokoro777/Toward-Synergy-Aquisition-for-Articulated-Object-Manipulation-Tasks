@@ -56,45 +56,23 @@ achievedgoal_values = postures[:, -1]
 # PCAを実行
 pca = PCA(n_components=2)
 # postures = postures[:, 1:-2]  # 17個から14個に要素を減らす(☓WRJ0, zslider, ag)
-postures = postures[:, :-1]
-print(postures.shape)
-postures_pca = pca.fit_transform(postures)
+postures_without_ag = postures[:, :-1]
+print(postures_without_ag.shape)
+postures_pca = pca.fit_transform(postures_without_ag)
 
 # PC1とPC2を取得
 pc1 = postures_pca[:, 0]
 pc2 = postures_pca[:, 1]
 
-# 相関係数を計算
-correlation = np.corrcoef(pc1, achievedgoal_values)[0, 1]
-print(f"PC1とachieved_goalの相関係数: {correlation}")
-
-# ランプ関数の定義
-def ramp_function(x, x0, a):
-    return np.piecewise(x, [x < x0, x >= x0],
-                        [0, lambda x: a * (x - x0)])
-
-# 初期パラメータの設定
-initial_x0 = np.percentile(pc1, 25)  # データの25パーセンタイルを初期値とする
-initial_a = (achievedgoal_values.max() - achievedgoal_values.min()) / (pc1.max() - pc1.min())  # 傾きをデータの範囲で推定
-initial_params = [initial_x0, initial_a]
-
-# フィッティング
-params, params_covariance = curve_fit(ramp_function, pc1, achievedgoal_values, p0=initial_params)
-
-# フィッティング結果をプロット
-plt.scatter(pc1, achievedgoal_values, label='Hand posture data')
-plt.plot(np.sort(pc1), ramp_function(np.sort(pc1), *params), label='Fitted ramp function', color='red', linewidth=2)
-plt.xlabel('PC1', fontsize=20)
-plt.ylabel('Desired scissor angle [rad]', fontsize=20)
-# plt.title('PC1 vs Angle', fontsize=20)  #  with Ramp Function Fit
-# ラベルの文字サイズを設定
-plt.xticks(fontsize=15)  # x軸のラベルの文字サイズを設定
-plt.yticks(fontsize=15)  # y軸のラベルの文字サイズを設定
-# Adjusting subplot parameters to trim excess whitespace
-plt.subplots_adjust(left=0.125, right=0.99, top=0.98, bottom=0.125)
-plt.legend()
-plt.show()
 
 
-# フィッティングパラメータを表示
-print(f"Fitted parameters: x0 = {params[0]}, a = {params[1]}")
+# PC1の値が-0.204657より小さいデータを削除
+threshold = -0.20465796750246762
+filtered_indices = np.where(pc1 >= threshold)[0]
+filtered_postures = postures[filtered_indices]
+print(filtered_postures.shape)
+
+# pc1が閾値より小さいdataを削除した, 新しいデータセットを保存
+filtered_dataset_path = os.path.join(args.dir + "/policy_without_WRJ1J0/{}".format(folder_name), 'filtered_grasp_dataset.npy')
+np.save(filtered_dataset_path, filtered_postures)
+print(f"Filtered dataset saved to {filtered_dataset_path}")

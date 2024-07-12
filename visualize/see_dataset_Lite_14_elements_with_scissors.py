@@ -67,7 +67,7 @@ while pos_num < len(postures):
 
     if t > 500:
         ag_value = _get_achieved_goal()
-        postures[pos_num][-1] = ag_value  # posturesの最後の要素を更新
+        postures[pos_num][-1] = ag_value  # posturesの最後の要素(zsliderかな？)をag_valueに更新
         print(f"Updated posture {pos_num}: ag = {ag_value}")
         t = 0
         pos_num += 1
