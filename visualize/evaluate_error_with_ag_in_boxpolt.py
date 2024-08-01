@@ -16,15 +16,15 @@ args = parser.parse_args()
 
 # ベースディレクトリの設定
 # base_dir = os.path.join(args.dir, "policy_without_WRJ1J0", "test")
-base_dir = os.path.join(args.dir, "policy_without_WRJ1J0", "test")
+base_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider_thre1", "test")
 
 # 各ファイルのパスと対応するdesired_agの値
 files_with_ag = [
-    (os.path.join(base_dir, "error_with_desired_ag=0.0_in_ramdom_hand_1degree.txt"), 0.0), #error_with_desired_ag=0.0_in_ramdom_hand_2degree.txt
-    (os.path.join(base_dir, "error_with_desired_ag=0.2_in_ramdom_hand_1degree.txt"), 0.2),
-    (os.path.join(base_dir, "error_with_desired_ag=0.4_in_ramdom_hand_1degree.txt"), 0.4),
-    (os.path.join(base_dir, "error_with_desired_ag=0.6_in_ramdom_hand_1degree.txt"), 0.6),
-    (os.path.join(base_dir, "error_with_desired_ag=0.7_in_ramdom_hand_1degree.txt"), 0.7)
+    (os.path.join(base_dir, "error_with_desired_ag=0.0_in_ramdom_hand_2degree.txt"), 0.0), #error_with_desired_ag=0.0_in_ramdom_hand_2degree.txt
+    (os.path.join(base_dir, "error_with_desired_ag=0.2_in_ramdom_hand_2degree.txt"), 0.2),
+    (os.path.join(base_dir, "error_with_desired_ag=0.4_in_ramdom_hand_2degree.txt"), 0.4),
+    (os.path.join(base_dir, "error_with_desired_ag=0.6_in_ramdom_hand_2degree.txt"), 0.6),
+    (os.path.join(base_dir, "error_with_desired_ag=0.7_in_ramdom_hand_2degree.txt"), 0.7)
 ]
 
 data = []
@@ -62,5 +62,5 @@ plt.yticks(fontsize=25)  # y軸のラベルの文字サイズを設定
 # Adjusting subplot parameters to trim excess whitespace
 plt.subplots_adjust(left=0.148, right=0.98, top=0.975, bottom=0.17)
 
-plt.savefig(os.path.join(base_dir, "boxplot_degrees_ramdom_hand_1degree.png")) # boxplot_degrees_ramdom_hand_2degree ,boxplot_degrees_-30-10.png"
+plt.savefig(os.path.join(base_dir, "boxplot_degrees_ramdom_hand_2degree.png")) # boxplot_degrees_ramdom_hand_2degree ,boxplot_degrees_-30-10.png"
 plt.show()

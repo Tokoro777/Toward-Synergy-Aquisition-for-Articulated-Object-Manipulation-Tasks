@@ -42,7 +42,7 @@ sim = MjSim(model)
 
 file_npy = "new_grasp_dataset_with_ag.npy"
 folder_name = "test"
-dataset_path = args.dir + "/policy_sci_updown_no_zslider/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_sci_updown_no_zslider_no_rollhingeWRJ1J0THJ2/{}/{}".format(folder_name, file_npy)
 viewer = MjViewer(sim)
 
 # データセットの読み込みと前処理
@@ -74,23 +74,35 @@ def set_joint_positions(sim, joint_names, joint_angles):
         sim.data.qpos[joint_idx] = joint_angle
 
 # 関節名と初期角度の定義
-joint_names = [#"robot0:zslider",
-                "robot0:rollhinge",
-                "robot0:WRJ1", "robot0:WRJ0",
+# joint_names = [#"robot0:zslider",
+#                 "robot0:rollhinge",
+#                 "robot0:WRJ1", "robot0:WRJ0",
+#                 "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+#                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+#                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+#                 # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+#                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+# joint_angles = [# 0.04,  # はさみの穴を狭めたver
+#                 1.57,
+#                 0.0, 0.0,
+#                 0.0, 1.44, 0.0, 1.57,
+#                 0.0, 1.53, 0.0, 1.57,
+#                 0.0, 1.44, 0.0, 1.57,
+#                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+#                 0.0, 1.22, 0.209, 0.0, -1.57]
+
+# robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+# rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
+joint_names = ["robot0:WRJ0",
                 "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-
-joint_angles = [# 0.04,  # はさみの穴を狭めたver
-                1.57,
-                0.0, 0.0,
+joint_angles = [0.0,
                 0.0, 1.44, 0.0, 1.57,
                 0.0, 1.53, 0.0, 1.57,
                 0.0, 1.44, 0.0, 1.57,
-                # 0.0, 0.0, 1.32, 0.0, 1.57,
-                0.0, 1.22, 0.209, 0.0, -1.57]
+                0.0, 1.22, 0.0, 0.0, -1.57]
 
 initial_qpos = np.array([1.07, 0.892, 0.4, 1, 0, 0, 0])  # はさみの初期位置
 

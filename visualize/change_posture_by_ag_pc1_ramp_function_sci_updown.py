@@ -41,7 +41,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_sci_updown_no_zslider/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_sci_updown_no_zslider_thre1/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -98,7 +98,7 @@ print(f"Fitted parameters: x0 = {params[0]}, a = {params[1]}")
 x0, a = params
 
 # 目標の achieved_goal (ag) 値
-desired_ag = 0.7
+desired_ag = 0.0
 
 # 対応するPC1の値を計算
 pc1_value = (desired_ag / a) + x0
@@ -180,17 +180,21 @@ while True:
     sim.data.ctrl[:] = actuation_center[:] + inverse_posture[0] * actuation_range[:]
     sim.data.ctrl[:] = np.clip(sim.data.ctrl[:], ctrlrange[:, 0], ctrlrange[:, 1])
 
+    # if t == 500:
+    #     print(sim.data.ctrl[:])  # 目標として与えた制御信号
+    #     print(sim.data.get_joint_qpos("robot0:FFJ2")) # 500step目のactuatorの値
+
     # time.sleep(0.005)
 
-# 結果をファイルに保存
-print(recorded_ags)
-
-output_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider/test/")
-os.makedirs(output_dir, exist_ok=True)
-file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_2degree.txt")
-
-with open(file_name, 'w') as file:
-    for ag in recorded_ags:
-        file.write(f"{ag}\n")
-
-print(f"Saved actual_ag values to {file_name}")
+# # 結果をファイルに保存
+# print(recorded_ags)
+#
+# output_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider_thre1/test/")
+# os.makedirs(output_dir, exist_ok=True)
+# file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_2degree.txt")
+#
+# with open(file_name, 'w') as file:
+#     for ag in recorded_ags:
+#         file.write(f"{ag}\n")
+#
+# print(f"Saved actual_ag values to {file_name}")

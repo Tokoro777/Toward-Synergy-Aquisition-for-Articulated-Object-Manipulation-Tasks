@@ -36,9 +36,9 @@ def euler2mat(euler):
 
 # Ensure we get the path separator correct on windows
 # GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')  # 5本指ver
-GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指.ver
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指.ver
 # GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_Lite.xml')  # 4本指でかつ、実機Liteと同じWRJ1J0,THJ2を削除した.ver
-# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown.xml')  # Liteではさみが上下.ver
+GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown.xml')  # Liteではさみが上下.ver
 
 
 class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
@@ -298,23 +298,49 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
         #                 0.0, 1.22, 0.209, 0.0, -1.57]
 
-        joint_names = ["robot0:zslider",
-                       "robot0:rollhinge",
-                       "robot0:WRJ1", "robot0:WRJ0",
-                       "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
-                       "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
-                       "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                       # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
-                       "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_names = ["robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        #
+        # joint_angles = [0.04,  # 指2本はさみの穴に入る.ver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.209, 0.0, -1.57]
 
-        joint_angles = [0.04,  # 指2本はさみの穴に入る.ver
-                        1.57,
-                        0.0, 0.0,
+        # # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+        # # 手首の関節なしで, THJ2は0.0~0.0001でしか動かないver
+        # joint_names = ["robot0:rollhinge",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.53, 0.0, 1.57,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, -1.57]
+
+        # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+        # rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
+        joint_names = ["robot0:WRJ0",
+                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        joint_angles = [0.0,
                         0.0, 1.44, 0.0, 1.57,
-                        0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0,
-                        # 0.0, 0.0, 1.32, 0.0, 1.57,
-                        0.0, 1.22, 0.209, 0.0, -1.57]
+                        0.0, 1.53, 0.0, 1.57,
+                        0.0, 1.44, 0.0, 1.57,
+                        0.0, 1.22, 0.0, 0.0, -1.57]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
             self.sim.data.set_joint_qpos(joint_name, angle)
@@ -342,7 +368,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # Run the simulation for a bunch of timesteps to let everything settle in.
         for _ in range(10):
-            self._set_action(np.zeros(15))  # self._set_action(np.zeros(21))
+            self._set_action(np.zeros(14))  # self._set_action(np.zeros(21))
             try:
                 self.sim.step()
             except mujoco_py.MujocoException:
@@ -568,7 +594,6 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
         #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
         #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        #
         # joint_angles = [# 0.04,  # はさみの穴を狭めたver
         #                 1.57,
         #                 0.0, 0.0,
@@ -579,23 +604,48 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #                 0.0, 1.22, 0.209, 0.0, -1.57]
 
 
-        joint_names = ["robot0:zslider",
-                       "robot0:rollhinge",
-                       "robot0:WRJ1", "robot0:WRJ0",
+        # joint_names = ["robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.04,  # 指2本はさみの穴に入る.ver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.209, 0.0, -1.57]
+
+        # # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+        # # rollhingeや手首の関節なしで, THJ2は0.0~0.0001でしか動かないver
+        # joint_names = ["robot0:rollhinge",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.53, 0.0, 1.57,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, -1.57]
+
+        # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+        # rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
+        joint_names = ["robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                       # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-
-        joint_angles = [0.04,  # 指2本はさみの穴に入る.ver
-                        1.57,
-                        0.0, 0.0,
+        joint_angles = [0.0,
                         0.0, 1.44, 0.0, 1.57,
-                        0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0,
-                        # 0.0, 0.0, 1.32, 0.0, 1.57,
-                        0.0, 1.22, 0.209, 0.0, -1.57]
+                        0.0, 1.53, 0.0, 1.57,
+                        0.0, 1.44, 0.0, 1.57,
+                        0.0, 1.22, 0.0, 0.0, -1.57]
 
 
         # print(obs["observation"][:22])
