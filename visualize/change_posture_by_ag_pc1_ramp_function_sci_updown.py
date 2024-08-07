@@ -41,7 +41,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_sci_updown_no_zslider_thre1/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_sci_updown_no_zslider/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -98,7 +98,7 @@ print(f"Fitted parameters: x0 = {params[0]}, a = {params[1]}")
 x0, a = params
 
 # 目標の achieved_goal (ag) 値
-desired_ag = 0.0
+desired_ag = 0.6
 
 # 対応するPC1の値を計算
 pc1_value = (desired_ag / a) + x0
@@ -114,12 +114,12 @@ print("Inverse posture:", inverse_posture)
 print(inverse_posture.shape)
 
 
-# ハンドモデルの初期関節位置を設定する関数
+# ハンドモデルの初期関節位置を設定する関数(ランダム姿勢)
 def set_initial_joint_positions(sim, joint_names, joint_angles):
     for joint_name, joint_angle in zip(joint_names, joint_angles):
         joint_idx = sim.model.joint_name2id(joint_name)
         # sim.data.qpos[joint_idx] = joint_angle  # もともとのコード
-        perturbation = math.radians(random.uniform(-2, 2))  # 修正後のコード, ロバスト性の確認用
+        perturbation = math.radians(random.uniform(-0, 0))  # 修正後のコード, ロバスト性の確認用
         sim.data.qpos[joint_idx] = joint_angle + perturbation  # 各関節に±1°のランダムなラジアンを加える
 
 # 関節名と初期角度の定義
@@ -167,6 +167,37 @@ while True:
         ag_value = _get_achieved_goal()
         recorded_ags.append(ag_value)  # actual_agを記録する
         print(f"actual_ag = {ag_value}")
+
+        if len(recorded_ags) == 10:
+            # 関節の値を取得
+            ffj0_angle = sim.data.get_joint_qpos("robot0:FFJ0")
+            mfj0_angle = sim.data.get_joint_qpos("robot0:MFJ0")
+            rfj0_angle = sim.data.get_joint_qpos("robot0:RFJ0")
+            # 制御信号の値を取得
+            control_values = sim.data.ctrl
+            print(control_values)
+            # 最終的な16個の関節値を組み合わせる
+            final_joint_values = np.zeros(16)
+            # 制御信号の14個の値をセット
+            final_joint_values[0] = control_values[0]    # FFJ3
+            final_joint_values[1] = control_values[1]    # FFJ2
+            final_joint_values[2] = control_values[2]    # FFJ1
+            final_joint_values[3] = ffj0_angle           # FFJ0
+            final_joint_values[4] = control_values[3]    # MFJ3
+            final_joint_values[5] = control_values[4]    # MFJ2
+            final_joint_values[6] = control_values[5]    # MFJ1
+            final_joint_values[7] = mfj0_angle           # MFJ0
+            final_joint_values[8] = control_values[6]    # RFJ3
+            final_joint_values[9] = control_values[7]    # RFJ2
+            final_joint_values[10] = control_values[8]   # RFJ1
+            final_joint_values[11] = rfj0_angle          # RFJ0
+            final_joint_values[12] = control_values[9]   # THJ4
+            final_joint_values[13] = control_values[10]  # THJ3
+            final_joint_values[14] = control_values[12]  # THJ1
+            final_joint_values[15] = control_values[13]  # THJ0
+            print("Final joint values:", final_joint_values)  # 最終的なハンドの姿勢, 3つ以外はactuator値
+            # sim.data.get_joint_qpos(joint_names, joint_angles)# 最終的なハンドの姿勢, 全てjoint値を得る
+
         t = 0
         set_initial_joint_positions(sim, joint_names, joint_angles)
         sim.data.set_joint_qpos("scissors:joint", initial_qpos)

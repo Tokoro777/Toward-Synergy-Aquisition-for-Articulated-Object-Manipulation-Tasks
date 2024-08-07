@@ -15,7 +15,7 @@ from sr_hand.shadowhand_ros import ShadowHand_ROS
 import numpy as np
 import rospkg 
 import struct 
-import sys 
+import sys
 
 def force_inc(jointgoal):
     
@@ -26,7 +26,7 @@ def force_inc(jointgoal):
     thumb_lowerlimits = {1:-0.257, 2:-0.515, 4:0, 5:-1.04}
 
     for finger in fingers:
-        for i in range(2,4):
+        for i in range(2,4):  # 1.1倍とか1.3倍が本当に適切なのかどうかは検討すること！！！！！
             jointgoal[prefix + finger + 'J' + str(i)] = 1.1 * jointgoal[prefix + finger + 'J' + str(i)]
             if jointgoal[prefix + finger + 'J' + str(i)] > 1.571:
                 jointgoal[prefix + finger + 'J' + str(i)] = 1.56
@@ -53,7 +53,7 @@ class Finger:
     def get_name(self):
         return self.name
     
-    def get_taticle_threshold(self):
+    def get_tacticle_threshold(self):
         return self.tactile_threshold
     
     def get_initial_tactile(self):
@@ -91,7 +91,7 @@ class GraspExecution():
                 for finger in self.fingers:
                     if finger.get_name() == finger_iterator:
                         tactile_percentage = (value - finger.get_initial_tactile())/finger.get_initial_tactile()
-                        if tactile_percentage >= finger.get_taticle_threshold():
+                        if tactile_percentage >= finger.get_tacticle_threshold():
                             self.stop_finger(finger_iterator)
 
     def get_tactile(self):
@@ -106,6 +106,8 @@ class GraspExecution():
 
         return tactile_data 
 
+    # 指の腹にある触覚センサーから, 停止すべき指を判定し, それ以外は動かし続ける.
+    # はさみ操作は指の裏側なので, このコードは特に役に立たない. でも, 悪さもしないので, 残す
     def stop_finger(self, finger):
         current_state = self.hand_commander.get_current_state()
         for i in self.fingers:
@@ -139,10 +141,13 @@ if __name__ == "__main__":
         joints_states = pickle.load(jc)
 
     print(joints_states)
-    
-    newjoint = force_inc(joints_states)
+
+    # 物体をつかむ操作の場合には force_inc を使用
+    # newjoint = force_inc(joints_states)
+
+    newjoint = joints_states
 
     print(newjoint)
-    
+
 
     node.run_posture(newjoint)
