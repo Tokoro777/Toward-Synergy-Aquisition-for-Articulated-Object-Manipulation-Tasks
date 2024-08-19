@@ -10,7 +10,7 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_remove_lf_scissors_updown.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy_sci_updown_no_zslider_no_rollhingeWRJ1J0THJ2/test/{}"
+dataset_path = "/home/tokoro/policy_sci_updown_no_zslider_only_third_bend/test/{}"
 
 viewer = MjViewer(sim)
 
@@ -52,18 +52,35 @@ def set_initial_joint_positions(sim, joint_names, joint_angles):
 #                 0.0, 1.44, 0.0, 1.57,
 #                 0.0, 1.22, 0.209, 0.0, -1.57]
 
-# robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
-# rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
-joint_names = ["robot0:WRJ0",
-                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
-                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
-                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-joint_angles = [0.0,
-                0.0, 1.44, 0.0, 1.57,
-                0.0, 1.53, 0.0, 1.57,
-                0.0, 1.44, 0.0, 1.57,
-                0.0, 1.22, 0.0, 0.0, -1.57]
+# # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+# # rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
+# joint_names = ["robot0:WRJ0",
+#                 "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+#                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+#                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+#                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+# joint_angles = [0.0,
+#                 0.0, 1.44, 0.0, 1.57,
+#                 0.0, 1.53, 0.0, 1.57,
+#                 0.0, 1.44, 0.0, 1.57,
+#                 0.0, 1.22, 0.0, 0.0, -1.57]
+
+# scissors_updown_only_third_bend
+# 第三関節しか曲がらない, 第一関節は全て曲がらないver
+joint_names = [#"robot0:zslider",
+               "robot0:rollhinge",
+               "robot0:WRJ1", "robot0:WRJ0",
+               "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+               "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+               "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+               "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+joint_angles = [#0.04,
+                1.57,  # はさみの穴を狭めたバージョン
+                0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.53, 0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.22, 0.0, 0.0, 0.0]
 
 initial_qpos = np.array([1.07, 0.892, 0.4, 1, 0, 0, 0])  # はさみの初期位置
 

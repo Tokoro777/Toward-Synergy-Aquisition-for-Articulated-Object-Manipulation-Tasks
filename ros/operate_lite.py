@@ -47,14 +47,14 @@ class OperateExecution():
         for name, value in self.targets.items():
             rospy.loginfo(f"Target joint {name}: {value}")
 
-        # self.hand_commander.move_to_joint_value_target(self.targets, wait=False)
-        self.hand_commander.move_to_joint_value_target(self.targets, wait=True)  # 同期的に動作を待つ
+        self.hand_commander.move_to_joint_value_target(self.targets, wait=False)
+        # self.hand_commander.move_to_joint_value_target(self.targets, wait=True)  # 同期的に動作を待つ
 
-        # ターゲットに近づいたかどうかを確認するために関節の状態をログに出力
-        rospy.loginfo("Monitoring joint states...")
-        # 現在の状態を確認
-        current_state = self.hand_commander.get_current_state()
-        self.log_joint_state()
+        # # ターゲットに近づいたかどうかを確認するために関節の状態をログに出力
+        # rospy.loginfo("Monitoring joint states...")
+        # # 現在の状態を確認
+        # current_state = self.hand_commander.get_current_state()
+        # self.log_joint_state()
 
     # def stop_finger(self, finger):
     #     current_state = self.hand_commander.get_current_state()
@@ -113,4 +113,4 @@ if __name__ == "__main__":
 
     node.run_posture(newjoint)
 
-    rospy.spin()  # ROSノードが停止しないようにする
+    # rospy.spin()  # ROSノードが停止しないようにする

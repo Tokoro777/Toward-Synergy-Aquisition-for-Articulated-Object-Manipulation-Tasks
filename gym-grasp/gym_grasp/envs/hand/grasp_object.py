@@ -680,7 +680,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                         0.0, 1.53, 0.0, 0.0,
                         0.0, 1.44, 0.0, 0.0,
                         # 0.0, 0.0, 1.32, 0.0, 1.57,
-                        0.0, 1.22, 0.209, 0.0, 0.0]
+                        0.0, 1.22, 0.0, 0.0, 0.0]
 
 
         # print(obs["observation"][:22])

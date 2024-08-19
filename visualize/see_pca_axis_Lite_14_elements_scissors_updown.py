@@ -36,7 +36,7 @@ folder_name = "test"
 #folder_name = "axis_5/Sequence5_On_Init_grasp"
 
 # ----------------------------------------------
-dataset_path = args.dir + "/policy_sci_updown_no_zslider_no_rollhingeWRJ1J0THJ2/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_sci_updown_no_zslider_only_third_bend/{}/{}".format(folder_name, file_npy)
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -118,16 +118,34 @@ def set_initial_joint_positions(sim, joint_names, joint_angles):
 
 # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
 # rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
-joint_names = ["robot0:WRJ0",
+# joint_names = ["robot0:WRJ0",
+#                 "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+#                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+#                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+#                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+# joint_angles = [0.0,
+#                 0.0, 1.44, 0.0, 1.57,
+#                 0.0, 1.53, 0.0, 1.57,
+#                 0.0, 1.44, 0.0, 1.57,
+#                 0.0, 1.22, 0.0, 0.0, -1.57]
+
+# 第一関節を曲げないver. THJ2は0.0に.
+joint_names = [#"robot0:zslider",
+               "robot0:rollhinge",
+                "robot0:WRJ1", "robot0:WRJ0",
                 "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-joint_angles = [0.0,
-                0.0, 1.44, 0.0, 1.57,
-                0.0, 1.53, 0.0, 1.57,
-                0.0, 1.44, 0.0, 1.57,
-                0.0, 1.22, 0.0, 0.0, -1.57]
+joint_angles = [#0.04,
+                1.57,  # はさみの穴を狭めたver
+                0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.53, 0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
+                # 0.0, 0.0, 1.32, 0.0, 1.57,
+                0.0, 1.22, 0.0, 0.0, 0.0]
 
 # 関節位置を設定
 set_initial_joint_positions(sim, joint_names, joint_angles)
