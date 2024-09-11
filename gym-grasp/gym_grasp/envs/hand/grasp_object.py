@@ -715,8 +715,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # Options for displaying information
         # self._display_contacts()
-        if self._is_in_grasp_space():
-            self._display_grasp_space()
+        # if self._is_in_grasp_space():
+        #     self._display_grasp_space()
 
         return obs, reward, done, info
 

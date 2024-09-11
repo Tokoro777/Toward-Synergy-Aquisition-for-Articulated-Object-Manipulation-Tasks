@@ -98,7 +98,7 @@ print(f"Fitted parameters: x0 = {params[0]}, a = {params[1]}")
 x0, a = params
 
 # 目標の achieved_goal (ag) 値
-desired_ag = 0.7
+desired_ag = 0.0
 
 # 対応するPC1の値を計算
 pc1_value = (desired_ag / a) + x0
@@ -119,7 +119,7 @@ def set_initial_joint_positions(sim, joint_names, joint_angles):
     for joint_name, joint_angle in zip(joint_names, joint_angles):
         joint_idx = sim.model.joint_name2id(joint_name)
         # sim.data.qpos[joint_idx] = joint_angle  # もともとのコード
-        perturbation = math.radians(random.uniform(-1, 1))  # 修正後のコード, ロバスト性の確認用
+        perturbation = math.radians(random.uniform(-2, 2))  # 修正後のコード, ロバスト性の確認用
         sim.data.qpos[joint_idx] = joint_angle + perturbation  # 各関節に±1°のランダムなラジアンを加える
 
 # 関節名と初期角度の定義
@@ -187,7 +187,7 @@ print(recorded_ags)
 
 output_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider_only_third_bend/test/")
 os.makedirs(output_dir, exist_ok=True)
-file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_1degree.txt")
+file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_2degree.txt")
 
 with open(file_name, 'w') as file:
     for ag in recorded_ags:

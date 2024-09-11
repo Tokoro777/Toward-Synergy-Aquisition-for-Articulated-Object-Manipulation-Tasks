@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 # ベースディレクトリの設定
 # base_dir = os.path.join(args.dir, "policy_without_WRJ1J0", "test")
-base_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider", "test")
+base_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider_only_third_bend", "test")
 
 # 各ファイルのパスと対応するdesired_agの値
 files_with_ag = [
@@ -72,7 +72,9 @@ desired = "desired"
 plt.xlabel(f"$A_{{{desired}}}$ [rad]", fontsize=40)
 plt.ylabel('$e$ [°]', fontsize=40)
 # plt.title('Boxplot of Errors for different Desired achieved_goal values')
-plt.ylim(0, 25)  # 縦軸の範囲を設定
+plt.ylim(0, 12)  # 縦軸の範囲を設定
+# 縦軸のメモリを5度刻みに設定
+plt.yticks(range(0, 15, 5))
 plt.grid(True)
 # ラベルの文字サイズを設定
 plt.xticks(fontsize=25)  # x軸のラベルの文字サイズを設定
@@ -80,5 +82,5 @@ plt.yticks(fontsize=25)  # y軸のラベルの文字サイズを設定
 # Adjusting subplot parameters to trim excess whitespace
 plt.subplots_adjust(left=0.148, right=0.98, top=0.975, bottom=0.17)
 
-plt.savefig(os.path.join(base_dir, "boxplot_degrees_ramdom_hand_2degree_abs.png")) # boxplot_degrees_ramdom_hand_2degree ,boxplot_degrees_-30-10.png"
+plt.savefig(os.path.join(base_dir, "boxplot_degrees_ramdom_hand_2degree_abs_0-12.png")) # boxplot_degrees_ramdom_hand_2degree ,boxplot_degrees_-30-10.png"
 plt.show()
