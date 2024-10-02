@@ -45,21 +45,21 @@ pc2 = postures_pca[:, 1]
 correlation = np.corrcoef(pc1, achievedgoal_values)[0, 1]
 print(f"PC1とachieved_goalの相関係数: {correlation}")
 
-# ランプ関数の定義
-def ramp_function(x, x0, a):
-    return np.piecewise(x, [x < x0, x >= x0],
-                        [0, lambda x: a * (x - x0)])
+# シグモイド関数の定義
+def sigmoid_function(x, a, b, c):
+    return a / (1 + np.exp(-b * (x - c)))
 
-# 初期パラメータの設定
-initial_x0 = np.percentile(pc1, 25)  # データの25パーセンタイルを初期値とする
-initial_a = (achievedgoal_values.max() - achievedgoal_values.min()) / (pc1.max() - pc1.min())
-initial_params = [initial_x0, initial_a]
+# 初期パラメータの設定 (シグモイド関数のために調整)
+initial_a = achievedgoal_values.max() - achievedgoal_values.min()
+initial_b = 1  # スケール調整の初期値
+initial_c = np.median(pc1)  # 中央値を初期値に設定
+initial_params = [initial_a, initial_b, initial_c]
 
-# 最初のフィッティング
-params, params_covariance = curve_fit(ramp_function, pc1, achievedgoal_values, p0=initial_params)
+# シグモイド関数で最初のフィッティング
+params, params_covariance = curve_fit(sigmoid_function, pc1, achievedgoal_values, p0=initial_params)
 
 # 残差を計算
-residuals = achievedgoal_values - ramp_function(pc1, *params)
+residuals = achievedgoal_values - sigmoid_function(pc1, *params)
 std_dev = np.std(residuals)
 
 # 外れ値を除外（残差が2標準偏差以内のデータのみ使用）
@@ -69,13 +69,13 @@ achievedgoal_values_filtered = achievedgoal_values[mask]
 
 # 外れ値を除外したデータで再度フィッティング
 params_filtered, params_covariance_filtered = curve_fit(
-    ramp_function, pc1_filtered, achievedgoal_values_filtered, p0=initial_params
+    sigmoid_function, pc1_filtered, achievedgoal_values_filtered, p0=initial_params
 )
 
 # 元データとフィッティング結果をプロット
 plt.scatter(pc1, achievedgoal_values, label='Original Hand posture data')
 plt.scatter(pc1_filtered, achievedgoal_values_filtered, label='Filtered Hand posture data', color='green')
-plt.plot(np.sort(pc1), ramp_function(np.sort(pc1), *params_filtered), label='Filtered fitted ramp function', color='red', linewidth=2)
+plt.plot(np.sort(pc1), sigmoid_function(np.sort(pc1), *params_filtered), label='Filtered fitted sigmoid function', color='red', linewidth=2)
 plt.xlabel('PC1', fontsize=20)
 plt.ylabel('Desired scissor angle [rad]', fontsize=20)
 plt.xticks(fontsize=15)
@@ -85,5 +85,5 @@ plt.legend()
 plt.show()
 
 # フィッティングパラメータを表示
-print(f"Initial fit parameters: x0 = {params[0]}, a = {params[1]}")
-print(f"Filtered fit parameters: x0 = {params_filtered[0]}, a = {params_filtered[1]}")
+print(f"Initial fit parameters: a = {params[0]}, b = {params[1]}, c = {params[2]}")
+print(f"Filtered fit parameters: a = {params_filtered[0]}, b = {params_filtered[1]}, c = {params_filtered[2]}")

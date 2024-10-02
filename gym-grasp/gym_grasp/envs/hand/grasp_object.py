@@ -584,6 +584,16 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                                            rgba=(1, 0, 0, 0.8),
                                            emission=1)
 
+    # 初期位置を設定する関数
+    def set_random_initial_qpos(self):
+        # 現在の初期位置を取得
+        init_object_qpos = self.initial_qpos
+        y_random_offset = np.random.uniform(0, 0.03)
+        # 初期位置のy軸成分を変更
+        init_object_qpos[1] += y_random_offset
+        # 設定を反映
+        self.initial_qpos = init_object_qpos
+
     def step(self, action):
         self.step_n += 1
 
@@ -703,9 +713,13 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #     current_zslider_pos = self.sim.data.get_joint_qpos("robot0:zslider")
         #     self.sim.data.set_joint_qpos("robot0:zslider", current_zslider_pos)
 
+        if self.step_n == 1:
+            self.set_random_initial_qpos()  # はさみ初期位置をランダム化
+            # print("はさみ初期位置ランダム化")
+            # print(self.initial_qpos[1])
 
         if self.step_n < 30:  # はじめの40stepは以下の値を維持する.(はさみの角度, ハンドの姿勢, はさみの位置)
-            self.sim.data.set_joint_qpos(self.object, self.initial_qpos)  # はさみを初期位置にし、freejointで落下させる
+            self.sim.data.set_joint_qpos(self.object, self.initial_qpos)  # はさみをランダム初期位置にし、freejointで落下させる
             # 空中固定の場合は必要ない。
             self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
             self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)

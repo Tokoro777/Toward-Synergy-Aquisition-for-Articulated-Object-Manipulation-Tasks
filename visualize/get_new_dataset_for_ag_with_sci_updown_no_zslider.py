@@ -98,7 +98,8 @@ while pos_num < len(postures):
     sim.step()
     state = sim.get_state()
 
-    if t > 500:
+    # if t > 500:  # RSJの時は500step目の角度を取得していた
+    if t > 3000:  # 制御入力に追従していないのではと思い, 3000step目の角度を取得する
         ag_value = _get_achieved_goal()
         postures[pos_num][-1] = ag_value  # postures(277,15)の最後の要素(0の値)をagの値に更新
         print(f"Updated posture {pos_num}: ag = {ag_value}")
@@ -118,6 +119,7 @@ while pos_num < len(postures):
 
 print(postures.shape)
 # 新しいデータセットの保存
-new_dataset_path = dataset_path.format("new_grasp_dataset_with_ag.npy")
+# new_dataset_path = dataset_path.format("new_grasp_dataset_with_ag.npy")
+new_dataset_path = dataset_path.format("new_grasp_dataset_with_ag_at_3000step.npy")
 np.save(new_dataset_path, postures)
 print(f"New dataset saved to {new_dataset_path}")
