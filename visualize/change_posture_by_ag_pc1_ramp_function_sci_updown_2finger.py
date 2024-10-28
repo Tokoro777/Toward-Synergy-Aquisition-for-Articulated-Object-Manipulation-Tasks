@@ -25,7 +25,7 @@ sim = MjSim(model)
 # データセットパス設定
 file_npy = "new_grasp_dataset_with_ag.npy"
 folder_name = "test"
-dataset_path = args.dir + "/policy_sci_updown_no_zslider_only_third_bend/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_2finger/{}/{}".format(folder_name, file_npy)
 
 viewer = MjViewer(sim)
 t = 0
@@ -43,10 +43,12 @@ postures_pca = pca.fit_transform(postures)
 # PC1とPC2を取得
 pc1 = postures_pca[:, 0]
 pc2 = postures_pca[:, 1]
+# 符号反転（必要に応じて行う）
+pc2 *= -1  # PC2 の符号を反転
 
 # 相関係数を計算
-correlation = np.corrcoef(pc1, achievedgoal_values)[0, 1]
-print(f"PC1とachieved_goalの相関係数: {correlation}")
+correlation = np.corrcoef(pc2, achievedgoal_values)[0, 1]
+print(f"PC2とachieved_goalの相関係数: {correlation}")
 
 # ランプ関数の定義
 def ramp_function(x, x0, a):
@@ -54,25 +56,25 @@ def ramp_function(x, x0, a):
                         [0, lambda x: a * (x - x0)])
 
 # 初期パラメータの設定
-initial_x0 = np.percentile(pc1, 25)
-initial_a = (achievedgoal_values.max() - achievedgoal_values.min()) / (pc1.max() - pc1.min())
+initial_x0 = np.percentile(pc2, 25)
+initial_a = (achievedgoal_values.max() - achievedgoal_values.min()) / (pc2.max() - pc2.min())
 initial_params = [initial_x0, initial_a]
 
 # 初期フィッティング
-params, params_covariance = curve_fit(ramp_function, pc1, achievedgoal_values, p0=initial_params)
+params, params_covariance = curve_fit(ramp_function, pc2, achievedgoal_values, p0=initial_params)
 
 # 残差の計算
-residuals = achievedgoal_values - ramp_function(pc1, *params)
+residuals = achievedgoal_values - ramp_function(pc2, *params)
 std_dev = np.std(residuals)
 
 # 外れ値を除外 (残差が2標準偏差以内のデータを使用)
 mask = np.abs(residuals) < 2 * std_dev
-pc1_filtered = pc1[mask]
+pc2_filtered = pc2[mask]
 achievedgoal_values_filtered = achievedgoal_values[mask]
 
 # フィルタリングされたデータで再フィッティング
 params_filtered, params_covariance_filtered = curve_fit(
-    ramp_function, pc1_filtered, achievedgoal_values_filtered, p0=initial_params
+    ramp_function, pc2_filtered, achievedgoal_values_filtered, p0=initial_params
 )
 
 # フィッティングパラメータを表示
@@ -82,25 +84,26 @@ print(f"フィルタリング後のフィットパラメータ: x0 = {params_fil
 x0, a = params_filtered
 
 # 目標の achieved_goal (ag) 値
-desired_ag = 0.7
+desired_ag = 0.4
 
-# 対応するPC1の値を計算
-pc1_value = (desired_ag / a) + x0
-print(f"PC1 value for ag = {desired_ag}: {pc1_value}")
+# 対応するPC2の値を計算
+pc2_value = (desired_ag / a) + x0
+print(f"PC2 value for ag = {desired_ag}: {pc2_value}")
 
-# PC1 の逆変換
-pc1_vector = np.zeros((1, 2))
-pc1_vector[0, 0] = pc1_value
+# PC2 の逆変換
+pc2_vector = np.zeros((1, 2))
+pc2_vector[0, 1] = pc2_value
+pc2_vector[0, 1] *= -1  # 必要であれば、再反転
 
 # 逆変換で姿勢を取得
-inverse_posture = pca.inverse_transform(pc1_vector)
+inverse_posture = pca.inverse_transform(pc2_vector)
 print("Inverse posture:", inverse_posture)
 
 # ハンドモデルの初期関節位置を設定する関数
 def set_initial_joint_positions(sim, joint_names, joint_angles):
     for joint_name, joint_angle in zip(joint_names, joint_angles):
         joint_idx = sim.model.joint_name2id(joint_name)
-        perturbation = math.radians(random.uniform(-0, 0))
+        perturbation = math.radians(random.uniform(-1, 1))
         sim.data.qpos[joint_idx] = joint_angle + perturbation
 
 # 関節名と初期角度の定義
@@ -115,8 +118,8 @@ joint_names = [
 joint_angles = [
     1.57, 0.0, 0.0,
     0.0, 1.44, 0.0, 0.0,
-    0.0, 1.53, 0.0, 0.0,
-    0.0, 1.44, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
     0.0, 1.22, 0.0, 0.0, 0.0
 ]
 
@@ -187,9 +190,9 @@ while True:
     sim.data.ctrl[:] = np.clip(sim.data.ctrl[:], ctrlrange[:, 0], ctrlrange[:, 1])
 
 # 結果をファイルに保存
-output_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider_only_third_bend/test/")
+output_dir = os.path.join(args.dir, "policy_2finger/test/")
 os.makedirs(output_dir, exist_ok=True)
-file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_2degree_modify.txt")
+file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_0degree_modify.txt")
 
 with open(file_name, 'w') as file:
     for ag in recorded_ags:

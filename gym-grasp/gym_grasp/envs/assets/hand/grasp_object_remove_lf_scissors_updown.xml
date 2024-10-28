@@ -72,48 +72,48 @@ https://www.shadowrobot.com/wp-content/uploads/shadow_dexterous_hand_technical_s
 
 
 
-
+<!--  最も良いはさみのモデル-->
                         <!--  ShadowHandLite用  刃が上下に来るように回転。はさみの形変更, 刃の重なりを無くす-->
         <!-- 上下反転させたはさみのモデル -->
-        <body name="scissors_part0" pos="1.07 0.892 0.4">
-            <geom name="scissors" type="sphere" size="0.01 0.01 0.01" condim="4" group="2"
-                  contype="0" conaffinity="0" rgba="0.9 0.9 0.1 1"></geom>
-            <site name="scissors:center" pos="0 0 0" rgba="1 0 0 0" size="0.01 0.01 0.01"></site>
-            <joint name="scissors:joint" type="free" damping="0.01"></joint>
-            <body name="scissors_part1_mirror" pos="0 0 0" euler="1.57 0 0">
-                <joint name="scissors_hinge_1:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-0.52358 0.52358" damping="0.1" armature="0.01"></joint>
-                <geom name="scissors_part1_mirror" type="box" friction="1.5 0.005 0.0001" size="0.1 0.008 0.004"></geom>
-<!--     hinge:jointでもう片方のはさみを連結-->
-                <body name="scissors_part1" pos="0 0 0.008">
-                    <geom name="scissors_part1" type="box" friction="1.5 0.005 0.0001" size="0.1 0.008 0.004"></geom>
-                    <joint name="scissors_hinge_2:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.02358" damping="0.1" armature="0.01"></joint>-->
-                    <body name="scissors_part2" pos="0 -0.024 0">
-                        <geom name="scissors_part2" type="box" friction="1.5 0.005 0.0001" size="0.02 0.008 0.004" euler="0 0 1.57075"></geom>
-                        <body name="scissors_part3" pos="-0.045 -0.027 0">
-                            <geom name="scissors_part3" type="box" friction="1.5 0.005 0.0001" size="0.053 0.008 0.004" euler="0 0 0"></geom>
-                            <body name="scissors_part4" pos="-0.058 0.025 0">
-                                <geom name="scissors_part4" type="box" friction="1.5 0.005 0.0001" size="0.034 0.008 0.004" euler="0 0 1.57075"></geom>
-                                <body name="scissors_part5" pos="0.045 0.015 0">
-                                    <geom name="scissors_part5" type="box" friction="1.5 0.005 0.0001" size="0.05 0.008 0.004" euler="0 0 0"></geom>
-                                </body>
-                            </body>
-                        </body>
-                    </body>
-                </body>
-                <body name="scissors_part2_mirror" pos="0 0.024 0">
-                    <geom name="scissors_part2_mirror" type="box" friction="1.5 0.005 0.0001" size="0.02 0.008 0.004" euler="0 0 -1.57075"></geom>
-                    <body name="scissors_part3_mirror" pos="-0.045 0.027 0">
-                        <geom name="scissors_part3_mirror" type="box" friction="1.5 0.005 0.0001" size="0.053 0.008 0.004" euler="0 0 0"></geom>
-                        <body name="scissors_part4_mirror" pos="-0.058 -0.025 0">
-                            <geom name="scissors_part4_mirror" type="box" friction="1.5 0.005 0.0001" size="0.034 0.008 0.004" euler="0 0 -1.57075"></geom>
-                            <body name="scissors_part5_mirror" pos="0.045 -0.018 0">
-                                <geom name="scissors_part5_mirror" type="box" friction="1.5 0.005 0.0001" size="0.05 0.008 0.004" euler="0 0 0"></geom>
-                            </body>
-                        </body>
-                    </body>
-                </body>
-            </body>
-        </body>
+<!--        <body name="scissors_part0" pos="1.07 0.892 0.4">-->
+<!--            <geom name="scissors" type="sphere" size="0.01 0.01 0.01" condim="4" group="2"-->
+<!--                  contype="0" conaffinity="0" rgba="0.9 0.9 0.1 1"></geom>-->
+<!--            <site name="scissors:center" pos="0 0 0" rgba="1 0 0 0" size="0.01 0.01 0.01"></site>-->
+<!--            <joint name="scissors:joint" type="free" damping="0.01"></joint>-->
+<!--            <body name="scissors_part1_mirror" pos="0 0 0" euler="1.57 0 0">-->
+<!--                <joint name="scissors_hinge_1:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-0.52358 0.52358" damping="0.1" armature="0.01"></joint>-->
+<!--                <geom name="scissors_part1_mirror" type="box" friction="1.5 0.005 0.0001" size="0.1 0.008 0.004"></geom>-->
+<!--&lt;!&ndash;     hinge:jointでもう片方のはさみを連結&ndash;&gt;-->
+<!--                <body name="scissors_part1" pos="0 0 0.008">-->
+<!--                    <geom name="scissors_part1" type="box" friction="1.5 0.005 0.0001" size="0.1 0.008 0.004"></geom>-->
+<!--                    <joint name="scissors_hinge_2:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.02358" damping="0.1" armature="0.01"></joint>&ndash;&gt;-->
+<!--                    <body name="scissors_part2" pos="0 -0.024 0">-->
+<!--                        <geom name="scissors_part2" type="box" friction="1.5 0.005 0.0001" size="0.02 0.008 0.004" euler="0 0 1.57075"></geom>-->
+<!--                        <body name="scissors_part3" pos="-0.045 -0.027 0">-->
+<!--                            <geom name="scissors_part3" type="box" friction="1.5 0.005 0.0001" size="0.053 0.008 0.004" euler="0 0 0"></geom>-->
+<!--                            <body name="scissors_part4" pos="-0.058 0.025 0">-->
+<!--                                <geom name="scissors_part4" type="box" friction="1.5 0.005 0.0001" size="0.034 0.008 0.004" euler="0 0 1.57075"></geom>-->
+<!--                                <body name="scissors_part5" pos="0.045 0.015 0">-->
+<!--                                    <geom name="scissors_part5" type="box" friction="1.5 0.005 0.0001" size="0.05 0.008 0.004" euler="0 0 0"></geom>-->
+<!--                                </body>-->
+<!--                            </body>-->
+<!--                        </body>-->
+<!--                    </body>-->
+<!--                </body>-->
+<!--                <body name="scissors_part2_mirror" pos="0 0.024 0">-->
+<!--                    <geom name="scissors_part2_mirror" type="box" friction="1.5 0.005 0.0001" size="0.02 0.008 0.004" euler="0 0 -1.57075"></geom>-->
+<!--                    <body name="scissors_part3_mirror" pos="-0.045 0.027 0">-->
+<!--                        <geom name="scissors_part3_mirror" type="box" friction="1.5 0.005 0.0001" size="0.053 0.008 0.004" euler="0 0 0"></geom>-->
+<!--                        <body name="scissors_part4_mirror" pos="-0.058 -0.025 0">-->
+<!--                            <geom name="scissors_part4_mirror" type="box" friction="1.5 0.005 0.0001" size="0.034 0.008 0.004" euler="0 0 -1.57075"></geom>-->
+<!--                            <body name="scissors_part5_mirror" pos="0.045 -0.018 0">-->
+<!--                                <geom name="scissors_part5_mirror" type="box" friction="1.5 0.005 0.0001" size="0.05 0.008 0.004" euler="0 0 0"></geom>-->
+<!--                            </body>-->
+<!--                        </body>-->
+<!--                    </body>-->
+<!--                </body>-->
+<!--            </body>-->
+<!--        </body>-->
 
 
 <!--&lt;!&ndash;  ShadowHandLite用  穴最小ver,   刃が上下に来るように回転。はさみの形変更, 刃の重なりを無くす&ndash;&gt;-->
@@ -158,6 +158,83 @@ https://www.shadowrobot.com/wp-content/uploads/shadow_dexterous_hand_technical_s
 <!--                                    <geom name="scissors_part6_mirror" type="box" friction="1.5 0.005 0.0001" size="0.026 0.025 0.004" euler="0 0 0"></geom>-->
 <!--                                </body>-->
 <!--                            </body>-->
+<!--                        </body>-->
+<!--                    </body>-->
+<!--                </body>-->
+<!--            </body>-->
+<!--        </body>-->
+
+
+<!--                       ShadowHandLite用  親指人差し指の2本はさみの穴に入るパターン-->
+        <body name="scissors_part0" pos="1.07 0.892 0.4">
+            <geom name="scissors" type="sphere" size="0.01 0.01 0.01" condim="4" group="2"
+                  contype="0" conaffinity="0" rgba="0.9 0.9 0.1 1"></geom>
+            <site name="scissors:center" pos="0 0 0" rgba="1 0 0 0" size="0.01 0.01 0.01"></site>
+            <joint name="scissors:joint" type="free" damping="0.01"></joint>
+            <body name="scissors_part1_mirror" pos="0 0 0" euler="1.57 0 0">
+                <joint name="scissors_hinge_1:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-0.52358 0.52358" damping="0.1" armature="0.01"></joint>
+                <geom name="scissors_part1_mirror_left" type="box" friction="1.5 0.005 0.0001" size="0.04 0.008 0.004" pos="-0.015 0 0"></geom> <!-- 左側の直方体 -->
+                <geom name="scissors_part1_mirror_right" type="box" friction="1.5 0.005 0.0001" size="0.075 0.008 0.004" pos="0.025 0 0"></geom> <!-- 右側の直方体 -->
+<!--     hinge:jointでもう片方のはさみを連結-->
+                <body name="scissors_part1" pos="0 0 0.008">
+                    <geom name="scissors_part1_left" type="box" friction="1.5 0.005 0.0001" size="0.04 0.008 0.004" pos="-0.015 0 0"></geom> <!-- 左側の直方体 -->
+                    <geom name="scissors_part1_right" type="box" friction="1.5 0.005 0.0001" size="0.075 0.008 0.004" pos="0.025 0 0"></geom> <!-- 右側の直方体 -->
+                    <joint name="scissors_hinge_2:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.02358" damping="0.1" armature="0.01"></joint>
+                    <body name="scissors_part2" pos="0 -0.024 0">
+                        <geom name="scissors_part2" type="box" friction="1.5 0.005 0.0001" size="0.02 0.008 0.004" euler="0 0 1.57075"></geom>
+                        <body name="scissors_part3" pos="-0.022 -0.027 0">
+                            <geom name="scissors_part3" type="box" friction="1.5 0.005 0.0001" size="0.03 0.008 0.004" euler="0 0 0"></geom>
+                            <body name="scissors_part4" pos="-0.031 0.026 0">
+                                <geom name="scissors_part4" type="box" friction="1.5 0.005 0.0001" size="0.034 0.004 0.004" euler="0 0 1.57075"></geom>
+                                <body name="scissors_part5" pos="0.022 0.015 0">
+                                    <geom name="scissors_part5" type="box" friction="1.5 0.005 0.0001" size="0.027 0.008 0.004" euler="0 0 0"></geom>
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+                <body name="scissors_part2_mirror" pos="0 0.024 0">
+                    <geom name="scissors_part2_mirror" type="box" friction="1.5 0.005 0.0001" size="0.02 0.008 0.004" euler="0 0 -1.57075"></geom>
+                    <body name="scissors_part3_mirror" pos="-0.022 0.027 0">
+                        <geom name="scissors_part3_mirror" type="box" friction="1.5 0.005 0.0001" size="0.03 0.008 0.004" euler="0 0 0"></geom>
+                        <body name="scissors_part4_mirror" pos="-0.031 -0.026 0">
+                            <geom name="scissors_part4_mirror" type="box" friction="1.5 0.005 0.0001" size="0.034 0.004 0.004" euler="0 0 -1.57075"></geom>
+                            <body name="scissors_part5_mirror" pos="0.022 -0.018 0">
+                                <geom name="scissors_part5_mirror" type="box" friction="1.5 0.005 0.0001" size="0.027 0.008 0.004" euler="0 0 0"></geom>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+
+
+        <!--                &lt;!&ndash; モデル３ zslider=0.5にする！薬指小指は入らない.2024/2/19&ndash;&gt;-->
+<!--    &lt;!&ndash; 上下反転させたはさみのモデル &ndash;&gt;-->
+<!--        <body name="scissors_part0" pos="1.07 0.892 0.4">-->
+<!--            <body name="scissors_part1_mirror" pos="0 0 0">-->
+<!--                <joint name="scissors_hinge_1:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-0.52358 0.52358" damping="1" armature="0.01"></joint>-->
+<!--                <geom name="scissors_part1_mirror" type="box" friction="1.5 0.005 0.0001" size="0.087 0.008 0.004"></geom>-->
+<!--    &lt;!&ndash; hinge:jointでもう片方のはさみを連結  &ndash;&gt;-->
+<!--                <body name="scissors_part1" pos="0 0 0">-->
+<!--                    <geom name="scissors_part1" type="box" friction="1.5 0.005 0.0001" size="0.087 0.008 0.004"></geom>-->
+<!--                    <joint name="scissors_hinge_2:joint" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.02358" damping="1" armature="0.01"></joint>&ndash;&gt;-->
+<!--                    <body name="scissors_part2" pos="0 -0.024 0">-->
+<!--                        <geom name="scissors_part2" type="box" friction="1.5 0.005 0.0001" size="0.02 0.008 0.004" euler="0 0 1.57075"></geom>-->
+<!--                        <body name="scissors_part3" pos="-0.032 -0.027 0">-->
+<!--                            <geom name="scissors_part3" type="box" friction="1.5 0.005 0.0001" size="0.04 0.008 0.004" euler="0 0 0"></geom>-->
+<!--                            <body name="scissors_part4" pos="-0.048 0.025 0">-->
+<!--                                <geom name="scissors_part4" type="box" friction="1.5 0.005 0.0001" size="0.033 0.008 0.004" euler="0 0 1.57075"></geom>-->
+<!--                            </body>-->
+<!--                        </body>-->
+<!--                    </body>-->
+<!--                </body>-->
+<!--                <body name="scissors_part2_mirror" pos="0 0.024 0">-->
+<!--                    <geom name="scissors_part2_mirror" type="box" friction="1.5 0.005 0.0001" size="0.02 0.008 0.004" euler="0 0 -1.57075"></geom>-->
+<!--                    <body name="scissors_part3_mirror" pos="-0.032 0.027 0">-->
+<!--                        <geom name="scissors_part3_mirror" type="box" friction="1.5 0.005 0.0001" size="0.04 0.008 0.004" euler="0 0 0"></geom>-->
+<!--                        <body name="scissors_part4_mirror" pos="-0.048 -0.025 0">-->
+<!--                            <geom name="scissors_part4_mirror" type="box" friction="1.5 0.005 0.0001" size="0.033 0.008 0.004" euler="0 0 -1.57075"></geom>-->
 <!--                        </body>-->
 <!--                    </body>-->
 <!--                </body>-->

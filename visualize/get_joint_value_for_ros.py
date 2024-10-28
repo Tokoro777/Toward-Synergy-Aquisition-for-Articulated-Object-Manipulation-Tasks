@@ -98,7 +98,7 @@ print(f"Fitted parameters: x0 = {params[0]}, a = {params[1]}")
 x0, a = params
 
 # 目標の achieved_goal (ag) 値
-desired_ag = 0.7
+desired_ag = 0.4
 
 # 対応するPC1の値を計算
 pc1_value = (desired_ag / a) + x0

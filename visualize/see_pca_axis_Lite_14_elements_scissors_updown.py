@@ -81,6 +81,9 @@ for i in range(5):
     # print(trajectory[-1].shape)
 trajectory = np.array(trajectory).transpose()
 
+# # 符号反転を行う (pc_axis が2の場合、PC2を反転)
+# trajectory[:, pc_axis - 1] *= -1  # PC2に相当する軸を反転
+
 # print(trajectory)  # .shapeは(500, 5) (0,0)~(499,0)にのみ非ゼロのPC1に沿った軌道が格納
 
 # ハンドモデルの初期関節位置を設定する関数

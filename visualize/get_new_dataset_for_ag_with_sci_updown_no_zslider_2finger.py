@@ -10,7 +10,7 @@ import time
 model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/envs/assets/hand/grasp_object_remove_lf_scissors_updown.xml")
 sim = MjSim(model)
 
-dataset_path = "/home/tokoro/policy_sci_updown_no_zslider_only_third_bend/test/{}"
+dataset_path = "/home/tokoro/policy_2finger/test/{}"
 
 viewer = MjViewer(sim)
 
@@ -78,8 +78,8 @@ joint_angles = [#0.04,
                 1.57,  # はさみの穴を狭めたバージョン
                 0.0, 0.0,
                 0.0, 1.44, 0.0, 0.0,
-                0.0, 1.53, 0.0, 0.0,
-                0.0, 1.44, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0,
                 0.0, 1.22, 0.0, 0.0, 0.0]
 
 initial_qpos = np.array([1.07, 0.892, 0.4, 1, 0, 0, 0])  # はさみの初期位置
@@ -93,33 +93,37 @@ def _get_achieved_goal():
     return hinge_joint_angle_2
 
 while pos_num < len(postures):
-    viewer.render()
-    t += 1
-    sim.step()
-    state = sim.get_state()
+    t = 0  # ステップカウンタを初期化
+    max_ag_value = -np.inf  # 非常に低い初期値から最大角度を見つける
 
-    if t > 500:  # RSJの時は500step目の角度を取得していた
-    # if t > 3000:  # 制御入力に追従していないのではと思い, 3000step目の角度を取得する
-        ag_value = _get_achieved_goal()
-        postures[pos_num][-1] = ag_value  # postures(277,15)の最後の要素(0の値)をagの値に更新
-        print(f"Updated posture {pos_num}: ag = {ag_value}")
-        t = 0
-        pos_num += 1
-        if pos_num < len(postures):  # pos_numが範囲内か確認
-            set_initial_joint_positions(sim, joint_names, joint_angles)
-            sim.data.set_joint_qpos("scissors:joint", initial_qpos)
-            sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)
-            sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
+    while t < 500:
+        viewer.render()
+        sim.step()
+        t += 1
 
+        # 現在の角度を取得し、最大値を更新
+        current_ag_value = _get_achieved_goal()
+        if current_ag_value > max_ag_value:
+            max_ag_value = current_ag_value
+
+    # 500ステップ経過後に最大角度を保存
+    postures[pos_num][-1] = max_ag_value  # pos_num行目の最後の要素に最大角度を設定
+    print(f"Updated posture {pos_num}: max ag = {max_ag_value}")
+
+    # pos_numを増加して次のデータに移行
+    pos_num += 1
+    if pos_num < len(postures):  # pos_numが範囲内か確認
+        set_initial_joint_positions(sim, joint_names, joint_angles)
+        sim.data.set_joint_qpos("scissors:joint", initial_qpos)
+        sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)
+        sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
+
+    # 制御信号を設定
     if pos_num < len(postures):  # pos_numが範囲内か確認
         sim.data.ctrl[:] = actuation_center[:] + postures[pos_num][:-1] * actuation_range[:]
         sim.data.ctrl[:] = np.clip(sim.data.ctrl[:], ctrlrange[:, 0], ctrlrange[:, 1])
 
-    # time.sleep(0.005)
-
-print(postures.shape)
 # 新しいデータセットの保存
 new_dataset_path = dataset_path.format("new_grasp_dataset_with_ag.npy")
-# new_dataset_path = dataset_path.format("new_grasp_dataset_with_ag_at_3000step.npy")
 np.save(new_dataset_path, postures)
 print(f"New dataset saved to {new_dataset_path}")

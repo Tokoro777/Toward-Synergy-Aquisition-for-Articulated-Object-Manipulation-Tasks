@@ -355,8 +355,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                         1.57,
                         0.0, 0.0,
                         0.0, 1.44, 0.0, 0.0,
-                        0.0, 1.53, 0.0, 0.0,
-                        0.0, 1.44, 0.0, 0.0,
+                        0.0, 0.0, 0.0, 0.0,  # 1.53
+                        0.0, 0.0, 0.0, 0.0,  # 1.44
                         # 0.0, 0.0, 1.32, 0.0, 1.57,
                         0.0, 1.22, 0.0, 0.0, 0.0]
 
@@ -687,8 +687,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                         1.57,
                         0.0, 0.0,
                         0.0, 1.44, 0.0, 0.0,
-                        0.0, 1.53, 0.0, 0.0,
-                        0.0, 1.44, 0.0, 0.0,
+                        0.0, 0.0, 0.0, 0.0,  # 1.53
+                        0.0, 0.0, 0.0, 0.0,  # 1.44
                         # 0.0, 0.0, 1.32, 0.0, 1.57,
                         0.0, 1.22, 0.0, 0.0, 0.0]
 
@@ -713,10 +713,10 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #     current_zslider_pos = self.sim.data.get_joint_qpos("robot0:zslider")
         #     self.sim.data.set_joint_qpos("robot0:zslider", current_zslider_pos)
 
-        if self.step_n == 1:
-            self.set_random_initial_qpos()  # はさみ初期位置をランダム化
-            # print("はさみ初期位置ランダム化")
-            # print(self.initial_qpos[1])
+        # if self.step_n == 1:
+        #     self.set_random_initial_qpos()  # はさみ初期位置をランダム化
+        #     # print("はさみ初期位置ランダム化")
+        #     # print(self.initial_qpos[1])
 
         if self.step_n < 30:  # はじめの40stepは以下の値を維持する.(はさみの角度, ハンドの姿勢, はさみの位置)
             self.sim.data.set_joint_qpos(self.object, self.initial_qpos)  # はさみをランダム初期位置にし、freejointで落下させる

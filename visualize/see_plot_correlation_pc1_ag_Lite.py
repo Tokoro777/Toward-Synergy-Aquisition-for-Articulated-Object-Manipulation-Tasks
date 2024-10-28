@@ -40,6 +40,8 @@ postures_pca = pca.fit_transform(postures)
 # PC1とPC2を取得
 pc1 = postures_pca[:, 0]
 pc2 = postures_pca[:, 1]
+# # 符号反転（必要に応じて行う）
+# pc2 *= -1  # PC2 の符号を反転
 
 # 相関係数を計算
 correlation = np.corrcoef(pc1, achievedgoal_values)[0, 1]
