@@ -145,6 +145,7 @@ while True:
     elif t > 500 and t <= 1000:  # 500step超えたらdesired_goal=0.0 の姿勢へ
         sim.data.ctrl[:] = actuation_center[:] + inverse_posture_2[0] * actuation_range[:]
         sim.data.ctrl[:] = np.clip(sim.data.ctrl[:], ctrlrange[:, 0], ctrlrange[:, 1])
+        print(sim.data.ctrl[:])
 
     elif t > 1000:  # 1000step超えたら姿勢を初期化
         set_initial_joint_positions(sim, joint_names, joint_angles)

@@ -78,4 +78,6 @@
     <mesh name="target0:Sci_part1" scale="0.001 0.001 0.001" file="target/sci_part1.stl"/>
 <!--    <mesh name="target0:Sci_part1" scale="0.2 0.2 0.2" file="target/sci_part1_scale_1per.stl"/>-->
     <mesh name="target0:Sci_part2" scale="0.001 0.001 0.001" file="target/sci_part2.stl"/>
+    <mesh name="target0:Scissor_up_c" scale="0.001 0.001 0.001" file="target/scissor_up_c.stl"/>
+    <mesh name="target0:Scissor_up_long" scale="0.001 0.001 0.001" file="target/scissor_up_long.stl"/>
 </mujoco>

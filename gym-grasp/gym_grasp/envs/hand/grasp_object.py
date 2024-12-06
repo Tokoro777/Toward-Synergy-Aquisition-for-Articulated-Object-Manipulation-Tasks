@@ -38,7 +38,8 @@ def euler2mat(euler):
 # GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')  # 5本指ver
 # GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指.ver
 # GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_Lite.xml')  # 4本指でかつ、実機Liteと同じWRJ1J0,THJ2を削除した.ver
-GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown.xml')  # Liteではさみが上下.ver
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown.xml')  # Liteではさみが上下.ver RSJで発表したversion.実機までこのモデルを使った
+GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown_no_rollhingeWRJ1J0THJ2.xml')  # 修論前に, きちんとしたモデルで学習し直してみる
 
 
 class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
@@ -331,34 +332,37 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
         # rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
-        # joint_names = ["robot0:WRJ0",
-        #                 "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
-        #                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
-        #                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-        #                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        # joint_angles = [0.0,
-        #                 0.0, 1.44, 0.0, 1.57,
-        #                 0.0, 1.53, 0.0, 1.57,
-        #                 0.0, 1.44, 0.0, 1.57,
-        #                 0.0, 1.22, 0.0, 0.0, -1.57]
+        # 修論前モデル
+        joint_names = ["robot0:WRJ0",
+                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        joint_angles = [0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.115, 1.22, 0.0, 0.0, 0.0]
 
-        joint_names = [#"robot0:zslider",
-                       "robot0:rollhinge",
-                       "robot0:WRJ1", "robot0:WRJ0",
-                       "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
-                       "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
-                       "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                       # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
-                       "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
 
-        joint_angles = [#0.04,  # はさみの穴を狭めたver
-                        1.57,
-                        0.0, 0.0,
-                        0.0, 1.44, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0,  # 1.53
-                        0.0, 0.0, 0.0, 0.0,  # 1.44
-                        # 0.0, 0.0, 1.32, 0.0, 1.57,
-                        0.0, 1.22, 0.0, 0.0, 0.0]
+        #  RSJで発表したモデル. grasp_object_remove_lf_scissors_updown.xml
+        # joint_names = [#"robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        #
+        # joint_angles = [#0.04,  # はさみの穴を狭めたver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.53, 0.0, 0.0,  # 1.53
+        #                 0.0, 0.0, 0.0, 0.0,  # 1.44
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
             self.sim.data.set_joint_qpos(joint_name, angle)
@@ -664,33 +668,35 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
         # rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
-        # joint_names = ["robot0:WRJ0",
-        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
-        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
-        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        # joint_angles = [0.0,
-        #                 0.0, 1.44, 0.0, 1.57,
-        #                 0.0, 1.53, 0.0, 1.57,
-        #                 0.0, 1.44, 0.0, 1.57,
-        #                 0.0, 1.22, 0.0, 0.0, -1.57]
-
-        joint_names = [#"robot0:zslider",
-                       "robot0:rollhinge",
-                       "robot0:WRJ1", "robot0:WRJ0",
+        # 修論前モデル
+        joint_names = ["robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                       # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        joint_angles = [# 0.04,  # はさみの穴を狭めたver
-                        1.57,
-                        0.0, 0.0,
-                        0.0, 1.44, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0,  # 1.53
-                        0.0, 0.0, 0.0, 0.0,  # 1.44
-                        # 0.0, 0.0, 1.32, 0.0, 1.57,
-                        0.0, 1.22, 0.0, 0.0, 0.0]
+        joint_angles = [0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.115, 1.22, 0.0, 0.0, 0.0]
+
+        #  RSJで発表したモデル. grasp_object_remove_lf_scissors_updown.xml
+        # joint_names = [#"robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [# 0.04,  # はさみの穴を狭めたver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.53, 0.0, 0.0,  # 1.53
+        #                 0.0, 0.0, 0.0, 0.0,  # 1.44
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
 
         # print(obs["observation"][:22])
