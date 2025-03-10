@@ -105,19 +105,19 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 ### 手順
 ### シミュレーション
 1. `grasp_object.py`  
-   はさみ操作の学習を行う
+   はさみ操作の学習
 2. `see_pca_axis_Lite_14_elements_scissors_updown.py`  
-   PCA軸を可視化し、14要素のはさみ操作を上昇・下降させる
+   PC1やPC2主成分軸に沿った, ハンドの動きを可視化
 3. `get_new_dataset_for_ag_with_sci_updown_no_zslider.py`  
-   新しいデータセットを取得し、スライダーなしで上昇・下降を行う
+   姿勢データセットを元に, はさみを操作し, その時の角度を取得することで, 姿勢と角度こみの新しいデータセットを作成.(PC1と角度の関係を調べるため)
 4. `see_plot_correlation_pc1_ag_Lite.py`  
-   PC1とag（姿勢）の相関をプロット
+   PC1とはさみ角度の相関をプロット
 5. `replay_dataset_Lite_pc1_ag_with_sci_updown_no_zslider_new_ag.py`  
-   新しいag（姿勢）データを使って、PC1とのリプレイを行う
+   新しいデータセット(姿勢と角度)を使用して,277個の操作を再生. この時, どのような姿勢が, どの主成分と角度に当たるのかが確認できる
 6. `change_posture_by_ag_pc1_ramp_function_sci_updown.py`  
-   ag（姿勢）を使って、PC1によるランプ関数で姿勢を変更
+   相関から同定したランプ関数で, 所望の角度に対応するPC1値で制御し,達成角度を保存
 7. `evaluate_error_with_ag_in_boxplot.py`  
-   ag（姿勢）のエラーを箱ひげ図で評価
+   保存した達成角度と目標角度との誤差を箱ひげ図で評価
 8. `get_joint_value_for_ros.py`  
    ROS用にジョイントの値を取得
 9. `create_pickle.py`  
@@ -127,13 +127,13 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 
 ### 実機
 1. `operate_lite_initial_config_jointtrajectory.py`  
-   初期設定のジョイント軌道でShadow Hand Liteを操作
+   はさみ操作の初期姿勢にShadow Hand Liteを移動
 2. `operate_lite_feedback_control_jointtrajectory.py`  
-   フィードバック制御を用いたジョイント軌道で操作
+   単一の目標値に対して, フィードバック制御(PID)を用いたジョイント軌道で操作
 3. `operate_lite_feedback_control_jointtrajectory_sequence.py`  
-   フィードバック制御によるジョイント軌道のシーケンスで操作
+   連続的に変化する目標値に対して, フィードバック制御(PID)によるジョイント軌道で操作
 4. `operate_lite_feedback_control_jointtrajectory_sinwave.py`  
-   サイン波のような動きでフィードバック制御を使用して操作
+   サイン波の目標値に対して, フィードバック制御(PID)を使用して操作
 
 
 
