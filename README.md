@@ -104,28 +104,29 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 
 ### 手順
 ### シミュレーション
-1.
+1. はさみ操作の学習
 ```
 python3 grasp_object.py
 ``` 
-   はさみ操作の学習
-2. `see_pca_axis_Lite_14_elements_scissors_updown.py`  
-   PC1やPC2主成分軸に沿った, ハンドの動きを可視化
-3. `get_new_dataset_for_ag_with_sci_updown_no_zslider.py`  
+2. PC1やPC2主成分軸に沿った, ハンドの動きを可視化
+```
+python3 see_pca_axis_Lite_14_elements_scissors_updown.py
+```
+4. `get_new_dataset_for_ag_with_sci_updown_no_zslider.py`  
    姿勢データセットを元に, はさみを操作し, その時の角度を取得することで, 姿勢と角度こみの新しいデータセットを作成.(PC1と角度の関係を調べるため)
-4. `see_plot_correlation_pc1_ag_Lite.py`  
+5. `see_plot_correlation_pc1_ag_Lite.py`  
    PC1とはさみ角度の相関をプロット
-5. `replay_dataset_Lite_pc1_ag_with_sci_updown_no_zslider_new_ag.py`  
+6. `replay_dataset_Lite_pc1_ag_with_sci_updown_no_zslider_new_ag.py`  
    新しいデータセット(姿勢と角度)を使用して,277個の操作を再生. この時, どのような姿勢が, どの主成分と角度に当たるのかが確認できる
-6. `change_posture_by_ag_pc1_ramp_function_sci_updown.py`  
+7. `change_posture_by_ag_pc1_ramp_function_sci_updown.py`  
    相関から同定したランプ関数で, 所望の角度に対応するPC1値で制御し,達成角度を保存
-7. `evaluate_error_with_ag_in_boxplot.py`  
+8. `evaluate_error_with_ag_in_boxplot.py`  
    保存した達成角度と目標角度との誤差を箱ひげ図で評価
-8. `get_joint_value_for_ros.py`  
+9. `get_joint_value_for_ros.py`  
    ROS用にジョイントの値を取得
-9. `create_pickle.py`  
+10. `create_pickle.py`  
    ピクルファイルを作成
-10. `operate_lite.py`  
+11. `operate_lite.py`  
     Shadow Hand Liteの動作を制御
 
 ### 実機
