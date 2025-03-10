@@ -164,6 +164,10 @@ python3 operate_lite_feedback_control_jointtrajectory_sequence.py
 python3 operate_lite_feedback_control_jointtrajectory_sinwave.py
 ```
 
+## ディレクトリ構造
+
+project/ │ ├── simulation/ │ ├── grasp_object.py │ ├── see_pca_axis_Lite_14_elements_scissors_updown.py │ ├── get_new_dataset_for_ag_with_sci_updown_no_zslider.py │ └── ... │ ├── real_robot/ │ ├── operate_lite_initial_config_jointtrajectory.py │ ├── operate_lite_feedback_control_jointtrajectory.py │ ├── operate_lite_feedback_control_jointtrajectory_sequence.py │ └── ... │ └── README.md
+
 
 
 
