@@ -166,13 +166,6 @@ python3 operate_lite_feedback_control_jointtrajectory_sinwave.py
 
 ## ディレクトリ構造
 
-## treeのインストール
-sudo apt install tree
-
-## tree実行
-tree
-
-## tree実行結果
 .
 └── laravel
     ├── README.md
