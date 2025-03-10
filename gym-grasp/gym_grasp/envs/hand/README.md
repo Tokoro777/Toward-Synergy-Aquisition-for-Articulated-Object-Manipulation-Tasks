@@ -10,12 +10,14 @@ def _reset_sim(self):
         self.sim.data.set_joint_qpos(joint_name, angle)
 ```
 ハンドの姿勢を初期化する部分.
-これは, joint_anglesの値に気をつける. 角ばった4本指はさみのバージョン, 丸い4本指はさみのバージョン, 3本指のバージョンの3種類あるので, コメントアウトして選択する.\
-\\
+これは, joint_anglesの値に気をつける. 角ばった4本指はさみのバージョン, 丸い4本指はさみのバージョン, 3本指のバージョンの3種類あるので, コメントアウトして選択する.
 
-同様に, \
-def step(self, action):\
-関数内にも\
-for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
-    self.sim.data.set_joint_qpos(joint_name, angle)  # 始めの50stepは手の初期位置を維持する\
-という, 初期化部分がある. これも, joint_anglesをはさみに応じて選択する.
+\同様に
+
+```
+def step(self, action):
+
+    for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
+        self.sim.data.set_joint_qpos(joint_name, angle)  # 始めの50stepは手の初期位置を維持する
+```
+初期化部分. これも, joint_anglesをはさみに応じて選択する.
