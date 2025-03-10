@@ -104,7 +104,8 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 
 ### 手順
 ### シミュレーション
-1. ```
+1.
+```
 python3 grasp_object.py
 ``` 
    はさみ操作の学習
