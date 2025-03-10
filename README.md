@@ -103,44 +103,61 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 
 
 # 実行コードの手順
-## シミュレーション
-1. はさみ操作の学習
+1. 仮想環境
 ```
-python3 grasp_object.py
-``` 
-2. PC1やPC2主成分軸に沿った, ハンドの動きを可視化
+. ~/venv/bin/activate
+```
+2. ディレクトリの指定
+```
+cd .mujoco
+```
+2. ディレクトリの指定
+```
+cd synergy
+```
+
+## シミュレーション
+1. はさみ操作の学習(学習部分grasp_object.pyから編集)
+```
+python3 -m baselines.her.experiment.train --env GraspObject-v0 --num_cpu 1 --n_epochs 300 --logdir /home/tokoro/policy/test --synergy_type actuator --reward_lambda 0.6
+```
+2. 学習結果
+```
+python3 -m baselines.her.experiment.play /home/tokoro/policy/test/policy_best.pkl --reward_lambda 0.6 --synergy_type actuator
+```
+3. PC1やPC2主成分軸に沿った, ハンドの動きを可視化
 ```
 python3 see_pca_axis_Lite_14_elements_scissors_updown.py
 ```
-3. 姿勢データセットを元に, はさみを操作し, その時の角度を取得することで, 姿勢と角度こみの新しいデータセットを作成.(PC1と角度の関係を調べるため)
+4. 姿勢データセットを元に, はさみを操作し, その時の角度を取得することで, 姿勢と角度こみの新しいデータセットを作成.(PC1と角度の関係を調べるため)
 ```
 python3 get_new_dataset_for_ag_with_sci_updown_no_zslider.py
 ```
-4. PC1とはさみ角度の相関をプロット
+5. PC1とはさみ角度の相関をプロット
 ```
 python3 see_plot_correlation_pc1_ag_Lite.py
 ```
-5. 新しいデータセット(姿勢と角度)を使用して,277個の操作を再生. この時, どのような姿勢が, どの主成分と角度に当たるのかが確認できる
+6. 新しいデータセット(姿勢と角度)を使用して,277個の操作を再生. この時, どのような姿勢が, どの主成分と角度に当たるのかが確認できる
 ```
 python3 replay_dataset_Lite_pc1_ag_with_sci_updown_no_zslider_new_ag.py
 ```
-6. 相関から同定したランプ関数で, 所望の角度に対応するPC1値で制御し,達成角度を保存
+7. 相関から同定したランプ関数で, 所望の角度に対応するPC1値で制御し,達成角度を保存
 ```
 python3 change_posture_by_ag_pc1_ramp_function_sci_updown.py
 ```
-7. 保存した達成角度と目標角度との誤差を箱ひげ図で評価
+8. 保存した達成角度と目標角度との誤差を箱ひげ図で評価
 ```
 python3 evaluate_error_with_ag_in_boxplot.py
 ```
-8. ROS用にジョイントの値を取得
+9. ROS用にジョイントの値を取得
 ```
 python3 get_joint_value_for_ros.py
 ```
-9. ピクルファイルを作成
+10. ピクルファイルを作成
 ```
 python3 create_pickle.py
 ```
-10. Shadow Hand Liteの動作を制御
+11. Shadow Hand Liteの動作を制御
 ```
 python3 create_pickle.py
 ```
