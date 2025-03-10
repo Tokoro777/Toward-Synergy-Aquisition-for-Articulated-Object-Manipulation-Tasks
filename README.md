@@ -103,23 +103,38 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 
 
 ### 手順
-## シミュレーション
-1. `grasp_object.py`
-2. `see_pca_axis_Lite_14_elements_scissors_updown.py`
-3. `get_new_dataset_for_ag_with_sci_updown_no_zslider.py`
-4. `see_plot_correlation_pc1_ag_Lite.py`
-5. `replay_dataset_Lite_pc1_ag_with_sci_updown_no_zslider_new_ag.py`
-6. `change_posture_by_ag_pc1_ramp_function_sci_updown.py`
-7. `evaluate_error_with_ag_in_boxplot.py`
-8. `get_joint_value_for_ros.py`
-9. `create_pickle.py`
-10. `operate_lite.py`
+### シミュレーション
+1. `grasp_object.py`  
+   はさみ操作の学習を行う
+2. `see_pca_axis_Lite_14_elements_scissors_updown.py`  
+   PCA軸を可視化し、14要素のはさみ操作を上昇・下降させる
+3. `get_new_dataset_for_ag_with_sci_updown_no_zslider.py`  
+   新しいデータセットを取得し、スライダーなしで上昇・下降を行う
+4. `see_plot_correlation_pc1_ag_Lite.py`  
+   PC1とag（姿勢）の相関をプロット
+5. `replay_dataset_Lite_pc1_ag_with_sci_updown_no_zslider_new_ag.py`  
+   新しいag（姿勢）データを使って、PC1とのリプレイを行う
+6. `change_posture_by_ag_pc1_ramp_function_sci_updown.py`  
+   ag（姿勢）を使って、PC1によるランプ関数で姿勢を変更
+7. `evaluate_error_with_ag_in_boxplot.py`  
+   ag（姿勢）のエラーを箱ひげ図で評価
+8. `get_joint_value_for_ros.py`  
+   ROS用にジョイントの値を取得
+9. `create_pickle.py`  
+   ピクルファイルを作成
+10. `operate_lite.py`  
+    Shadow Hand Liteの動作を制御
 
-## 実機
-1. `operate_lite_initial_config_jointtrajectory.py`
-2. `operate_lite_feedback_control_jointtrajectory.py`
-3. `operate_lite_feedback_control_jointtrajectory_sequence.py`
-4. `operate_lite_feedback_control_jointtrajectory_sinwave.py`
+### 実機
+1. `operate_lite_initial_config_jointtrajectory.py`  
+   初期設定のジョイント軌道でShadow Hand Liteを操作
+2. `operate_lite_feedback_control_jointtrajectory.py`  
+   フィードバック制御を用いたジョイント軌道で操作
+3. `operate_lite_feedback_control_jointtrajectory_sequence.py`  
+   フィードバック制御によるジョイント軌道のシーケンスで操作
+4. `operate_lite_feedback_control_jointtrajectory_sinwave.py`  
+   サイン波のような動きでフィードバック制御を使用して操作
+
 
 
 
