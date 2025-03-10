@@ -147,14 +147,22 @@ python3 create_pickle.py
 
 
 ### 実機
-1. `operate_lite_initial_config_jointtrajectory.py`  
-   はさみ操作の初期姿勢にShadow Hand Liteを移動
-2. `operate_lite_feedback_control_jointtrajectory.py`  
-   単一の目標値に対して, フィードバック制御(PID)を用いたジョイント軌道で操作
-3. `operate_lite_feedback_control_jointtrajectory_sequence.py`  
-   連続的に変化する目標値に対して, フィードバック制御(PID)によるジョイント軌道で操作
-4. `operate_lite_feedback_control_jointtrajectory_sinwave.py`  
-   サイン波の目標値に対して, フィードバック制御(PID)を使用して操作
+1. はさみ操作の初期姿勢にShadow Hand Liteを移動
+```
+python3 operate_lite_initial_config_jointtrajectory.py
+```
+2. 単一の目標値に対して, フィードバック制御(PID)を用いたジョイント軌道で操作
+```
+python3 operate_lite_feedback_control_jointtrajectory.py
+```
+3. 連続的に変化する目標値に対して, フィードバック制御(PID)によるジョイント軌道で操作
+```
+python3 operate_lite_feedback_control_jointtrajectory_sequence.py
+```
+4. サイン波の目標値に対して, フィードバック制御(PID)を使用して操作
+```
+python3 operate_lite_feedback_control_jointtrajectory_sinwave.py
+```
 
 
 
