@@ -48,7 +48,7 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
     all_success_grasp_path = os.path.join(logger.get_dir(), "total_grasp_dataset.npy")
 
     poslist = []
-    if is_init_grasp:  # On/Off
+    if is_init_grasp:  # On/Off   # ここは使っていない！
         init_poslist = []
         path_to_default_grasp_dataset = "model/initial_grasp_pose.npy"
         if os.path.exists(path_to_default_grasp_dataset):
@@ -69,7 +69,7 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
     logger.info("Training...")
     best_success_rate = -1
 
-    if policy.bc_loss == 1: policy.initDemoBuffer(demo_file)   # initialize demo buffer if training with demonstrations
+    if policy.bc_loss == 1: policy.initDemoBuffer(demo_file)  # initialize demo buffer if training with demonstrations # ここも使っていない！！！
     for epoch in range(n_epochs):
         clogger.info("Start: Epoch {}/{}".format(epoch, n_epochs))
         # train
@@ -83,8 +83,9 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
                                                        synergy=pos_database,
                                                        synergy_type=synergy_type)
 
-            if len(pos_database.get_poslist()) > min_num:
+            if len(pos_database.get_poslist()) > min_num:  # 0epochの途中から実行される
                 pos_database.calc_pca()
+
 
             # clogger.info("Episode = {}".format(episode.keys()))
             # for key in episode.keys():
@@ -96,12 +97,14 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
                 _, _, reward = policy.train()
                 rewards.append(reward)
             policy.update_target_net()
+
         # test
         evaluator.clear_history()
         for _ in range(n_test_rollouts):
             evaluator.generate_rollouts(min_num=min_num, num_axis=num_axis,
                                         reward_lambda=reward_lambda, synergy=pos_database,
                                         synergy_type=synergy_type)
+
         # record logs
         logger.record_tabular('epoch', epoch)
         for key, val in evaluator.logs('test'):
@@ -136,7 +139,7 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
             policy_path = periodic_policy_path.format(epoch)
             logger.info('Saving periodic policy to {} ...'.format(policy_path))
             evaluator.save_policy(policy_path)
-            # -- motoda added
+            # -- motoda added  # ここは作動してた。
             grasp_path = path_to_grasp_dataset.format(epoch)
             logger.info('Saving grasp pose: {} grasps. Saving policy to {} ...'.format(len(pos_database.get_poslist()),
                                                                                        grasp_path))
@@ -156,9 +159,8 @@ def train(min_num, max_num, num_axis, reward_lambda, # nishimura
         if rank != 0:
             assert local_uniform[0] != root_uniform[0]
 
-    # motoda --
+    # motoda --   # ここは作動してなかった。
     # Dumping the total success_pose
-    logger.info('Saving grasp pose: {} grasps. Saving policy to {} ...'.format(len(poslist), all_success_grasp_path))
     np.save(all_success_grasp_path, poslist)
     # --
 

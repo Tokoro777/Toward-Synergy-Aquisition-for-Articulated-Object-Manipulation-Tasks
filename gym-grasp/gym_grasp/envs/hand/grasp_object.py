@@ -35,7 +35,11 @@ def euler2mat(euler):
     return r
 
 # Ensure we get the path separator correct on windows
-GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object.xml')  # 5本指ver
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf.xml')  # 4本指.ver
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_Lite.xml')  # 4本指でかつ、実機Liteと同じWRJ1J0,THJ2を削除した.ver
+# GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown.xml')  # Liteではさみが上下.ver RSJで発表したversion.実機までこのモデルを使った
+GRASP_OBJECT_XML = os.path.join('hand', 'grasp_object_remove_lf_scissors_updown_no_rollhingeWRJ1J0THJ2.xml')  # 修論前に, きちんとしたモデルで学習し直してみる
 
 
 class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
@@ -45,7 +49,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             randomize_initial_position=False, randomize_initial_rotation=False, randomize_object=False,
             distance_threshold=0.01, rotation_threshold=0.1, angle_threshold=0.1, n_substeps=20, relative_control=False,
             ignore_z_target_rotation=False,
-            target_id=0, num_axis=5, reward_lambda=0.5  # angle_threshold=0.1は約5度に相当
+            target_id=0, num_axis=5, reward_lambda=0.5  # angle_threshold=0.1は約5度に相当  0.02は、約
     ):
         """Initializes a new Hand manipulation environment.
 
@@ -90,7 +94,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         self.ignore_z_target_rotation = ignore_z_target_rotation
         self.synergy = None
 
-        self.object_list = ["box:joint", "apple:joint", "banana:joint", "beerbottle:joint", "book:joint",
+        self.object_list = ["scissors:joint", "box:joint", "apple:joint", "banana:joint", "beerbottle:joint", "book:joint",
                             "needle:joint", "pen:joint", "teacup:joint"]
         self.target_id = target_id
         self.num_axis = num_axis  # the number of components
@@ -103,7 +107,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             self.object = self.object_list[self.target_id]  # target
 
         self.step_n = 0
-        self.init_object_qpos = np.array([1.08, 0.888, 0.4, 1, 0, 0, 0])  # 1
+        self.init_object_qpos = np.array([1.07, 0.892, 0.4, 1, 0, 0, 0])  # 1
 
         assert self.target_position in ['ignore', 'fixed', 'random']
         assert self.target_rotation in ['ignore', 'fixed', 'xyz', 'z', 'parallel']
@@ -189,9 +193,14 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             gpenalty = info["is_in_grasp_space"].T[0]
             success = self._is_success(achieved_goal, goal, gpenalty).astype(np.float32)  # 成否（1,0）を取得する
             cpenalty = info["contact_penalty"].T[0]
-            success = success * gpenalty
+            keep_reward = info['keep_position'].T[0]
 
-            reward = (success - 1.)  # - c_lambda * (success * info['e']) - cpenalty  # - gpenalty
+            # success = success * gpenalty
+            success = success * gpenalty #* keep_reward
+
+            reward = (success - 1.) #+ (keep_reward - 1.)  # キープ報酬を加算して全体の報酬を計算
+
+            # reward = (success - 1.)  # - c_lambda * (success * info['e']) - cpenalty  # - gpenalty
 
             return reward
 
@@ -210,6 +219,16 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         achieved_angle = (d_angle < self.angle_threshold).astype(np.float32)  # はさみが閉じれた状態なら成功. 回転角度が閾値以下なら閉じれたと判断
         achieved_both = achieved_angle.flatten() * isingrasp
         return achieved_both
+
+    def keep_positon(self):
+        # 追加部分: はさみを目標位置にキープした場合の報酬計算
+        distance_threshold = 0.05  # 目標位置に対する最大許容距離
+        obj_pos = self.sim.data.site_xpos[self.sim.model.site_name2id("scissors:center")]  # はさみの位置
+        goal_pos = self.init_object_qpos[:3]
+        goal_pos = goal_pos #+ [0.0, 0.0, 0.1]  # 目標位置
+        distance_to_goal = np.linalg.norm(obj_pos - goal_pos)  # はさみと目標位置との距離を計算
+        keep_reward = 1.0 if distance_to_goal <= distance_threshold else 0.0
+        return keep_reward
 
     def _env_setup(self, initial_qpos):
         for name, value in initial_qpos.items():
@@ -261,22 +280,124 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                 raise error.Error('Unknown target_rotation option "{}".'.format(self.target_rotation))
 
         # self.sim.data.set_joint_qpos("robot0:rollhinge", 1.57) # self.np_random.uniform(0, 3.14))
-        joint_names = ["robot0:zslider",
-                       "robot0:rollhinge",
-                       "robot0:WRJ1", "robot0:WRJ0",
-                       "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
-                       "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
-                       "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                       "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
-                       "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
-        joint_angles = [0.03,
-                        1.57,
-                        0.0, 0.0,
+
+        # joint_names = [#"robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        #
+        # joint_angles = [#0.04,  # はさみの穴を狭めたver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.53, 0.0, 1.57,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.209, 0.0, -1.57]
+
+        # joint_names = ["robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        #
+        # joint_angles = [0.04,  # 指2本はさみの穴に入る.ver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.209, 0.0, -1.57]
+
+        # # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+        # # 手首の関節なしで, THJ2は0.0~0.0001でしか動かないver
+        # joint_names = ["robot0:rollhinge",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.53, 0.0, 1.57,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, -1.57]
+
+        # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+        # rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
+        # 修論前モデル
+        # 4本指バージョン
+        joint_names = ["robot0:WRJ0",
+                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        joint_angles = [0.0,
                         0.0, 1.57, 0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
                         0.0, 1.57, 0.0, 0.0,
-                        0.0, 0.0, 1.57, 0.0, 0.0,
-                        0.461, 1.22, 0.209, 0.0, 0.0]
+                        0.115, 1.22, 0.0, 0.0, 0.0]
+        # 3本指バージョン
+        # joint_names = ["robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.115, 1.22, 0.0, 0.0, 0.0]
+        # 2本指バージョン
+        # joint_names = ["robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.115, 1.22, 0.0, 0.0, 0.0]
+
+        # 角ばったはさみバージョン
+        # joint_names = ["robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.53, 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
+
+
+        #  RSJで発表したモデル. grasp_object_remove_lf_scissors_updown.xml
+        # joint_names = [#"robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        #
+        # joint_angles = [#0.04,  # はさみの穴を狭めたver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.53, 0.0, 0.0,  # 1.53
+        #                 0.0, 0.0, 0.0, 0.0,  # 1.44
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
         for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
             self.sim.data.set_joint_qpos(joint_name, angle)
@@ -288,7 +409,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         initial_quat /= np.linalg.norm(initial_quat)
         initial_qpos = np.concatenate([initial_pos, initial_quat])
-        # self.initial_qpos = initial_qpos
+        self.initial_qpos = initial_qpos
+        self.sim.data.set_joint_qpos(self.object, initial_qpos)  # はさみの位置をinitial_qposに初期化, 空中固定の場合は必要ない
         self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
         self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)  #  1.02358
         self.step_n = 0
@@ -303,7 +425,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
 
         # Run the simulation for a bunch of timesteps to let everything settle in.
         for _ in range(10):
-            self._set_action(np.zeros(21))
+            self._set_action(np.zeros(14))  # self._set_action(np.zeros(21))
             try:
                 self.sim.step()
             except mujoco_py.MujocoException:
@@ -318,7 +440,7 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
             offset = self.np_random.uniform(max(0.3, self.target_angle_range[0, 0]), min(1.0, self.target_angle_range[0, 1]))
             offset = np.array([offset])
             assert offset.shape == (1,)
-            goal = 1.0 - offset
+            goal = 1.0 - offset  #  0.0~0.7のランダム値
         elif self.target_position in ['ignore', 'fixed']:
             goal = 1.0
         else:
@@ -424,11 +546,8 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         return posgrasp
 
     def _is_in_grasp_space(self, radius=0.05):
-        posgrasp = self._get_grasp_center_space(radius=radius)
-        x = self.init_object_qpos[0] - 0.02
-        y = self.init_object_qpos[1]
-        z = self.init_object_qpos[2]
-        posobject = [x, y, z]
+        posgrasp = self._get_grasp_center_space(radius=radius)  # 手の平の位置
+        posobject = self.sim.data.site_xpos[self.sim.model.site_name2id("scissors:center")]  # はさみの位置
         return mean_squared_error(posgrasp, posobject, squared=False) < 0.05
 
     def _display_grasp_space(self):
@@ -504,11 +623,20 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
                                            rgba=(1, 0, 0, 0.8),
                                            emission=1)
 
+    # 初期位置を設定する関数
+    def set_random_initial_qpos(self):
+        # 現在の初期位置を取得
+        init_object_qpos = self.initial_qpos
+        y_random_offset = np.random.uniform(0, 0.03)
+        # 初期位置のy軸成分を変更
+        init_object_qpos[1] += y_random_offset
+        # 設定を反映
+        self.initial_qpos = init_object_qpos
+
     def step(self, action):
         self.step_n += 1
 
         action = np.clip(action, self.action_space.low, self.action_space.high)
-        self._set_action(action)
         self._set_action(action)
         self.sim.step()
         self._step_callback()
@@ -519,36 +647,127 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         info = {
             'is_success': self._is_success(obs['achieved_goal'], self.goal, 1.0 if self._is_in_grasp_space() else 0.0),
             "contact_penalty": self._check_contact(),
-            "is_in_grasp_space": 1.0 if self._is_in_grasp_space() else 0.0
+            "is_in_grasp_space": 1.0 if self._is_in_grasp_space() else 0.0,
+            'achieved_goal': obs['achieved_goal'],  # 新たにagを追加, rolloutで把持姿勢pos＋はさみの角度を保存するため
+            'keep_position': self.keep_positon()
         }
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
 
-        joint_names = ["robot0:zslider",
-                       "robot0:rollhinge",
-                       "robot0:WRJ1", "robot0:WRJ0",
+        # joint_names = [#"robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [# 0.04,  # はさみの穴を狭めたver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.53, 0.0, 1.57,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.209, 0.0, -1.57]
+
+
+        # joint_names = ["robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.04,  # 指2本はさみの穴に入る.ver
+        #                 1.57,
+        #                 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
+        #                 0.0, 1.22, 0.209, 0.0, -1.57]
+
+        # # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+        # # rollhingeや手首の関節なしで, THJ2は0.0~0.0001でしか動かないver
+        # joint_names = ["robot0:rollhinge",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.53, 0.0, 1.57,
+        #                 0.0, 1.44, 0.0, 1.57,
+        #                 0.0, 1.22, 0.0, 0.0, -1.57]
+
+        # robot_for_grasp_obj_Lite_scissors_updown_no_rollhingeWRJ1J0THJ2
+        # rollhingeやWRJ1なし(WRJ0はあり0.0~0.001)で, THJ2は0.0~0.0001でしか動かないver
+        # 修論前モデル
+        # 4本指バージョン
+        joint_names = ["robot0:WRJ0",
                        "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
                        "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                        "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
-                       "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
                        "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        joint_angles = [0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.0, 1.57, 0.0, 0.0,
+                        0.115, 1.22, 0.0, 0.0, 0.0]
+        # 3本指バージョン
+        # joint_names = ["robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.115, 1.22, 0.0, 0.0, 0.0]
+        # 2本指バージョン
+        # joint_names = ["robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.57, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.0, 0.0, 0.0, 0.0,
+        #                 0.115, 1.22, 0.0, 0.0, 0.0]
 
-        joint_angles = [0.04,  #指真っ直ぐの時
-                        1.57,
-                        0.0, 0.0,
-                        0.0, 1.4, 0.0, 0.0,
-                        0.0, 1.4, 0.0, 0.0,
-                        0.0, 1.4, 0.0, 0.0,
-                        0.0, 0.0, 1.4, 0.0, 0.0,
-                        0.0, 1.22, 0.0, 0.0, 0.0]
+        # 角ばったはさみバージョン
+        # joint_names = ["robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.53, 0.0, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
-        # joint_angles = [0.04,  # 指中くらいに曲げる時
+        #  RSJで発表したモデル. grasp_object_remove_lf_scissors_updown.xml
+        # joint_names = [#"robot0:zslider",
+        #                "robot0:rollhinge",
+        #                "robot0:WRJ1", "robot0:WRJ0",
+        #                "robot0:FFJ3", "robot0:FFJ2", "robot0:FFJ1", "robot0:FFJ0",
+        #                "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
+        #                "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
+        #                # "robot0:LFJ4", "robot0:LFJ3", "robot0:LFJ2", "robot0:LFJ1", "robot0:LFJ0",
+        #                "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+        # joint_angles = [# 0.04,  # はさみの穴を狭めたver
         #                 1.57,
         #                 0.0, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 1., 0.5, 0.0,
-        #                 0.0, 0.0, 1., 0.5, 0.0,
+        #                 0.0, 1.44, 0.0, 0.0,
+        #                 0.0, 1.53, 0.0, 0.0,  # 1.53
+        #                 0.0, 0.0, 0.0, 0.0,  # 1.44
+        #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
         #                 0.0, 1.22, 0.0, 0.0, 0.0]
+
 
         # print(obs["observation"][:22])
         # self.sim.data.ctrl[:] = [0.0, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 1.57, 0.0, 0.0, 0.0, 1.57, 0.0, 0.5, 1.22, 0.209, 0.0, 0.0, 0.02]
@@ -570,22 +789,30 @@ class ManipulateEnv(hand_env.HandEnv, utils.EzPickle):
         #     current_zslider_pos = self.sim.data.get_joint_qpos("robot0:zslider")
         #     self.sim.data.set_joint_qpos("robot0:zslider", current_zslider_pos)
 
-        if self.step_n < 20:
+        # if self.step_n == 1:
+        #     self.set_random_initial_qpos()  # はさみ初期位置をランダム化
+        #     # print("はさみ初期位置ランダム化")
+        #     # print(self.initial_qpos[1])
+
+        if self.step_n < 30:  # はじめの40stepは以下の値を維持する.(はさみの角度, ハンドの姿勢, はさみの位置)
+            self.sim.data.set_joint_qpos(self.object, self.initial_qpos)  # はさみをランダム初期位置にし、freejointで落下させる
+            # 空中固定の場合は必要ない。
             self.sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
             self.sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
             for joint_name, angle in zip(joint_names, joint_angles):  # 全てのjointを初期指定
                 self.sim.data.set_joint_qpos(joint_name, angle)  # 始めの50stepは手の初期位置を維持する
 
+
         # Options for displaying information
         # self._display_contacts()
-        if self._is_in_grasp_space():
-            self._display_grasp_space()
+        # if self._is_in_grasp_space():
+        #     self._display_grasp_space()
 
         return obs, reward, done, info
 
 
 class GraspObjectEnv(ManipulateEnv):
-    def __init__(self, target_position='random', target_rotation='xyz', reward_type="not_sparse"):
+    def __init__(self, target_position='random', target_rotation='fixed', reward_type="not_sparse"):
         super(GraspObjectEnv, self).__init__(
             model_path=GRASP_OBJECT_XML, target_position=target_position,
             target_rotation=target_rotation,

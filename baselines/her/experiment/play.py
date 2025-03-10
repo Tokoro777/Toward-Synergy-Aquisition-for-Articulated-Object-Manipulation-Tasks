@@ -13,7 +13,7 @@ from baselines.her.experiment.pos_database import SynergyManager
 @click.command()
 @click.argument('policy_file', type=str)
 @click.option('--seed', type=int, default=0)
-@click.option('--n_test_rollouts', type=int, default=10)
+@click.option('--n_test_rollouts', type=int, default=100)  # もともと10だったけど、増やした
 @click.option('--render', type=int, default=1)
 @click.option('--min_num', type=int, default=100,help='minimum number of success_u whether to run PCA')
 @click.option('--num_axis', type=int, default=5,help='number of principal components to calculate the reward function')

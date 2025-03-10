@@ -17,7 +17,7 @@ class Runner(AbstractEnvRunner):
         # Discount rate
         self.gamma = gamma
 
-    def run(self):
+    def run(self):   ### このプログラムは学習につかわれていない!!!!!!!!!!!
         # Here, we init the lists that will contain the mb of experiences
         mb_obs, mb_rewards, mb_actions, mb_values, mb_dones, mb_neglogpacs = [],[],[],[],[],[]
         mb_states = self.states

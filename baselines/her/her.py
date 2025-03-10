@@ -73,7 +73,7 @@ def make_sample_her_transitions(replay_strategy, replay_k, reward_fun):
                                        axis=1)
             # print (info['e'])
         else:
-            info['e'] = [0.]*transitions['pos'].shape[0]
+            info['e'] = [0.] * transitions['pos'].shape[0]
 
         transitions['e'] = np.array(info['e'])
         info['lambda'] = pos_database.get_lambda()

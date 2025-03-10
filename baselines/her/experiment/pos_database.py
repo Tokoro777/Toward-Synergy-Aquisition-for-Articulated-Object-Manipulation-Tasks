@@ -8,8 +8,8 @@ class SynergyManager:
         self.num_axis = num_axis
         self.maxn_pos = maxn_pos
 
-        self.axis = np.array([[0.5] * 20] * self.num_axis)
-        print(self.axis)
+        self.axis = np.array([[0.5] * 20] * self.num_axis)  # num_axis=5
+        print(self.axis)  # 0.5を20個持つ、(5, 20)が出力
 
         self.pca = PCA(self.num_axis)
 
@@ -19,8 +19,11 @@ class SynergyManager:
     def get_lambda(self):
         return self.reward_lambda
 
-    def add_pos(self, pos):
+    def add_pos(self, pos):  # 要素をリストに追加
         self.poslist.append(pos)
+
+    def add_list(self, list):  # リストをリストに追加. new
+        self.poslist.extend(list)
 
     def set_poslist(self, poslist):
         self.poslist = poslist

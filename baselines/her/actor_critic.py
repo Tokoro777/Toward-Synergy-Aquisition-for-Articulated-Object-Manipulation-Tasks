@@ -58,7 +58,7 @@ class ActorCritic:
                                   name='fc3')
             self.pi_tf_fc2 = fc2
             self.pi_tf     = fc3
-            
+
         with tf.variable_scope('Q'):
             # for policy training
             input_Q = tf.concat(axis=1, values=[o, g, self.pi_tf / self.max_u])

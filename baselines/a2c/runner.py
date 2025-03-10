@@ -18,7 +18,7 @@ class Runner(AbstractEnvRunner):
         self.batch_action_shape = [x if x is not None else -1 for x in model.train_model.action.shape.as_list()]
         self.ob_dtype = model.train_model.X.dtype.as_numpy_dtype
 
-    def run(self):
+    def run(self):  ####  この部分一切学習に使われていないプログラム!!!!!!!!!!!
         # We initialize the lists that will contain the mb of experiences
         mb_obs, mb_rewards, mb_actions, mb_values, mb_dones = [],[],[],[],[]
         mb_states = self.states
