@@ -104,7 +104,9 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 
 ### 手順
 ### シミュレーション
-1. `grasp_object.py`  
+1. ```
+python3 grasp_object.py
+``` 
    はさみ操作の学習
 2. `see_pca_axis_Lite_14_elements_scissors_updown.py`  
    PC1やPC2主成分軸に沿った, ハンドの動きを可視化
