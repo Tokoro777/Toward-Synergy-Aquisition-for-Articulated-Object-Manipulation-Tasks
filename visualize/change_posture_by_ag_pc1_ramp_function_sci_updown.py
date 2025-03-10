@@ -26,7 +26,7 @@ sim = MjSim(model)
 # データセットパス設定
 file_npy = "new_grasp_dataset_with_ag.npy"
 folder_name = "test"
-dataset_path = args.dir + "/policy_roundscissor/{}/{}".format(folder_name, file_npy)
+dataset_path = args.dir + "/policy_round3finger/{}/{}".format(folder_name, file_npy)
 
 viewer = MjViewer(sim)
 t = 0
@@ -104,7 +104,7 @@ print("Inverse posture:", inverse_posture)
 def set_initial_joint_positions(sim, joint_names, joint_angles):
     for joint_name, joint_angle in zip(joint_names, joint_angles):
         joint_idx = sim.model.joint_name2id(joint_name)
-        perturbation = math.radians(random.uniform(-1, 1))
+        perturbation = math.radians(random.uniform(-2, 2))
         sim.data.qpos[joint_idx] = joint_angle + perturbation
 
 
@@ -119,7 +119,7 @@ joint_names = ["robot0:WRJ0",
 joint_angles = [0.0,
                 0.0, 1.57, 0.0, 0.0,
                 0.0, 1.57, 0.0, 0.0,
-                0.0, 1.57, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0,
                 0.115, 1.22, 0.0, 0.0, 0.0]
 
 # 関節名と初期角度の定義
@@ -211,9 +211,9 @@ while True:
     sim.data.ctrl[:] = np.clip(sim.data.ctrl[:], ctrlrange[:, 0], ctrlrange[:, 1])
 
 # 結果をファイルに保存
-output_dir = os.path.join(args.dir, "policy_roundscissor/test/")
+output_dir = os.path.join(args.dir, "policy_round3finger/test/")
 os.makedirs(output_dir, exist_ok=True)
-file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_1degree_modify.txt")
+file_name = os.path.join(output_dir, f"error_with_desired_ag={desired_ag}_in_ramdom_hand_2degree_modify.txt")
 
 with open(file_name, 'w') as file:
     for ag in recorded_ags:

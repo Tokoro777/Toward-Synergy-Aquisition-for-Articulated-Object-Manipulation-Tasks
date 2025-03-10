@@ -12,7 +12,7 @@ model = load_model_from_path("/home/tokoro/.mujoco/synergy/gym-grasp/gym_grasp/e
 sim = MjSim(model)
 
 # dataset_path = "/home/tokoro/policy_sci_updown_no_zslider_only_third_bend/test/{}"  # RSJ用
-dataset_path = "/home/tokoro/policy_roundscissor/test/{}"  # 修論前用
+dataset_path = "/home/tokoro/policy_oldscissor/test/{}"  # 修論前用
 
 viewer = MjViewer(sim)
 
@@ -62,11 +62,16 @@ joint_names = ["robot0:WRJ0",
                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+# joint_angles = [0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 0.0, 0.0, 0.0,
+#                 0.115, 1.22, 0.0, 0.0, 0.0]
 joint_angles = [0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.115, 1.22, 0.0, 0.0, 0.0]
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.53, 0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.22, 0.0, 0.0, 0.0]
 
 # scissors_updown_only_third_bend
 # 第三関節しか曲がらない, 第一関節は全て曲がらないver

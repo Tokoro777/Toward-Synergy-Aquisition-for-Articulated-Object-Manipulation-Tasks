@@ -24,7 +24,7 @@ viewer = MjViewer(sim)
 file_npy = "new_grasp_dataset_with_ag.npy"
 folder_name = "test"
 # dataset_path = args.dir + "/policy_sci_updown_no_zslider_only_third_bend/{}/{}".format(folder_name, file_npy)  # RSJ用
-dataset_path = args.dir + "/policy_before/{}/{}".format(folder_name, file_npy)  # 修論前用
+dataset_path = args.dir + "/policy_roundscissor/{}/{}".format(folder_name, file_npy)  # 修論前用
 
 # データの読み込み
 postures = np.load(dataset_path)
@@ -42,7 +42,7 @@ postures_pca = pca.fit_transform(postures)
 pc1 = postures_pca[:, 0]
 pc2 = postures_pca[:, 1]
 # # 符号反転（必要に応じて行う）
-# pc2 *= -1  # PC2 の符号を反転
+# pc1 *= -1  # PC2 の符号を反転
 
 # 相関係数を計算
 correlation = np.corrcoef(pc1, achievedgoal_values)[0, 1]
@@ -76,15 +76,15 @@ params_filtered, params_covariance_filtered = curve_fit(
 )
 
 # 元データとフィッティング結果をプロット
-plt.scatter(pc1, achievedgoal_values, label='Original Hand posture data')
-plt.scatter(pc1_filtered, achievedgoal_values_filtered, label='Filtered Hand posture data', color='green')
-plt.plot(np.sort(pc1), ramp_function(np.sort(pc1), *params_filtered), label='Filtered fitted ramp function', color='red', linewidth=2)
+plt.scatter(pc1, achievedgoal_values, label='Outlier Hand posture')
+plt.scatter(pc1_filtered, achievedgoal_values_filtered, label='Filtered Hand posture', color='green')
+plt.plot(np.sort(pc1), ramp_function(np.sort(pc1), *params_filtered), label='Fitted ramp function', color='red', linewidth=2)
 plt.xlabel('PC1', fontsize=20)
 plt.ylabel('Desired scissor angle [rad]', fontsize=20)
 plt.xticks(fontsize=15)
 plt.yticks(fontsize=15)
 plt.subplots_adjust(left=0.125, right=0.99, top=0.98, bottom=0.125)
-plt.legend()
+plt.legend(fontsize=18)
 plt.show()
 
 # フィッティングパラメータを表示

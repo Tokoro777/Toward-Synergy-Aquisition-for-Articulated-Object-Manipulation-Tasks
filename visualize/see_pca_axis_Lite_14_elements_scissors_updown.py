@@ -38,7 +38,7 @@ folder_name = "test"
 
 # ----------------------------------------------
 # dataset_path = args.dir + "/policy_sci_updown_no_zslider_only_third_bend/{}/{}".format(folder_name, file_npy)  # RSJ用
-dataset_path = args.dir + "/policy_roundscissor/{}/{}".format(folder_name, file_npy)  # 修論前用
+dataset_path = args.dir + "/policy_oldscissor/{}/{}".format(folder_name, file_npy)  # 修論前用
 # dataset_path = args.dir + "/policy/{}/{}".format("210215", "grasp_dataset_30.npy")
 
 viewer = MjViewer(sim)
@@ -65,7 +65,7 @@ explained_variance_ratios = pca.explained_variance_ratio_
 for i, explained_variance_ratio in enumerate(explained_variance_ratios):
     print(f"PC{i+1} explained variance ratio: {explained_variance_ratio:.4f}")
 
-pc_axis = 2
+pc_axis = 1
 n = 0
 scores = pca.transform(postures)
 score_range = [(min(a), max(a)) for a in scores.T]
@@ -129,11 +129,16 @@ joint_names = ["robot0:WRJ0",
                 "robot0:MFJ3", "robot0:MFJ2", "robot0:MFJ1", "robot0:MFJ0",
                 "robot0:RFJ3", "robot0:RFJ2", "robot0:RFJ1", "robot0:RFJ0",
                 "robot0:THJ4", "robot0:THJ3", "robot0:THJ2", "robot0:THJ1", "robot0:THJ0"]
+# joint_angles = [0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 1.57, 0.0, 0.0,
+#                 0.0, 0.0, 0.0, 0.0,
+#                 0.115, 1.22, 0.0, 0.0, 0.0]
 joint_angles = [0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.0, 1.57, 0.0, 0.0,
-                0.115, 1.22, 0.0, 0.0, 0.0]
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.53, 0.0, 0.0,
+                0.0, 1.44, 0.0, 0.0,
+                0.0, 1.22, 0.0, 0.0, 0.0]
 
 # 第一関節を曲げないver. THJ2は0.0に.
 # RSJ用のモデル設定
@@ -154,10 +159,14 @@ joint_angles = [0.0,
 #                 # 0.0, 0.0, 1.32, 0.0, 1.57,
 #                 0.0, 1.22, 0.0, 0.0, 0.0]
 
-# 関節位置を設定
-set_initial_joint_positions(sim, joint_names, joint_angles)
 
 initial_qpos = np.array([1.07, 0.892, 0.4, 1, 0, 0, 0])
+
+# 関節位置を設定
+set_initial_joint_positions(sim, joint_names, joint_angles)
+sim.data.set_joint_qpos("scissors:joint", initial_qpos)  # はさみを初期位置にし、freejointで落下させる
+sim.data.set_joint_qpos("scissors_hinge_1:joint", 0)  # はさみの回転角度の初期化
+sim.data.set_joint_qpos("scissors_hinge_2:joint", 0)
 
 p = 0
 while True:
@@ -186,6 +195,13 @@ while True:
 
     # print("trajectory[", n, "]")
 
+    # 今のサンプルに対応する PCA 空間での座標
+    # trajectory[n] = [PC1, PC2, PC3, PC4, PC5] の順
+    current_pc = trajectory[n]
+
+    # ここで第一主成分(PC1スコア)を取得
+    current_pc_score = current_pc[pc_axis - 1]
+
     posture = pca.mean_ + pca.inverse_transform(trajectory[n])  # trajectory[?]=[* 0 0 0 0]
 
     # sim.data.ctrl[2:-1] = actuation_center[2:-1] + posture * actuation_range[2:-1]  # WRJ0とzsliderとagを消すパターン
@@ -193,6 +209,9 @@ while True:
 
     sim.data.ctrl[:] = actuation_center[:] + posture * actuation_range[:]  # actuatorが14個で, datasetからagを消すパターン
     sim.data.ctrl[:] = np.clip(sim.data.ctrl[:], ctrlrange[:, 0], ctrlrange[:, 1])
+
+    # 第一主成分スコアを確認したい場合に表示
+    print(f"[n={n}] PC1 score: {current_pc_score:.4f}")
 
     hinge_joint_angle_2 = sim.data.get_joint_qpos("scissors_hinge_2:joint")
     # print(hinge_joint_angle_2)  # PC1を変化させた時の, achieved_goalの値を出力

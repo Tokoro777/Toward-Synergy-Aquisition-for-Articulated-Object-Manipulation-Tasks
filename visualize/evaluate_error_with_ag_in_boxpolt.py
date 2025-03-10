@@ -16,15 +16,15 @@ args = parser.parse_args()
 
 # ベースディレクトリの設定
 # base_dir = os.path.join(args.dir, "policy_without_WRJ1J0", "test")
-base_dir = os.path.join(args.dir, "policy_roundscissor", "test")
+base_dir = os.path.join(args.dir, "policy_sci_updown_no_zslider_only_third_bend", "test")
 
 # 各ファイルのパスと対応するdesired_agの値
 files_with_ag = [
-    (os.path.join(base_dir, "error_with_desired_ag=0.0_in_ramdom_hand_1degree_quadratic.txt"), 0.0), #error_with_desired_ag=0.0_in_ramdom_hand_2degree.txt
-    (os.path.join(base_dir, "error_with_desired_ag=0.2_in_ramdom_hand_1degree_quadratic.txt"), 0.2),
-    (os.path.join(base_dir, "error_with_desired_ag=0.4_in_ramdom_hand_1degree_quadratic.txt"), 0.4),
-    (os.path.join(base_dir, "error_with_desired_ag=0.6_in_ramdom_hand_1degree_quadratic.txt"), 0.6),
-    (os.path.join(base_dir, "error_with_desired_ag=0.7_in_ramdom_hand_1degree_quadratic.txt"), 0.7)
+    (os.path.join(base_dir, "error_with_desired_ag=0.0_in_ramdom_hand_2degree_modify.txt"), 0.0), #error_with_desired_ag=0.0_in_ramdom_hand_2degree.txt
+    (os.path.join(base_dir, "error_with_desired_ag=0.2_in_ramdom_hand_2degree_modify.txt"), 0.2),
+    (os.path.join(base_dir, "error_with_desired_ag=0.4_in_ramdom_hand_2degree_modify.txt"), 0.4),
+    (os.path.join(base_dir, "error_with_desired_ag=0.6_in_ramdom_hand_2degree_modify.txt"), 0.6),
+    (os.path.join(base_dir, "error_with_desired_ag=0.7_in_ramdom_hand_2degree_modify.txt"), 0.7)
 ]
 
 data = []
@@ -67,7 +67,17 @@ for file, desired_ag in files_with_ag:
 
 # |actual-desired| 絶対値の場合
 plt.figure(figsize=(10, 6))
-plt.boxplot(data, labels=['0.0', '0.2', '0.4', '0.6', '0.7'])
+# plt.boxplot(data, labels=['0.0', '0.2', '0.4', '0.6', '0.7'])
+box = plt.boxplot(data, labels=['0.0', '0.2', '0.4', '0.6', '0.7'], patch_artist=True)
+
+# 各箱を無色に設定
+for patch in box['boxes']:
+    patch.set(facecolor='none', edgecolor='black')  # 無色かつ黒い枠線
+# 中央値の線を太くする
+median_line_width = 3  # 中央値の線の太さ
+for median in box['medians']:
+    median.set(color='red', linewidth=median_line_width)
+
 desired = "desired"
 plt.xlabel(f"$A_{{{desired}}}$ [rad]", fontsize=40)
 plt.ylabel('$e$ [°]', fontsize=40)
@@ -82,5 +92,5 @@ plt.yticks(fontsize=25)  # y軸のラベルの文字サイズを設定
 # Adjusting subplot parameters to trim excess whitespace
 plt.subplots_adjust(left=0.148, right=0.98, top=0.975, bottom=0.17)
 
-plt.savefig(os.path.join(base_dir, "boxplot_degrees_ramdom_hand_1degree_abs_0-12_quadratic.png")) # boxplot_degrees_ramdom_hand_2degree ,boxplot_degrees_-30-10.png"
+plt.savefig(os.path.join(base_dir, "boxplot_degrees_ramdom_hand_2degree_abs_0-12_modify.png")) # boxplot_degrees_ramdom_hand_2degree ,boxplot_degrees_-30-10.png"
 plt.show()
