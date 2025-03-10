@@ -100,3 +100,26 @@ pip install -e .
 Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint dynamics in contact) physics simulator, which is proprietary and requires binaries and a license (temporary 30-day license can be obtained from [www.mujoco.org](http://www.mujoco.org)). Instructions on setting up MuJoCo can be found [here](https://github.com/openai/mujoco-py)
 
 
+
+
+### 手順
+## シミュレーション
+1. `grasp_object.py`
+2. `see_pca_axis_Lite_14_elements_scissors_updown.py`
+3. `get_new_dataset_for_ag_with_sci_updown_no_zslider.py`
+4. `see_plot_correlation_pc1_ag_Lite.py`
+5. `replay_dataset_Lite_pc1_ag_with_sci_updown_no_zslider_new_ag.py`
+6. `change_posture_by_ag_pc1_ramp_function_sci_updown.py`
+7. `evaluate_error_with_ag_in_boxplot.py`
+8. `get_joint_value_for_ros.py`
+9. `create_pickle.py`
+10. `operate_lite.py`
+
+## 実機
+1. `operate_lite_initial_config_jointtrajectory.py`
+2. `operate_lite_feedback_control_jointtrajectory.py`
+3. `operate_lite_feedback_control_jointtrajectory_sequence.py`
+4. `operate_lite_feedback_control_jointtrajectory_sinwave.py`
+
+
+
