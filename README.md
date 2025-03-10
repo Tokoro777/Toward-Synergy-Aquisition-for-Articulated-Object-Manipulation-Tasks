@@ -102,8 +102,8 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 
 
 
-### 実行コードの手順
-### シミュレーション
+# 実行コードの手順
+## シミュレーション
 1. はさみ操作の学習
 ```
 python3 grasp_object.py
@@ -146,7 +146,7 @@ python3 create_pickle.py
 ```
 
 
-### 実機
+## 実機
 1. はさみ操作の初期姿勢にShadow Hand Liteを移動
 ```
 python3 operate_lite_initial_config_jointtrajectory.py
