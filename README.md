@@ -102,7 +102,7 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 
 
 
-### 手順
+### 実行コードの手順
 ### シミュレーション
 1. はさみ操作の学習
 ```
