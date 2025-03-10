@@ -165,21 +165,21 @@ python3 operate_lite_feedback_control_jointtrajectory_sinwave.py
 ```
 
 ## ディレクトリ構造
+リポジトリTOP
+│
+├ README.md .. 目次を書く
+│
+├ ○○.md
+├ ○○.md
+├ ○○.md
+│
+├ 第１章 .. フォルダを作成
+│　├ ○○.md
+│　├ ○○.md
+│　└ ○○.md
+│
+├ 第２章 .. フォルダを作成
 
-.
-└── laravel
-    ├── README.md
-    ├── composer.json
-    ├── composer.lock
-    ├── docker-compose.yml
-    ├── package-lock.json
-    ├── package.json
-    ├── phpunit.xml
-    ├── public
-    │   ├── favicon.ico
-    │   ├── index.php
-    │   └── robots.txt
-    └── vite.config.js
 
 
 
