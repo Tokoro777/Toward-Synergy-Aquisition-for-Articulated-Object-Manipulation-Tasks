@@ -117,7 +117,7 @@ cd synergy
 ```
 
 ## シミュレーション
-1. はさみ操作の学習(学習部分grasp_object.pyから編集)
+1. 学習(学習については, grasp_object.pyから編集)
 ```
 python3 -m baselines.her.experiment.train --env GraspObject-v0 --num_cpu 1 --n_epochs 300 --logdir /home/tokoro/policy/test --synergy_type actuator --reward_lambda 0.6
 ```
