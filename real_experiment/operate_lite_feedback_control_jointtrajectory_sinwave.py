@@ -528,4 +528,34 @@ Evaluation Metrics:
                 self.previous_error = error
 
                 # キーボード入力のチェック
-                self.check_fo
+                self.check_for_stop_request()
+                rospy.sleep(0.1)
+
+    def check_for_stop_request(self):
+        if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
+            key = sys.stdin.read(1)
+            if key == 's':
+                rospy.loginfo("Stop request received. Stopping hand movement.")
+                self.stop_requested = True
+                rospy.loginfo("Evaluating PID performance.")
+                self.evaluate_pid_performance(desired_goal=0.1)
+                rospy.loginfo("Plotting angle history.")
+                self.plot_angle_history(desired_goal=0.1)
+
+    def __del__(self):
+        termios.tcsetattr(sys.stdin, termios.TCSANOW, self.old_term)
+
+if __name__ == "__main__":
+    rospy.init_node("operate_scissor", anonymous=True)
+
+    node = OperateExecution()
+
+    operateconfig = sys.argv[1]
+    with open('operate_configs/' + operateconfig + '.pkl', 'rb') as jc:
+        joints_states = pickle.load(jc)
+
+    print(joints_states)
+    newjoint = joints_states
+    print(newjoint)
+
+    node.run_posture(newjoint)

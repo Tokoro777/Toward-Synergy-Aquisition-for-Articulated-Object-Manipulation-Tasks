@@ -530,4 +530,81 @@ Evaluation Metrics:
 
                 # 現在の目標に基づくPID計算
                 current_target_angle = desired_goal
-                error = current_target_angle - self.c
+                error = desired_goal - current_target_angle
+                self.integral += error * 0.1  # タイムステップ0.1秒
+                # Integral windup対策
+                self.integral = max(self.integral_min, min(self.integral, self.integral_max))
+                derivative = (error - self.previous_error) / 0.1  # タイムステップ0.1秒
+                pid_output = (self.Kp * error) + (self.Ki * self.integral) + (self.Kd * derivative)
+                self.pc1_score += pid_output
+                self.pc1_score = np.clip(self.pc1_score, -0.6, 0.5)
+
+                pc1_vector[0, 0] = self.pc1_score
+                inverse_posture = self.pca.inverse_transform(pc1_vector)
+
+                rospy.loginfo(f"PC1 score: {self.pc1_score}")
+
+                # データの適切な調整
+                try:
+                    inverse_posture = np.delete(inverse_posture, 11)
+                    inverse_posture[12] = - inverse_posture[12]
+                except IndexError as e:
+                    rospy.logerr(f"Index error during posture adjustment: {e}")
+                    continue  # 次のループへ
+
+                control_values = actuation_center + inverse_posture * actuation_range
+                control_values = np.clip(control_values, [jmin for jmin, _ in joint_limits.values()],
+                                         [jmax for _, jmax in joint_limits.values()])
+
+                adjusted_targets = dict(zip(joint_names, control_values))
+                rospy.loginfo(f"Moving!!!!!(Based on angle: {self.current_angle:.4f} rad)")
+
+                # joint_trajectory_controllerへ送信
+                goal = FollowJointTrajectoryGoal()
+                trajectory = JointTrajectory()
+                trajectory.joint_names = joint_names
+
+                point = JointTrajectoryPoint()
+                point.positions = [adjusted_targets[jn] for jn in joint_names]
+                point.time_from_start = rospy.Duration(0.2)  # 0.2秒で到達想定
+
+                trajectory.points.append(point)
+                trajectory.header.stamp = rospy.Time.now() + rospy.Duration(0.05)
+
+                goal.trajectory = trajectory
+
+                self.client.send_goal(goal)
+
+                self.previous_error = error
+
+                self.check_for_stop_request()
+                rospy.sleep(0.1)
+
+    def check_for_stop_request(self):
+        if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
+            key = sys.stdin.read(1)
+            if key == 's':
+                rospy.loginfo("Stop request received. Stopping hand movement.")
+                self.stop_requested = True
+                rospy.loginfo("Evaluating PID performance.")
+                self.evaluate_pid_performance(desired_goal=0.1)
+                rospy.loginfo("Plotting angle history.")
+                self.plot_angle_history(desired_goal=0.1)
+
+    def __del__(self):
+        termios.tcsetattr(sys.stdin, termios.TCSANOW, self.old_term)
+
+if __name__ == "__main__":
+    rospy.init_node("operate_scissor", anonymous=True)
+
+    node = OperateExecution()
+
+    operateconfig = sys.argv[1]
+    with open('operate_configs/' + operateconfig + '.pkl', 'rb') as jc:
+        joints_states = pickle.load(jc)
+
+    print(joints_states)
+    newjoint = joints_states
+    print(newjoint)
+
+    node.run_posture(newjoint)

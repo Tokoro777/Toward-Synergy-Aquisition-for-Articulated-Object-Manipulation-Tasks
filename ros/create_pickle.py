@@ -21,6 +21,42 @@ configs = {
         'rh_THJ2': 0,
         'rh_THJ1': 0
     },
+    'initial_4finger_config': {
+        'rh_FFJ4': 0,
+        'rh_FFJ3': 1.57,
+        'rh_FFJ2': 0,
+
+        'rh_MFJ4': 0,
+        'rh_MFJ3': 1.57,
+        'rh_MFJ2': 0,
+
+        'rh_RFJ4': 0,
+        'rh_RFJ3': 1.57,
+        'rh_RFJ2': 0,
+
+        'rh_THJ5': 0.115,
+        'rh_THJ4': 1.22,
+        'rh_THJ2': 0,
+        'rh_THJ1': 0
+    },
+    'initial_3finger_config': {
+        'rh_FFJ4': 0,
+        'rh_FFJ3': 1.57,
+        'rh_FFJ2': 0,
+
+        'rh_MFJ4': 0,
+        'rh_MFJ3': 1.57,
+        'rh_MFJ2': 0,
+
+        'rh_RFJ4': 0,
+        'rh_RFJ3': 0,
+        'rh_RFJ2': 0,
+
+        'rh_THJ5': 0.115,
+        'rh_THJ4': 1.22,
+        'rh_THJ2': 0,
+        'rh_THJ1': 0
+    },
     '0.0_config': {
         'rh_FFJ4': -0.01245162,
         'rh_FFJ3': 0.88069618,
