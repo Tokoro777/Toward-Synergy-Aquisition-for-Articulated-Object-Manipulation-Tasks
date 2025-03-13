@@ -164,13 +164,16 @@ python3 operate_lite.py
 
 
 ## 実機
+
+### PID制御法
 1. はさみ操作の初期姿勢にShadow Hand Liteを移動
 ```
 python3 operate_lite_initial_config_jointtrajectory.py initial_config
 ```
 configを指定することで, 同じディレクトリ内にあるpickleファイルから, 欲しい初期姿勢を選択できる.
 丸い4本指はさみであればinitial_4finger_config, 3本指はさみであればinitial_3finger_configと指定する.
-これらのpickleファイルは, あらかじめ同じディレクトリに配置.\
+これらのpickleファイルは, あらかじめ同じディレクトリに配置.\\
+
 2. 単一の目標値に対して, フィードバック制御(PID)を用いたジョイント軌道で操作
 ```
 python3 operate_lite_feedback_control_jointtrajectory.py 0.4_config
@@ -182,6 +185,24 @@ python3 operate_lite_feedback_control_jointtrajectory_sequence.py 0.4_config
 4. サイン波の目標値に対して, フィードバック制御(PID)を使用して操作
 ```
 python3 operate_lite_feedback_control_jointtrajectory_sinwave.py 0.4_config
+```
+
+### 再フィッティング法
+1. はさみ操作の初期姿勢にShadow Hand Liteを移動
+```
+python3 operate_lite_initial_config_jointtrajectory.py initial_config
+```
+configを指定することで, 同じディレクトリ内にあるpickleファイルから, 欲しい初期姿勢を選択できる.
+丸い4本指はさみであればinitial_4finger_config, 3本指はさみであればinitial_3finger_configと指定する.
+これらのpickleファイルは, あらかじめ同じディレクトリに配置.\\
+
+2. 実機における, PC1-角度の相関を調べ, 直線を同定
+```
+python3 operate_lite_pc1_score.py 0.4_config
+```
+3. 同定した直線から, 角度に対応するPC1値を計算し, ハンドを制御及び, 角度や誤差を保存
+```
+python3 operate_lite_pc1_score_caluc.py 0.4_config
 ```
 
 ## ディレクトリ構造
