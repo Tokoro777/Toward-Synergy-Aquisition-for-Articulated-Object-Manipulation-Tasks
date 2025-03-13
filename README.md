@@ -157,9 +157,9 @@ python3 get_joint_value_for_ros.py
 ```
 python3 create_pickle.py
 ```
-11. Shadow Hand Liteの動作を制御
+11. シミュレーターでShadow Hand Liteの動作を制御（必要なければ, いきなり実機でよい）
 ```
-python3 create_pickle.py
+python3 operate_lite.py
 ```
 
 
