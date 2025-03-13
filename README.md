@@ -172,7 +172,7 @@ python3 operate_lite_initial_config_jointtrajectory.py initial_config
 ```
 configを指定することで, 同じディレクトリ内にあるpickleファイルから, 欲しい初期姿勢を選択できる.
 丸い4本指はさみであればinitial_4finger_config, 3本指はさみであればinitial_3finger_configと指定する.
-これらのpickleファイルは, あらかじめ同じディレクトリに配置.\
+これらのpickleファイルは, あらかじめ同じディレクトリに配置.
 
 2. 単一の目標値に対して, フィードバック制御(PID)を用いたジョイント軌道で操作
 ```
@@ -194,7 +194,7 @@ python3 operate_lite_initial_config_jointtrajectory.py initial_config
 ```
 configを指定することで, 同じディレクトリ内にあるpickleファイルから, 欲しい初期姿勢を選択できる.
 丸い4本指はさみであればinitial_4finger_config, 3本指はさみであればinitial_3finger_configと指定する.
-これらのpickleファイルは, あらかじめ同じディレクトリに配置.\
+これらのpickleファイルは, あらかじめ同じディレクトリに配置.
 
 2. 実機における, PC1-角度の相関を調べ, 直線を同定
 ```
