@@ -22,3 +22,6 @@ rosservice call robot_enable
 ///////////
 roslaunch sda5fshl_moveit_config demo_fake.launch
 ///////////
+
+
+## ShadowHandの制御
