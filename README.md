@@ -207,7 +207,7 @@ python3 operate_lite_pc1_score_caluc.py 0.4_config
 
 ## ディレクトリ構造
 リポジトリTOP
-│
+│\
 ├ README.md .. 目次を書く
 │
 ├ ○○.md
