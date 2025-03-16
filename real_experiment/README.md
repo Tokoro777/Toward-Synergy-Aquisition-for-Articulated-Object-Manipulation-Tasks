@@ -1,6 +1,6 @@
 # Motomanの使い方～ShadowHandの使用まで
 
-###
+## Motoman PC how to launch
 terminator -l motoman
 
 cd catkin_ws/
