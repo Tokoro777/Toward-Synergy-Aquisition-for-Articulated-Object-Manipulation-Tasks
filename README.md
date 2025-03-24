@@ -115,6 +115,11 @@ cd .mujoco
 ```
 cd synergy
 ```
+3. GUIエラーが出る際のおまじない
+```
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so
+```
+
 
 ## シミュレーション
 1. 学習(学習については, grasp_object.pyから編集)
