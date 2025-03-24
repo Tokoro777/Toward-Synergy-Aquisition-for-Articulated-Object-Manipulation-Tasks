@@ -178,6 +178,18 @@ python3 create_pickle.py
 python3 operate_lite.py
 ```
 
+## 学習環境の変え方(はさみの形状の変更方法)
+grasp_object.pyの中で、どの環境（xml）を使うか指定します。
+
+今回はgrasp_object_remove_lf_scissors_updown_no_rollhingeWRJ1J0THJ2.xml
+だと思うので、このxmlファイルで欲しいハサミを表示させます。
+
+このxmlは、gym-grasp/gym_grasp/envs/assets/handにあります。
+今あるハサミ記述をコメントアウトして、逆に使いたいハサミ記述を復活させます。例えば次は、4本指丸いハサミ、あるいは3本指です。これが反映されてるか確認するには、mujoco にxmlをドロップしてみれます。
+
+これでハサミが変わったことが確認できたら、そのハサミに応じた指の初期姿勢も変わるので、grasp_object.py内で初期姿勢の部分をコメントアウトして変更します。これもmujocoにドロップする事で、正しい初期姿勢か確認出来ます。
+
+初期姿勢に関しては、gym-grasp/gym_grasp/envs/handでREADME.mdに説明があります。
 
 ## 実機
 
