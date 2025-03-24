@@ -138,7 +138,8 @@ export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so
 gym_grasp/envs/assets/stls/target
 
 上記フォルダがリポジトリに登録されていなくて，githubに上がっていない.
-解決策 : research 中に、assetsがあると思います。ここから、GitHubには登録できていなかったtarget の情報がありますので、追加できると思います。
+
+解決策 : 引継ぎ資料のディスクのresearch 中に、assetsがあると思います。ここから、GitHubには登録できていなかったtarget の情報がありますので、追加できると思います。
 
 1. 学習(学習については, grasp_object.pyから編集)
 ```
