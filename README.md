@@ -133,6 +133,13 @@ export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so
 
 
 ## シミュレーション
+#### 注意点
+
+gym_grasp/envs/assets/stls/target
+
+上記フォルダがリポジトリに登録されていなくて，githubに上がっていない.
+解決策 : research 中に、assetsがあると思います。ここから、GitHubには登録できていなかったtarget の情報がありますので、追加できると思います。
+
 1. 学習(学習については, grasp_object.pyから編集)
 ```
 python3 -m baselines.her.experiment.train --env GraspObject-v0 --num_cpu 1 --n_epochs 300 --logdir /home/tokoro/policy/test --synergy_type actuator --reward_lambda 0.6
