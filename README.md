@@ -103,9 +103,13 @@ Some of the baselines examples use [MuJoCo](http://www.mujoco.org) (multi-joint 
 # 所の環境について
 
 Ubuntu 18.04.6 LTS
+
 GPU : NVIDIA GeForce RTX 3080
+
 NVIDIA-SMI 530.41.03
+
 Driver Version : 530.41.03
+
 CUDA : V10.0.130
 
 
