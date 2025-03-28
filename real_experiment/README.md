@@ -64,12 +64,28 @@ roslaunch sda5fshl_moveit_config demo_fake.launch
 # ShadowHandの使い方
 
 ### ShadowHandの起動
-1. ShadowHandの文字が印字された黒い電源箱に, 電源ケーブルを刺して, Power Onに. 
+1. ShadowHandの文字が印字された黒い電源箱に, 電源ケーブルを刺して, 電源 Onに. 
 
 2. ShadowHand本体から垂れているコード(先が丸い金属)と, もう一つの先が金属のコードとを接続. この時, 2つのコードのそれぞれの赤い印が揃うように接続する. 奥まで差し込むと, ハンドの指ががちゃがちゃと動く. これで接続完了.
 
 ### ShadowHandとコードで接続されたPCを用いて, 実際にShadowHandを制御する
-1. PCデスクトップの Launcher を開ける
+1. PCデスクトップの Launcher を開ける.
 
-2. その中の, launch_shadow_hand_right desktopを押すと, 4つのターミナルとgazeboが起動する. gazeboの起動まで待機
+2. Launcherファイル中の, launch_shadow_hand_right desktopを押し, dockerを起動させる. 4つのターミナルとgazeboが起動する. gazeboの起動まで待機.
 
+3. これもPlanとExecuteがある. 壊れないように, Simで確認.
+
+4. vscodeで, attach con... dextrous.....sr_graspにある, grasplite.pyを実行する. この時, ターミナルで, grasplite.pyのあるディレクトリまで, roscdで指定. vscodeの左でディレクトリ構造は分かる.
+
+### ShadowHand終了の仕方
+1. 指が閉じた状態に戻して終了する必要がある. gazeboで, Goal state:finger_packにして, Planする. Simで指が閉じたことが確認できたら, Executeで実機を動かす.
+
+2. ターミナルをすべて, ctrl+何かで, 閉じる.
+
+3. すべて閉じたら, Launcherファイル中にある, ShadowHand Close desktopをクリックすることで, dockerを終了.
+
+4. 金属のコードを抜く.
+
+5. 電源ボタンで電源 OFFにする.
+
+6. 電源ケーブルを抜く.
