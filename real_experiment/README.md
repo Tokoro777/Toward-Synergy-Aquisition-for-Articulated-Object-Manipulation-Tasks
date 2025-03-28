@@ -1,7 +1,10 @@
 # Motomanの使い方～ShadowHandの使用まで
 
 ## Motoman PC how to launch
+1. 仮想環境
+```
 terminator -l motoman
+```
 
 cd catkin_ws/
 
