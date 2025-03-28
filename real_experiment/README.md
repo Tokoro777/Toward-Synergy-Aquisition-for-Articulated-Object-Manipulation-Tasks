@@ -8,7 +8,7 @@ terminator -l motoman
 
 2. motomanの電源 ON
 
-3. コントローラ 背面をhalfPressしながら, Connectをタッチで起動させる
+3. コントローラ 背面をhalfPressしながら, Connectをタッチし起動させる
 
 4. key:teachに鍵を回す
 
@@ -26,7 +26,7 @@ roslaunch motoman_sda5f_support robot_interface_streaming_sda5f.launch robot_ip:
 rosservice call robot_enable
 ```
 
-9. motomanを動かす
+9. motomanの動きをシミュレーションで確認できる(only sim). demo.launchにすると, シミュレーションだけでなく実機も動くので注意(sim＆real).
 ```
 roslaunch sda5fshl_moveit_config demo_fake.launch
 ```
