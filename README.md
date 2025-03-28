@@ -213,7 +213,7 @@ Fusionで, stlモデル(はさみ)の輪郭をスケッチし, それを押し�
 
 その後, ポテンショメータやコードのためのスペースが入るよう, モデルを再度編集し, 3Dプリンタで印刷.
 
-### PID制御法
+### PID制御法(/real_experiment/にコードあり)
 1. はさみ操作の初期姿勢にShadow Hand Liteを移動
 ```
 python3 operate_lite_initial_config_jointtrajectory.py initial_config
@@ -235,7 +235,7 @@ python3 operate_lite_feedback_control_jointtrajectory_sequence.py 0.4_config
 python3 operate_lite_feedback_control_jointtrajectory_sinwave.py 0.4_config
 ```
 
-### 再フィッティング法
+### 再フィッティング法(/real_experiment/にコードあり)
 1. はさみ操作の初期姿勢にShadow Hand Liteを移動
 ```
 python3 operate_lite_initial_config_jointtrajectory.py initial_config
@@ -248,7 +248,7 @@ configを指定することで, 同じディレクトリ内にあるpickleファ
 ```
 python3 operate_lite_pc1_score.py 0.4_config
 ```
-3. 同定した直線から, 角度に対応するPC1値を計算し, ハンドを制御及び, 角度や誤差を保存
+3. 同定した直線から, 角度に対応するPC1値を計算し, ハンドを制御及び, 角度や誤差を保存. このpythonファイルは紛失したので, 作る必要あり.
 ```
 python3 operate_lite_pc1_score_caluc.py 0.4_config
 ```
