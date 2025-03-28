@@ -241,21 +241,7 @@ python3 operate_lite_pc1_score.py 0.4_config
 python3 operate_lite_pc1_score_caluc.py 0.4_config
 ```
 
-## ディレクトリ構造
-リポジトリTOP
-│\
-├ README.md .. 目次を書く
-│
-├ ○○.md
-├ ○○.md
-├ ○○.md
-│
-├ 第１章 .. フォルダを作成
-│　├ ○○.md
-│　├ ○○.md
-│　└ ○○.md
-│
-├ 第２章 .. フォルダを作成
+
 
 
 
