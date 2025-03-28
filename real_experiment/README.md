@@ -1,10 +1,24 @@
 # Motomanの使い方～ShadowHandの使用まで
 
 ## Motoman PC how to launch
-1. 仮想環境
+1. ターミナル表示切替
 ```
 terminator -l motoman
 ```
+
+2. motomanの電源 ON
+
+3. コントローラ 背面をhalfPressしながら, Connectをタッチで起動させる
+
+4. key:teachに鍵を回す
+
+5. サーボオンボタンを押しながら, ロボットを作業基点に動かす
+
+6. key:remoteに鍵を回す(PCで所望の位置にmotomanを動かす場合)
+
+7. 
+
+
 
 cd catkin_ws/
 
