@@ -10,7 +10,7 @@
 4. ロボットR2orR1から作業基点選択, サーボオンボタンを押して, コントローラ背面とreadyボタンを押しながら, ロボットを作業基点に動かす
 
 ### motomanをPCと繋ぎ, PCから動かす
-1. key:remoteに鍵を回す(PCで所望の位置にmotomanを動かしたい場合. motomanとPCをつなぐ.)
+1. key:remoteに鍵を回す. (PCで所望の位置にmotomanを動かしたい場合. motomanとPCをつなぐ.)
 
 2. ターミナル表示切替(分割されたterminatorが表示される)
 ```
@@ -84,8 +84,8 @@ roslaunch sda5fshl_moveit_config demo_fake.launch
 
 3. すべて閉じたら, Launcherファイル中にある, ShadowHand Close desktopをクリックすることで, dockerを終了.
 
-4. 金属のコードを抜く.
+4. ShadowHand本体の金属のコード接続を抜く.
 
-5. 電源ボタンで電源 OFFにする.
+5. ShadowHandの文字が印字された黒い電源箱の, 電源ボタンで電源 OFFにする.
 
-6. 電源ケーブルを抜く.
+6. 電源箱から, 電源ケーブルを抜く.
