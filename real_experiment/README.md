@@ -43,17 +43,17 @@ cd ../
 source devel/setup.bash
 ```
 
-4. (wiki参照)
+4. 右側の別のターミナルに記述(wiki参照)
 ```
 roslaunch motoman_sda5f_support robot_interface_streaming_sda5f.launch robot_ip:=192.168.255.1 controller:=fs100
 ```
 
-5. Turn on servo カチッとmotomanから音が鳴る(wiki参照)
+5. また別のターミナルに記述. Turn on servo. カチッとmotomanから音が鳴る！！(wiki参照)
 ```
 rosservice call robot_enable
 ```
 
-6. motomanの動きをシミュレーションで確認できる(only sim). demo.launchにすると, シミュレーションだけでなく実機も動くので注意(sim＆real). あるいは, Planでシミュレーション確認をして, その後Executeで実機を動かすでも可.
+6. motomanの動きをシミュレーションで確認できる(only sim). demo.launchにすると, シミュレーションだけでなく実機も動くので注意！！(sim＆real). あるいは, Planでシミュレーション確認をして, その後Executeで実機を動かすでも可.
 ```
 roslaunch sda5fshl_moveit_config demo_fake.launch
 ```
