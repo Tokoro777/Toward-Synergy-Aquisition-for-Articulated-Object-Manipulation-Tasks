@@ -53,10 +53,23 @@ roslaunch motoman_sda5f_support robot_interface_streaming_sda5f.launch robot_ip:
 rosservice call robot_enable
 ```
 
-6. また別のターミナルに記述. motomanの動きをシミュレーションで確認できる(only sim). demo.launchにすると, シミュレーションだけでなく実機も動くので注意！！(sim＆real). あるいは, Planでシミュレーション確認をして, その後Executeで実機を動かすでも可.
+6. また別のターミナルに記述. gazeboが起動. motomanの動きをシミュレーションで確認できる(only sim). demo.launchにすると, シミュレーションだけでなく実機も動くので注意！！(sim＆real). あるいは, Planでシミュレーション確認をして, その後Executeで実機を動かすでも可.
 ```
 roslaunch sda5fshl_moveit_config demo_fake.launch
 ```
 
+7. ハンドの7関節の値をあらかじめ保存したpythonコードで, motomanを動かす(私の場合). Planでシミュレーション確認をして, その後Executeで実機を動かすでも可.
+
 
 # ShadowHandの使い方
+
+### ShadowHandの起動
+1. ShadowHandの文字が印字された黒い電源箱に, 電源ケーブルを刺して, Power Onに. 
+
+2. ShadowHand本体から垂れているコード(先が丸い金属)と, もう一つの先が金属のコードとを接続. この時, 2つのコードのそれぞれの赤い印が揃うように接続する. 奥まで差し込むと, ハンドの指ががちゃがちゃと動く. これで接続完了.
+
+### ShadowHandとコードで接続されたPCを用いて, 実際にShadowHandを制御する
+1. PCデスクトップの Launcher を開ける
+
+2. その中の, launch_shadow_hand_right desktopを押すと, 4つのターミナルとgazeboが起動する. gazeboの起動まで待機
+
