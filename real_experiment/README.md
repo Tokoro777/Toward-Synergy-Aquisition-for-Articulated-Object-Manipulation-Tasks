@@ -1,6 +1,6 @@
-# Motomanの使い方～ShadowHandの使用まで
+# Motomanの使い方
 
-## Motomanの起動
+### Motomanの起動
 1. motomanの電源 ON
 
 2. コントローラ 背面をhalfPressしながら, Connectをタッチし起動させる
@@ -9,7 +9,7 @@
 
 4. サーボオンボタンを押しながら, ロボットを作業基点に動かす
 
-## motomanをPCと繋ぎ, PCから動かす
+### motomanをPCと繋ぎ, PCから動かす
 1. key:remoteに鍵を回す(PCで所望の位置にmotomanを動かしたい場合. motomanとPCをつなぐ.)
 
 2. ターミナル表示切替(分割されたterminatorが表示される)
@@ -59,4 +59,4 @@ roslaunch sda5fshl_moveit_config demo_fake.launch
 ```
 
 
-## ShadowHandの制御
+# ShadowHandの使い方
