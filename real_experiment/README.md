@@ -75,7 +75,7 @@ roslaunch sda5fshl_moveit_config demo_fake.launch
 
 3. これもPlanとExecuteがある. 壊れないように, Simで確認.
 
-4. vscodeで, attach con... dextrous.....sr_graspにある, grasplite.pyを実行する. この時, ターミナルで, grasplite.pyのあるディレクトリまで, roscdで指定. vscodeの左でディレクトリ構造は分かる.
+4. ターミナルで, 用意したpythonファイルを実行し, ShadowHandを制御する. 例えばvscodeの, attach con... dextrous.....sr_graspにある, grasplite.pyを実行する. この時, ターミナルで, grasplite.pyのあるディレクトリまで, roscdで指定. vscodeの左でディレクトリ構造は分かる.
 
 ### ShadowHand終了の仕方
 1. 指が閉じた状態に戻して終了する必要がある. gazeboで, Goal state:finger_packにして, Planする. Simで指が閉じたことが確認できたら, Executeで実機を動かす.
