@@ -1,6 +1,6 @@
 # 各ファイルで注意すべき点
 
-## see_pca_axis_Lite_14_elements_scissors_updown.py
+## ・see_pca_axis_Lite_14_elements_scissors_updown.py
 ### どの主成分の軌道を見たいかの選択
 これは第一主成分
 ```
@@ -19,7 +19,7 @@
 ```
 
 
-## get_new_dataset_for_ag_with_sci_updown_no_zslider.py
+## ・get_new_dataset_for_ag_with_sci_updown_no_zslider.py
 ### ハンドの初期姿勢の指定
 はさみに応じて, joint_anglesをコメントアウトで選択
 ```
@@ -32,7 +32,7 @@
 ```
 
 
-## see_plot_correlation_pc1_ag_Lite.py
+## ・see_plot_correlation_pc1_ag_Lite.py
 3本指のはさみのみ,PC2がはさみ操作に必要な主成分であった.また, そのベクトルの符号を反転させた場合にのみ, はさみ操作の動きであることを確認したため, 3本指のときは以下のようにコメントアウトを外す.
 ```
     # # 符号反転（必要に応じて行う）
@@ -40,7 +40,7 @@
 ```
 
 
-## change_posture_by_ag_pc1_ramp_function_sci_updown.py
+## ・change_posture_by_ag_pc1_ramp_function_sci_updown.py
 3本指のときは, 符号反転PC2を使用するので, 以下の２つのコメントアウトは外す.
 ```
     # # 符号反転（必要に応じて行う）
