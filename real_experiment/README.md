@@ -14,9 +14,22 @@ terminator -l motoman
 
 5. サーボオンボタンを押しながら, ロボットを作業基点に動かす
 
-6. key:remoteに鍵を回す(PCで所望の位置にmotomanを動かす場合)
+6. key:remoteに鍵を回す(PCで所望の位置にmotomanを動かしたい場合. motomanとPCをつなぐ.)
 
-7. 
+7. (wiki参照)
+```
+roslaunch motoman_sda5f_support robot_interface_streaming_sda5f.launch robot_ip:=192.168.255.1 controller:=fs100
+```
+
+8. Turn on servo カチッとmotomanから音が鳴る(wiki参照)
+```
+rosservice call robot_enable
+```
+
+9. motomanを動かす
+```
+roslaunch sda5fshl_moveit_config demo_fake.launch
+```
 
 
 
