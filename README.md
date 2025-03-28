@@ -201,6 +201,11 @@ grasp_object.pyの中で、どの環境（xml）を使うか指定します。
 
 ## 実機
 
+### 実機で用いるモデル(はさみ)の用意の仕方
+/gym-grasp/gym_grasp/envs/assets/hand/save_stl.py
+
+でsim環境と全く同じサイズモデルをstl化できる.
+
 ### PID制御法
 1. はさみ操作の初期姿勢にShadow Hand Liteを移動
 ```
