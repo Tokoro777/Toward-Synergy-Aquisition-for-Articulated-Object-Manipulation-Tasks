@@ -26,7 +26,7 @@ roslaunch motoman_sda5f_support robot_interface_streaming_sda5f.launch robot_ip:
 rosservice call robot_enable
 ```
 
-9. motomanの動きをシミュレーションで確認できる(only sim). demo.launchにすると, シミュレーションだけでなく実機も動くので注意(sim＆real).
+9. motomanの動きをシミュレーションで確認できる(only sim). demo.launchにすると, シミュレーションだけでなく実機も動くので注意(sim＆real). あるいは, Planでシミュレーション確認をして, その後Executeで実機を動かすでも可.
 ```
 roslaunch sda5fshl_moveit_config demo_fake.launch
 ```
