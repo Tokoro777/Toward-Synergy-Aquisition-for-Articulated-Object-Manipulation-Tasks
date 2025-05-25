@@ -253,6 +253,23 @@ python3 operate_lite_pc1_score.py 0.4_config
 python3 operate_lite_pc1_score_caluc.py 0.4_config
 ```
 
+### Arduinoポテンショメータ角度取得コード
+const int analogPin = A0; // アナログピンの定義
+const float maxAngle = 330.0; // センサーの最大回転角度
+const float vcc = 5.0; // Arduinoの電圧
+
+void setup() {
+  Serial.begin(115200);
+}
+
+void loop() {
+  int sensorValue = analogRead(analogPin); // アナログ値を読み取り
+  float voltage = sensorValue * (vcc / 1023.0); // 電圧に変換
+  float angle = (voltage / vcc) * maxAngle; // 角度に変換
+  Serial.println(157.10 - angle);  //Serial.println(158.71 - angle);
+  delay(100); // 適宜調整 0.1秒
+}
+
 
 
 
